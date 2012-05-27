@@ -19,6 +19,8 @@ namespace fullcircle {
       Frame (
           const uint8_t& x_dim, 
           const uint8_t& y_dim);
+      Frame (Frame& rhs);
+      virtual ~Frame() {};
       void set_pixel(
           const uint8_t& x,
           const uint8_t& y,
@@ -35,14 +37,15 @@ namespace fullcircle {
           const uint8_t& x,
           const uint8_t& y
         );
+      const uint8_t x_dim() { return _x_dim; };
+      const uint8_t y_dim() { return _y_dim; };
       void dump_frame(std::ostream& os);
 
-   
-      virtual ~Frame() {};
+      Frame& operator= (const Frame& rhs);
+      bool operator==(Frame &rhs);
+      bool operator!=(Frame &rhs);
 
     private:
-      Frame (const Frame& original);
-      Frame& operator= (const Frame& rhs);
       inline void check_coordinates(
           const uint8_t& x,
           const uint8_t& y);
@@ -51,7 +54,7 @@ namespace fullcircle {
       std::vector<RGB_t> _framedata;
   };
 };
-  
+
 
 #endif /* LIBFULLCIRCLE_FRAME_HPP */
 

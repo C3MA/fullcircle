@@ -15,6 +15,17 @@ Frame::Frame ( const uint8_t& x_dim, const uint8_t& y_dim)
     }
 };
 
+Frame::Frame (Frame& rhs) 
+  : _x_dim(rhs.x_dim())
+  , _y_dim(rhs.y_dim())
+  , _framedata(_x_dim * _y_dim) {
+    for (uint8_t x=0; x<_x_dim; ++x) {
+      for (uint8_t y=0; y<_y_dim; ++y) {
+        set_pixel(x, y, rhs.get_pixel(x,y)); 
+      }
+    }
+};
+
 inline void Frame::check_coordinates (
     const uint8_t& x,
     const uint8_t& y ) 
@@ -69,4 +80,27 @@ void Frame::dump_frame(std::ostream& os) {
     }
     os << std::endl;
   }
+}
+
+
+bool Frame::operator== (Frame &rhs) {
+  if (x_dim() != rhs.x_dim() ||
+      y_dim() != rhs.y_dim())
+    return false;
+  for (uint8_t x=0; x < _x_dim; ++x) {
+    for (uint8_t y=0; y < _y_dim; ++y) {
+      RGB_t thisc=get_pixel(x,y);
+      RGB_t rhsc=rhs.get_pixel(x,y);
+      if (thisc.red != rhsc.red ||
+          thisc.green != rhsc.green ||
+          thisc.blue != rhsc.blue)
+        return false;
+    }
+  }
+  return true;
+}
+
+
+bool Frame::operator!= (Frame &rhs) {
+  return !(*this == rhs);
 }

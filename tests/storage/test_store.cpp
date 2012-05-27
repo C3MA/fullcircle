@@ -45,12 +45,12 @@ BOOST_AUTO_TEST_CASE ( check_sanity ) {
 }
 
 BOOST_AUTO_TEST_CASE ( check_frame ) {
-  std::cout << "Testing a single frame." << std::endl;
-  fullcircle::Frame::Ptr f1(new fullcircle::Frame(4,4));
-
-  f1->set_pixel(0, 0, 255, 255, 255);
+  std::cout << "### Testing a single frame." << std::endl;
   fullcircle::RGB_t white;
   white.red = white.green = white.blue = 255;
+
+  fullcircle::Frame::Ptr f1(new fullcircle::Frame(4,4));
+  f1->set_pixel(0, 0, 255, 255, 255);
   f1->set_pixel(1, 0, white);
 
   f1->dump_frame(std::cout);
@@ -83,6 +83,24 @@ BOOST_AUTO_TEST_CASE ( check_frame ) {
   } catch (fullcircle::GenericException const& ex) {
     std::cout << "Caught expected exception: " << ex.what() << std::endl;
   }
+
+  std::cout << "### Testing equality operators" << std::endl; 
+  fullcircle::Frame::Ptr f2(new fullcircle::Frame(4,4));
+  for (uint8_t x=0; x < f2->x_dim(); ++x) {
+    for (uint8_t y=0; y < f2->y_dim(); ++y) {
+      f2->set_pixel(x, y, white);
+    }
+  }
+  f2->dump_frame(std::cout);
+  BOOST_REQUIRE(*f2 == *f2);
+  BOOST_REQUIRE(*f1 != *f2);
+
+  std::cout << "### Testing copy constructor" << std::endl; 
+  fullcircle::Frame::Ptr f3(new fullcircle::Frame(*f2));
+  f3->dump_frame(std::cout);
+  BOOST_REQUIRE(*f3 == *f2);
+  BOOST_REQUIRE(*f1 != *f3);
+
 }
 //  bfs::path db(TEST_DB_FILE);
 
