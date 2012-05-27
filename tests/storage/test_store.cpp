@@ -186,7 +186,8 @@ BOOST_AUTO_TEST_CASE ( check_sequence_storage ) {
     fullcircle::Sequence::Ptr loaded_seq(new fullcircle::Sequence(input));
     std::cout << "Loaded sequence:" << std::endl;
     loaded_seq->dump(std::cout);
-  } catch (fullcircle::GenericException const& ex) {
+    BOOST_REQUIRE(*seq == *loaded_seq);
+  } catch (fullcircle::GenericException& ex) {
     std::cout << "Caught exception: " << ex.what() << std::endl;
     BOOST_FAIL( "Wasn't able to load sequence." );
   }

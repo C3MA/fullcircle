@@ -55,6 +55,16 @@ namespace fullcircle {
 
   };
 
+  class IndexOutOfBoundException : public GenericException{
+	public:
+	  typedef std::tr1::shared_ptr<IndexOutOfBoundException> Ptr;
+	  IndexOutOfBoundException (const std::string reason) :
+		fullcircle::GenericException(reason) {};
+	  virtual ~IndexOutOfBoundException() throw() {};
+
+  };
+
+
   class StoreException : public GenericException{
 	public:
 	  typedef std::tr1::shared_ptr<StoreException> Ptr;

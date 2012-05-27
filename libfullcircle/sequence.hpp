@@ -19,8 +19,12 @@ namespace fullcircle {
       virtual ~Sequence() {}; 
 
       void add_frame(Frame::Ptr frame);
+      Frame::Ptr get_frame(uint32_t frameid);
       uint8_t x_dim() const { return _x_dim; };
       uint8_t y_dim() const { return _y_dim; };
+      uint8_t fps() const { return _fps; };
+      const std::string& generator_name() const { return _generator_name; };
+      const std::string& generator_version() const { return _generator_version; };
       uint32_t size() const { return _frames.size(); };
       void dump(std::ostream& os);
       void save(std::ostream& os,
@@ -30,6 +34,8 @@ namespace fullcircle {
         return (_frames.begin()); };
       const_iterator end() const {
         return (_frames.end()); };
+      bool operator== (Sequence &rhs);
+      bool operator!= (Sequence &rhs);
 
     private:
       Sequence (const Sequence& original);

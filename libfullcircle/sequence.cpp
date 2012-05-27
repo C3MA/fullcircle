@@ -92,3 +92,40 @@ Sequence::Sequence(std::istream& is)
     _frames.push_back(frame);
   }
 }
+
+
+Frame::Ptr Sequence::get_frame(uint32_t frameid) {
+  if (frameid < size())
+    return _frames[frameid];
+  else 
+    throw fullcircle::IndexOutOfBoundException("Invalid index during get_frame");
+}
+
+bool Sequence::operator== (Sequence &rhs) {
+  if (x_dim() != rhs.x_dim() ||
+      y_dim() != rhs.y_dim() ||
+      fps() != rhs.fps() ||
+      size() != rhs.size()
+      ) {
+    std::cout << "HORST:" << std::endl;
+    return false;
+  }
+  try {
+    for (uint8_t frameID=0; frameID < size(); ++frameID) {
+      fullcircle::Frame::Ptr lhs_frame = get_frame(frameID);
+      fullcircle::Frame::Ptr rhs_frame = rhs.get_frame(frameID);
+      if (*lhs_frame != *rhs_frame) {
+        std::cout << "Uschi:" << std::endl;
+        return false;
+      }
+    }
+  } catch (fullcircle::IndexOutOfBoundException const& ex) {
+    std::cout << "Ursel:" << std::endl;
+    return false;
+  }
+  return true;
+}
+
+bool Sequence::operator!= (Sequence &rhs) {
+  return !(*this == rhs);
+}
