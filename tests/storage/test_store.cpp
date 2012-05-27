@@ -21,10 +21,14 @@
 #define BOOST_TEST_MODULE store_test
 #include <boost/test/unit_test.hpp>
 #include <iostream>
+#include <fstream>
 #include <testconfig.h>
 #include <libfullcircle/frame.hpp>
 #include <libfullcircle/sequence.hpp>
+#include <libfullcircle/sequence.pb.h>
+#include <boost/filesystem.hpp>
 
+namespace bfs=boost::filesystem;
 
 /**
  * see http://www.boost.org/doc/libs/1_43_0/libs/test/doc/html/tutorials/hello-the-testing-world.html
@@ -103,7 +107,6 @@ BOOST_AUTO_TEST_CASE ( check_frame ) {
   BOOST_REQUIRE(*f1 != *f3);
 
 }
-//  bfs::path db(TEST_DB_FILE);
 
 BOOST_AUTO_TEST_CASE ( check_sequence ) {
   fullcircle::RGB_t white;
@@ -149,4 +152,48 @@ BOOST_AUTO_TEST_CASE ( check_sequence ) {
 }
 
 
+BOOST_AUTO_TEST_CASE ( check_sequence_storage ) {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+  bfs::path binfile(TEST_SEQUENCE_FILE);
+  
+  // create a test sequence
+  fullcircle::RGB_t white;
+  white.red = white.green = white.blue = 255;
+  fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(10,4,4));
+  fullcircle::Frame::Ptr f0(new fullcircle::Frame(4,4));
+  f0->set_pixel(0, 0, white);
+  fullcircle::Frame::Ptr f1(new fullcircle::Frame(4,4));
+  f1->set_pixel(1, 0, white);
+  fullcircle::Frame::Ptr f2(new fullcircle::Frame(4,4));
+  f2->set_pixel(2, 0, white);
+  fullcircle::Frame::Ptr f3(new fullcircle::Frame(4,4));
+  f3->set_pixel(3, 0, white);
+  seq->add_frame(f0);
+  seq->add_frame(f1);
+  seq->add_frame(f2);
+  seq->add_frame(f3);
+
+  std::cout << "Saving sequence to file " << binfile << std::endl;
+  std::fstream output(binfile.c_str(), 
+      std::ios::out | std::ios::trunc | std::ios::binary);
+  seq->save(output, "Testcase: check_sequence_storage", "current");
+  output.close();
+
+  std::cout << "Loading sequence from file " << binfile << std::endl;
+  std::fstream input(binfile.c_str(), 
+      std::ios::in | std::ios::binary);
+  try {
+    fullcircle::Sequence::Ptr loaded_seq(new fullcircle::Sequence(input));
+    std::cout << "Loaded sequence:" << std::endl;
+    loaded_seq->dump(std::cout);
+  } catch (fullcircle::GenericException const& ex) {
+    std::cout << "Caught exception: " << ex.what() << std::endl;
+    BOOST_FAIL( "Wasn't able to load sequence." );
+  }
+  input.close();
+
+
+
+  google::protobuf::ShutdownProtobufLibrary();
+}
 //BOOST_AUTO_TEST_SUITE_END()

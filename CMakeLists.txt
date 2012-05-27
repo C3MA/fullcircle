@@ -61,6 +61,13 @@ set(CMAKE_CXX_FLAGS "-Wall ")
 # library.
 SET(Boost_ADDITIONAL_VERSIONS "1.46.1" "1.48.0" "1.48")
 FIND_PACKAGE(Boost 1.46.1 COMPONENTS test_exec_monitor program_options filesystem system)
+# find googles protocol buffers
+INCLUDE(FindProtobuf)
+IF (PB_FOUND)
+  message(STATUS "Found Protocol Buffers: ${PB_PROTOC_CMD}")
+  include_directories(${PB_INCLUDE_DIR})
+  #link_libraries(${PB_LIBRARY})
+ENDIF (PB_FOUND)
 
 include_directories(${CMAKE_BINARY_DIR})
 
@@ -101,6 +108,6 @@ message("  boost include: ${Boost_INCLUDE_DIRS}")
 message("  boost program options lib: ${Boost_PROGRAM_OPTIONS_LIBRARY}")
 message("  boost system lib: ${Boost_SYSTEM_LIBRARY}")
 message("  boost filesystem lib: ${Boost_FILESYSTEM_LIBRARY}")
-message("  sqlite3 include: ${SQLITE3_INCLUDE_DIR}, lib: ${SQLITE3_LIBRARIES}")
+message("  PB include: ${PROTOBUF_INCLUDE_DIRS}, lib: ${PROTOBUF_LIBRARIES}")
 message("  extended logging: ${ENABLE_LOGGING}")
 

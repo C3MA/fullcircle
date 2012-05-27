@@ -1,0 +1,26 @@
+package fullcircle;
+
+message BinarySequenceMetadata {
+  required uint32 frames_per_second = 1;
+  required uint32 x_dim = 2;
+  required uint32 y_dim = 3;
+  required string generator_name = 4;
+  required string generator_version = 5;
+}
+
+message RGB_Value {
+  required uint32 red = 1;
+  required uint32 green = 2;
+  required uint32 blue = 3;
+  required uint32 x = 4;
+  required uint32 y = 5;
+}
+
+message BinaryFrame {
+  repeated RGB_Value pixel = 1;
+}
+
+message BinarySequence {
+  required BinarySequenceMetadata metadata = 1;
+  repeated BinaryFrame frame = 2;
+}
