@@ -51,7 +51,7 @@ namespace fullcircle {
           const uint8_t& y);
       uint8_t _x_dim;
       uint8_t _y_dim;
-      std::vector<RGB_t> _framedata;
+      std::vector<RGB_t> _pixels;
   };
 };
 

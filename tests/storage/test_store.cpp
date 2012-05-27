@@ -23,6 +23,7 @@
 #include <iostream>
 #include <testconfig.h>
 #include <libfullcircle/frame.hpp>
+#include <libfullcircle/sequence.hpp>
 
 
 /**
@@ -103,5 +104,49 @@ BOOST_AUTO_TEST_CASE ( check_frame ) {
 
 }
 //  bfs::path db(TEST_DB_FILE);
+
+BOOST_AUTO_TEST_CASE ( check_sequence ) {
+  fullcircle::RGB_t white;
+  white.red = white.green = white.blue = 255;
+  fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(10,4,4));
+  fullcircle::Frame::Ptr f0(new fullcircle::Frame(4,4));
+  f0->set_pixel(0, 0, white);
+  fullcircle::Frame::Ptr f1(new fullcircle::Frame(4,4));
+  f1->set_pixel(1, 0, white);
+  fullcircle::Frame::Ptr f2(new fullcircle::Frame(4,4));
+  f2->set_pixel(2, 0, white);
+  fullcircle::Frame::Ptr f3(new fullcircle::Frame(4,4));
+  f3->set_pixel(3, 0, white);
+  
+  seq->add_frame(f0);
+  seq->add_frame(f1);
+  seq->add_frame(f2);
+  seq->add_frame(f3);
+  std::cout << "Printing some test frames" << std::endl;
+  seq->dump(std::cout);
+
+  BOOST_REQUIRE(seq->size() == 4);
+
+  fullcircle::Frame::Ptr damaged_frame(new fullcircle::Frame(3,4));
+  try {
+    seq->add_frame(damaged_frame);
+    BOOST_FAIL( "Was able to add a damaged frame." );
+  } catch (fullcircle::GenericException const& ex) {
+    std::cout << "Caught expected exception: " << ex.what() << std::endl;
+  }
+  BOOST_REQUIRE(seq->size() == 4);
+
+  std::cout << "Testing our sequence iterator" << std::endl;
+
+  fullcircle::Sequence::const_iterator it;
+  uint8_t framecount=0;
+  for (it = seq->begin(); it != seq->end(); ++it) {
+    (*it)->dump_frame(std::cout);
+    framecount++;
+  }
+  BOOST_REQUIRE(seq->size() == framecount);
+
+}
+
 
 //BOOST_AUTO_TEST_SUITE_END()
