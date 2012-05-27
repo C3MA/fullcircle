@@ -22,6 +22,7 @@
 #include <boost/test/unit_test.hpp>
 #include <iostream>
 #include <testconfig.h>
+#include <libfullcircle/frame.hpp>
 
 
 /**
@@ -43,27 +44,46 @@ BOOST_AUTO_TEST_CASE ( check_sanity ) {
   }
 }
 
-//BOOST_AUTO_TEST_CASE ( check_create_storage_sqlite3 ) {
-//  std::cout << "Testing create storage utility for SQLite3" << std::endl;
-//  klio::StoreFactory::Ptr factory(new klio::StoreFactory()); 
+BOOST_AUTO_TEST_CASE ( check_frame ) {
+  std::cout << "Testing a single frame." << std::endl;
+  fullcircle::Frame::Ptr f1(new fullcircle::Frame(4,4));
+
+  f1->set_pixel(0, 0, 255, 255, 255);
+  fullcircle::RGB_t white;
+  white.red = white.green = white.blue = 255;
+  f1->set_pixel(1, 0, white);
+
+  f1->dump_frame(std::cout);
+
+  fullcircle::RGB_t setcolor0=f1->get_pixel(0,0);
+  BOOST_REQUIRE(setcolor0.red == 255);
+  BOOST_REQUIRE(setcolor0.green == 255);
+  BOOST_REQUIRE(setcolor0.blue == 255);
+
+  fullcircle::RGB_t setcolor1=f1->get_pixel(1,0);
+  BOOST_REQUIRE(setcolor1.red == 255);
+  BOOST_REQUIRE(setcolor1.green == 255);
+  BOOST_REQUIRE(setcolor1.blue == 255);
+
+  fullcircle::RGB_t setcolor2=f1->get_pixel(0,1);
+  BOOST_REQUIRE(setcolor2.red == 0);
+  BOOST_REQUIRE(setcolor2.green == 0);
+  BOOST_REQUIRE(setcolor2.blue == 0);
+
+  try {
+    f1->set_pixel(10,10,white);
+    BOOST_FAIL( "Was able to set pixel outside of the frame." );
+  } catch (fullcircle::GenericException const& ex) {
+    std::cout << "Caught expected exception: " << ex.what() << std::endl;
+  }
+
+  try {
+    f1->set_pixel(-1,-1,white);
+    BOOST_FAIL( "Was able to set pixel outside of the frame." );
+  } catch (fullcircle::GenericException const& ex) {
+    std::cout << "Caught expected exception: " << ex.what() << std::endl;
+  }
+}
 //  bfs::path db(TEST_DB_FILE);
-//  try {
-//    std::cout << "Attempting to create " << db << std::endl;
-//    klio::Store::Ptr store(factory->createStore(klio::SQLITE3, db));
-//    std::cout << "Created: " << store->str() << std::endl;
-//    store->open(); // Second call to open - should not break
-//    store->initialize();
-//  } catch (klio::StoreException const& ex) {
-//    std::cout << "Caught invalid exception: " << ex.what() << std::endl;
-//    BOOST_FAIL( "Unexpected exception occured for initialize request" );
-//  }
-//  try {
-//    klio::Store::Ptr invalid_store(factory->createStore(klio::UNDEFINED, db));
-//    BOOST_FAIL( "No exception occured for invalid createStore request" );
-//  } catch (klio::GenericException const & ex) {
-//    std::cout << "Caught valid exception: " << ex.what() << std::endl;
-//  }
-//}
-//
 
 //BOOST_AUTO_TEST_SUITE_END()

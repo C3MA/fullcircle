@@ -3,6 +3,7 @@
 
 #include <libfullcircle/common.hpp>
 #include <vector>
+#include <ostream>
 
 namespace fullcircle {
 
@@ -17,10 +18,7 @@ namespace fullcircle {
       typedef std::tr1::shared_ptr<Frame> Ptr;
       Frame (
           const uint8_t& x_dim, 
-          const uint8_t& y_dim) 
-        : _x_dim(x_dim)
-        , _y_dim(y_dim)
-        , _framedata(x_dim * y_dim) {};
+          const uint8_t& y_dim);
       void set_pixel(
           const uint8_t& x,
           const uint8_t& y,
@@ -37,6 +35,7 @@ namespace fullcircle {
           const uint8_t& x,
           const uint8_t& y
         );
+      void dump_frame(std::ostream& os);
 
    
       virtual ~Frame() {};
