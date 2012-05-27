@@ -107,7 +107,6 @@ bool Sequence::operator== (Sequence &rhs) {
       fps() != rhs.fps() ||
       size() != rhs.size()
       ) {
-    std::cout << "HORST:" << std::endl;
     return false;
   }
   try {
@@ -115,12 +114,10 @@ bool Sequence::operator== (Sequence &rhs) {
       fullcircle::Frame::Ptr lhs_frame = get_frame(frameID);
       fullcircle::Frame::Ptr rhs_frame = rhs.get_frame(frameID);
       if (*lhs_frame != *rhs_frame) {
-        std::cout << "Uschi:" << std::endl;
         return false;
       }
     }
   } catch (fullcircle::IndexOutOfBoundException const& ex) {
-    std::cout << "Ursel:" << std::endl;
     return false;
   }
   return true;
