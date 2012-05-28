@@ -18,7 +18,7 @@ fullcircle::Sequence::Ptr mk_demo_sequence() {
   red.red = 255; red.green = red.blue = 0;
   fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(2,10,5));
 
-  for( uint32_t frameID = 0; frameID < 4; ++frameID) {
+  for( uint32_t frameID = 0; frameID < 100; ++frameID) {
     fullcircle::Frame::Ptr frame(new fullcircle::Frame(10,5));
     uint16_t xpos=frameID % 10;
     uint16_t ypos=frameID % 5;
