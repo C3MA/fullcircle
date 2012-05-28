@@ -12,17 +12,17 @@ namespace fullcircle {
       typedef std::tr1::shared_ptr<Sequence> Ptr;
       typedef std::vector<Frame::Ptr>::const_iterator const_iterator;
       Sequence (
-          const uint8_t& frames_per_second, 
-          const uint8_t& x_dim, 
-          const uint8_t& y_dim);
+          const uint16_t& frames_per_second, 
+          const uint16_t& x_dim, 
+          const uint16_t& y_dim);
       Sequence (std::istream& is);
       virtual ~Sequence() {}; 
 
       void add_frame(Frame::Ptr frame);
       Frame::Ptr get_frame(uint32_t frameid);
-      uint8_t x_dim() const { return _x_dim; };
-      uint8_t y_dim() const { return _y_dim; };
-      uint8_t fps() const { return _fps; };
+      uint16_t x_dim() const { return _x_dim; };
+      uint16_t y_dim() const { return _y_dim; };
+      int fps() const { return _fps; };
       const std::string& generator_name() const { return _generator_name; };
       const std::string& generator_version() const { return _generator_version; };
       uint32_t size() const { return _frames.size(); };
@@ -40,9 +40,9 @@ namespace fullcircle {
     private:
       Sequence (const Sequence& original);
       Sequence& operator= (const Sequence& rhs);
-      uint8_t _fps;
-      uint8_t _x_dim;
-      uint8_t _y_dim;
+      uint16_t _fps;
+      uint16_t _x_dim;
+      uint16_t _y_dim;
       std::string _generator_name;
       std::string _generator_version;
       std::vector<Frame::Ptr> _frames;

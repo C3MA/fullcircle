@@ -29,6 +29,13 @@
 #include <boost/filesystem.hpp>
 
 namespace bfs=boost::filesystem;
+fullcircle::RGB_t white;
+fullcircle::RGB_t red;
+
+void init_color() {
+  white.red = white.green = white.blue = 255;
+  red.red = 255; red.green = red.blue = 0;
+}
 
 /**
  * see http://www.boost.org/doc/libs/1_43_0/libs/test/doc/html/tutorials/hello-the-testing-world.html
@@ -50,6 +57,7 @@ BOOST_AUTO_TEST_CASE ( check_sanity ) {
 }
 
 BOOST_AUTO_TEST_CASE ( check_frame ) {
+  init_color();
   std::cout << "### Testing a single frame." << std::endl;
   fullcircle::RGB_t white;
   white.red = white.green = white.blue = 255;
@@ -57,6 +65,7 @@ BOOST_AUTO_TEST_CASE ( check_frame ) {
   fullcircle::Frame::Ptr f1(new fullcircle::Frame(4,4));
   f1->set_pixel(0, 0, 255, 255, 255);
   f1->set_pixel(1, 0, white);
+  f1->set_pixel(2, 0, red);
 
   f1->dump_frame(std::cout);
 
@@ -74,6 +83,12 @@ BOOST_AUTO_TEST_CASE ( check_frame ) {
   BOOST_REQUIRE(setcolor2.red == 0);
   BOOST_REQUIRE(setcolor2.green == 0);
   BOOST_REQUIRE(setcolor2.blue == 0);
+
+  fullcircle::RGB_t setcolor3=f1->get_pixel(2,0);
+  BOOST_REQUIRE(setcolor3.red == 255);
+  BOOST_REQUIRE(setcolor3.green == 0);
+  BOOST_REQUIRE(setcolor3.blue == 0);
+
 
   try {
     f1->set_pixel(10,10,white);
@@ -109,6 +124,7 @@ BOOST_AUTO_TEST_CASE ( check_frame ) {
 }
 
 BOOST_AUTO_TEST_CASE ( check_sequence ) {
+  init_color();
   fullcircle::RGB_t white;
   white.red = white.green = white.blue = 255;
   fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(10,4,4));
@@ -119,8 +135,8 @@ BOOST_AUTO_TEST_CASE ( check_sequence ) {
   fullcircle::Frame::Ptr f2(new fullcircle::Frame(4,4));
   f2->set_pixel(2, 0, white);
   fullcircle::Frame::Ptr f3(new fullcircle::Frame(4,4));
-  f3->set_pixel(3, 0, white);
-  
+  f3->set_pixel(3, 0, red);
+
   seq->add_frame(f0);
   seq->add_frame(f1);
   seq->add_frame(f2);
@@ -155,19 +171,17 @@ BOOST_AUTO_TEST_CASE ( check_sequence ) {
 BOOST_AUTO_TEST_CASE ( check_sequence_storage ) {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
   bfs::path binfile(TEST_SEQUENCE_FILE);
-  
+  init_color();
   // create a test sequence
-  fullcircle::RGB_t white;
-  white.red = white.green = white.blue = 255;
-  fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(10,4,4));
-  fullcircle::Frame::Ptr f0(new fullcircle::Frame(4,4));
+  fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(10,5,4));
+  fullcircle::Frame::Ptr f0(new fullcircle::Frame(5,4));
   f0->set_pixel(0, 0, white);
-  fullcircle::Frame::Ptr f1(new fullcircle::Frame(4,4));
-  f1->set_pixel(1, 0, white);
-  fullcircle::Frame::Ptr f2(new fullcircle::Frame(4,4));
+  fullcircle::Frame::Ptr f1(new fullcircle::Frame(5,4));
+  f1->set_pixel(1, 0, red);
+  fullcircle::Frame::Ptr f2(new fullcircle::Frame(5,4));
   f2->set_pixel(2, 0, white);
-  fullcircle::Frame::Ptr f3(new fullcircle::Frame(4,4));
-  f3->set_pixel(3, 0, white);
+  fullcircle::Frame::Ptr f3(new fullcircle::Frame(5,4));
+  f3->set_pixel(3, 0, red);
   seq->add_frame(f0);
   seq->add_frame(f1);
   seq->add_frame(f2);

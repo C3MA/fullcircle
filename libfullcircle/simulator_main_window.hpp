@@ -20,6 +20,10 @@ namespace fullcircle {
       void on_play_PB_clicked();
       void on_stop_PB_clicked();
       void draw_frame(int frameID);
+      void draw_next_frame();
+
+    signals:
+      void valueChanged(int newValue);
 
     protected:
       void closeEvent(QCloseEvent *event);
@@ -29,6 +33,8 @@ namespace fullcircle {
       Ui::SimpleUI* _ui;
       QGraphicsScene* _scene;
       Sequence::Ptr _seq;
+      QTimer* _timer;
+      int _current_frame;
   };
 
 };

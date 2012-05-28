@@ -8,6 +8,8 @@ SimulatorMainWindow::SimulatorMainWindow(
   ) : _ui(new Ui::SimpleUI)
     , _scene(new QGraphicsScene())
     , _seq(seq)
+    , _timer(new QTimer(this))
+    , _current_frame(0)
 {
   _ui->setupUi(this);
   _scene->addText("Uschi");
@@ -16,44 +18,70 @@ SimulatorMainWindow::SimulatorMainWindow(
   _ui->frame_slider->setMaximum(_seq->size()-1);
   _ui->frame_slider->setSingleStep(1);
   _ui->frame_slider->setValue(0);
-  draw_frame(0);
+  _ui->frame_spinbox->setMinimum(0);
+  _ui->frame_spinbox->setMaximum(_seq->size()-1);
+  _ui->frame_spinbox->setSingleStep(1);
+  _ui->frame_spinbox->setValue(0);
+  draw_frame(_current_frame);
+  // connect the slider and the spinbox: reflects the frame number
   connect(_ui->frame_slider, SIGNAL(valueChanged(int)),
           this, SLOT(draw_frame(int)));
+  connect(this, SIGNAL(valueChanged(int)),
+          _ui->frame_slider, SLOT(setValue(int)));
+  connect(_ui->frame_spinbox, SIGNAL(valueChanged(int)),
+          this, SLOT(draw_frame(int)));
+  connect(this, SIGNAL(valueChanged(int)),
+          _ui->frame_spinbox, SLOT(setValue(int)));
+  // connect the timer: set to framerate
+  connect(_timer, SIGNAL(timeout()), this, SLOT(draw_next_frame()));
 }
 
 SimulatorMainWindow::~SimulatorMainWindow() {
+  delete _timer;
   delete _scene;
   delete _ui;
 }
 
+void SimulatorMainWindow::draw_next_frame() {
+  if ((uint32_t)_current_frame < _seq->size()) {
+    draw_frame(_current_frame++);
+  } else {
+    _timer->stop();
+  }
+}
+
 void SimulatorMainWindow::draw_frame(int frameID) {
-  std::cout << "Drawing frame " << frameID << std::endl;
   _scene->clear();
-  qreal pixelwidth=_scene->width()/_seq->x_dim();
-  qreal pixelheight=_scene->height()/_seq->y_dim();
+  //QSize size=_ui->frame_slider->size();
+  //std::cout << "Size: " << size.width() << "x" << size.height() << std::endl;
+  //qreal pixelwidth=size.width()/_seq->x_dim();
+  //qreal pixelheight=size.height()/_seq->y_dim();
+  qreal pixelwidth=800/_seq->x_dim();
+  qreal pixelheight=600/_seq->y_dim();
+  //std::cout << "Pixel: " << pixelwidth << "x" << pixelheight << std::endl;
   fullcircle::Frame::Ptr frame=_seq->get_frame(frameID);
   QPen pen(Qt::green);
   for (uint8_t x=0; x < _seq->x_dim(); ++x) {
     for (uint8_t y=0; y < _seq->y_dim(); ++y) {
       RGB_t pixelcolor=frame->get_pixel(x,y);
-      QBrush brush(QColor(
-            pixelcolor.red, pixelcolor.green, pixelcolor.blue
-            ));
+      QBrush brush(
+          QColor(pixelcolor.red, pixelcolor.green, pixelcolor.blue)
+        );
       QRectF pixel(x*pixelwidth, y*pixelheight,
-          pixelwidth, pixelheight);
+                  pixelwidth, pixelheight);
       _scene->addRect(pixel, pen, brush);
     }
   }
+  emit valueChanged(frameID);
 }
 
 void SimulatorMainWindow::on_stop_PB_clicked() {
-  _scene->clear();
-  _scene->addText("ursel");
+  _timer->stop();
 }
 
 void SimulatorMainWindow::on_play_PB_clicked() {
-  _scene->clear();
-  _scene->addText("horst");
+  int timer_interval =(1000/_seq->fps());
+  _timer->start(timer_interval);
 }
 
 void SimulatorMainWindow::closeEvent(QCloseEvent *event) {

@@ -4,8 +4,8 @@
 
 using namespace fullcircle;
 
-Sequence::Sequence ( const uint8_t& frames_per_second,
-    const uint8_t& x_dim, const uint8_t& y_dim)
+Sequence::Sequence ( const uint16_t& frames_per_second,
+    const uint16_t& x_dim, const uint16_t& y_dim)
   : _fps(frames_per_second)
   , _x_dim(x_dim)
   , _y_dim(y_dim)
@@ -48,8 +48,8 @@ void Sequence::save(std::ostream& os,
   fullcircle::Sequence::const_iterator it;
   for (it = begin(); it != end(); ++it) {
     fullcircle::BinaryFrame* binframe=bseq.add_frame();
-    for (uint8_t x=0; x<_x_dim; ++x) {
-      for (uint8_t y=0; y<_y_dim; ++y) {
+    for (uint16_t x=0; x<_x_dim; ++x) {
+      for (uint16_t y=0; y<_y_dim; ++y) {
         RGB_t pixel=(*it)->get_pixel(x,y);
         fullcircle::RGB_Value* binpixel=binframe->add_pixel();
         binpixel->set_red(pixel.red);
@@ -110,7 +110,7 @@ bool Sequence::operator== (Sequence &rhs) {
     return false;
   }
   try {
-    for (uint8_t frameID=0; frameID < size(); ++frameID) {
+    for (uint32_t frameID=0; frameID < size(); ++frameID) {
       fullcircle::Frame::Ptr lhs_frame = get_frame(frameID);
       fullcircle::Frame::Ptr rhs_frame = rhs.get_frame(frameID);
       if (*lhs_frame != *rhs_frame) {

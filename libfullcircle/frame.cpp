@@ -1,15 +1,17 @@
 #include "frame.hpp"
+#include <iostream>
+
 
 using namespace fullcircle;
 
-Frame::Frame ( const uint8_t& x_dim, const uint8_t& y_dim)
+Frame::Frame ( uint16_t x_dim, uint16_t y_dim)
   : _x_dim(x_dim)
   , _y_dim(y_dim)
   , _pixels(x_dim * y_dim) {
     RGB_t black;
     black.red = black.green = black.blue = 0;
-    for (uint8_t x=0; x<x_dim; ++x) {
-      for (uint8_t y=0; y<y_dim; ++y) {
+    for (uint16_t x=0; x<x_dim; x++) {
+      for (uint16_t y=0; y<y_dim; y++) {
         set_pixel(x, y, black); 
       }
     }
@@ -19,28 +21,28 @@ Frame::Frame (Frame& rhs)
   : _x_dim(rhs.x_dim())
   , _y_dim(rhs.y_dim())
   , _pixels(_x_dim * _y_dim) {
-    for (uint8_t x=0; x<_x_dim; ++x) {
-      for (uint8_t y=0; y<_y_dim; ++y) {
+    for (uint16_t x=0; x<_x_dim; ++x) {
+      for (uint16_t y=0; y<_y_dim; ++y) {
         set_pixel(x, y, rhs.get_pixel(x,y)); 
       }
     }
 };
 
 inline void Frame::check_coordinates (
-    const uint8_t& x,
-    const uint8_t& y ) 
+    const uint16_t& x,
+    const uint16_t& y ) 
 {
-  if ((x > _x_dim) || (y > _y_dim) ) 
-    // Not needed: || (x < 0) || (y < 0)) uint8_t cannot be negative
+  if ((x >= _x_dim) || (y >= _y_dim) ) 
+    // Not needed: || (x < 0) || (y < 0)) uint16_t cannot be negative
     throw DataFormatException("Pixel coordinates out of bound");
 }
 
 void Frame::set_pixel(
-    const uint8_t& x,
-    const uint8_t& y,
-    const uint8_t& red,
-    const uint8_t& green,
-    const uint8_t& blue
+    const uint16_t& x,
+    const uint16_t& y,
+    const uint16_t& red,
+    const uint16_t& green,
+    const uint16_t& blue
 ) {
   RGB_t color;
   color.red=red;
@@ -50,26 +52,26 @@ void Frame::set_pixel(
 }
 
 void Frame::set_pixel(
-    const uint8_t& x,
-    const uint8_t& y,
+    const uint16_t& x,
+    const uint16_t& y,
     const RGB_t& color
 ) {
   check_coordinates(x,y);
-  _pixels[(x*_x_dim)+y]=color;
+  _pixels[(y*_y_dim)+x]=color;
 }
 
 const RGB_t Frame::get_pixel(
-    const uint8_t& x,
-    const uint8_t& y
+    const uint16_t& x,
+    const uint16_t& y
   ) {
   check_coordinates(x,y);
-  return _pixels[(x*_x_dim)+y];
+  return _pixels[(y*_y_dim)+x];
 }
 
 
 void Frame::dump_frame(std::ostream& os) {
-  for (uint8_t x=0; x < _x_dim; ++x) {
-    for (uint8_t y=0; y < _y_dim; ++y) {
+  for (uint16_t y=0; y < _y_dim; ++y) {
+    for (uint16_t x=0; x < _x_dim; ++x) {
       RGB_t color=get_pixel(x,y);
       os.setf ( std::ios::hex, std::ios::basefield ); 
       os << "(" << (int)color.red << "," 
@@ -87,8 +89,8 @@ bool Frame::operator== (Frame &rhs) {
   if (x_dim() != rhs.x_dim() ||
       y_dim() != rhs.y_dim())
     return false;
-  for (uint8_t x=0; x < _x_dim; ++x) {
-    for (uint8_t y=0; y < _y_dim; ++y) {
+  for (uint16_t x=0; x < _x_dim; ++x) {
+    for (uint16_t y=0; y < _y_dim; ++y) {
       RGB_t thisc=get_pixel(x,y);
       RGB_t rhsc=rhs.get_pixel(x,y);
       if (thisc.red != rhsc.red ||

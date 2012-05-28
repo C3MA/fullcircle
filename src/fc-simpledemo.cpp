@@ -10,23 +10,26 @@ namespace po = boost::program_options;
 namespace bfs=boost::filesystem;
 
 fullcircle::Sequence::Ptr mk_demo_sequence() {
+  std::cout << "Generating demo sequence." << std::endl;
+
   fullcircle::RGB_t white;
   white.red = white.green = white.blue = 255;
-  fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(10,4,4));
+  fullcircle::RGB_t red;
+  red.red = 255; red.green = red.blue = 0;
+  fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(2,10,5));
 
-  fullcircle::Frame::Ptr f0(new fullcircle::Frame(4,4));
-  f0->set_pixel(0, 0, white);
-  fullcircle::Frame::Ptr f1(new fullcircle::Frame(4,4));
-  f1->set_pixel(1, 0, white);
-  fullcircle::Frame::Ptr f2(new fullcircle::Frame(4,4));
-  f2->set_pixel(2, 0, white);
-  fullcircle::Frame::Ptr f3(new fullcircle::Frame(4,4));
-  f3->set_pixel(3, 0, white);
-  seq->add_frame(f0);
-  seq->add_frame(f1);
-  seq->add_frame(f2);
-  seq->add_frame(f3);
-  
+  for( uint32_t frameID = 0; frameID < 4; ++frameID) {
+    fullcircle::Frame::Ptr frame(new fullcircle::Frame(10,5));
+    uint16_t xpos=frameID % 10;
+    uint16_t ypos=frameID % 5;
+    std::cout << " Frame " << frameID 
+      << " Xpos: " << xpos 
+      << " Ypos: " << ypos << std::endl;
+    frame->set_pixel(xpos, ypos, red);
+    frame->set_pixel(0, 0, white);
+    seq->add_frame(frame);
+    frame->dump_frame(std::cout);
+  }
   return seq;
 }
 
