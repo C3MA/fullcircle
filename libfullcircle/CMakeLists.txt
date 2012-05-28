@@ -11,15 +11,35 @@ include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_CURRENT_BINARY_DIR}
                     ${Boost_INCLUDE_DIRS})
 file(GLOB fullcircle_src *.cpp *.hpp)
+set(fullcircle_hdr simulator_main_window.hpp)
+set(fullcircle_forms simulator.ui)
+set(fullcircle_resources default.qrc)
+QT4_WRAP_UI(fullcircle_hdr_forms ${fullcircle_forms})
+QT4_WRAP_CPP(fullcircle_hdr_moc ${fullcircle_hdr})
+QT4_ADD_RESOURCES(fullcircle_rcc_resources ${fullcircle_resources})
+
 PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS sequence.proto)
+
+include_directories(
+  ${CMAKE_SOURCE_DIR}
+  ${Boost_INCLUDE_DIRS}
+  ${CMAKE_BINARY_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}
+  )
+
 
 ADD_LIBRARY(fullcircle STATIC 
   ${fullcircle_src} 
-  ${PROTO_SRCS} ${PROTO_HDRS})
+  ${PROTO_SRCS} ${PROTO_HDRS}
+  ${fullcircle_hdr_moc}
+  ${fullcircle_hdr_forms}
+  ${fullcircle_rcc_resources}
+  )
 
 target_link_libraries(fullcircle
   ${Boost_LIBRARIES}
   ${PROTOBUF_LIBRARIES}
+  ${QT_LIBRARIES}
   pthread
 )
 

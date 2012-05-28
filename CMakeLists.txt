@@ -69,7 +69,17 @@ IF (PB_FOUND)
   #link_libraries(${PB_LIBRARY})
 ENDIF (PB_FOUND)
 
+# this command finds Qt4 libraries and sets all required variables
+# note that it's Qt4, not QT4 or qt4
+FIND_PACKAGE( Qt4 REQUIRED )
+
+# add some useful macros and variables
+# (QT_USE_FILE is a variable defined by FIND_PACKAGE( Qt4 ) that contains a path to CMake script)
+INCLUDE( ${QT_USE_FILE} )
+
+
 include_directories(${CMAKE_BINARY_DIR})
+
 
 # Check for some compiler stuff
 include(CMakeBackwardCompatibilityCXX)
@@ -109,5 +119,6 @@ message("  boost program options lib: ${Boost_PROGRAM_OPTIONS_LIBRARY}")
 message("  boost system lib: ${Boost_SYSTEM_LIBRARY}")
 message("  boost filesystem lib: ${Boost_FILESYSTEM_LIBRARY}")
 message("  PB include: ${PROTOBUF_INCLUDE_DIRS}, lib: ${PROTOBUF_LIBRARIES}")
+message("  QT4 include: ${QT_INCLUDE_DIR}, lib: ${QT_LIBRARIES}")
 message("  extended logging: ${ENABLE_LOGGING}")
 
