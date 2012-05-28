@@ -2,9 +2,10 @@
 #define LIBHEXADISPLAY_MAIN_WINDOW_HPP 1
 
 #include <QtGui>
-#include <QVBoxLayout>
+#include <QGraphicsScene>
 #include <libfullcircle/common.hpp>
 #include <libfullcircle/ui_simulator.h>
+#include <libfullcircle/sequence.hpp>
 
 namespace fullcircle {
 
@@ -13,13 +14,12 @@ namespace fullcircle {
 
     public:
       typedef std::tr1::shared_ptr<SimulatorMainWindow> Ptr;
-      SimulatorMainWindow ();
+      SimulatorMainWindow (Sequence::Ptr seq);
       virtual ~SimulatorMainWindow();
     private slots:
-      void on_refresh_PB_clicked();
-      void on_on_PB_clicked();
-      void on_off_PB_clicked();
-      void on_toggle_PB_clicked();
+      void on_play_PB_clicked();
+      void on_stop_PB_clicked();
+      void draw_frame(int frameID);
 
     protected:
       void closeEvent(QCloseEvent *event);
@@ -27,6 +27,8 @@ namespace fullcircle {
       SimulatorMainWindow (const SimulatorMainWindow& original);
       SimulatorMainWindow& operator= (const SimulatorMainWindow& rhs);
       Ui::SimpleUI* _ui;
+      QGraphicsScene* _scene;
+      Sequence::Ptr _seq;
   };
 
 };
