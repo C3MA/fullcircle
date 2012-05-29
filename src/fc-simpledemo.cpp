@@ -26,7 +26,7 @@ fullcircle::Sequence::Ptr mk_demo_sequence() {
       << " Xpos: " << xpos 
       << " Ypos: " << ypos << std::endl;
     frame->set_pixel(xpos, ypos, red);
-    frame->set_pixel(0, 0, white);
+    frame->set_pixel(0, 3, white);
     seq->add_frame(frame);
     frame->dump_frame(std::cout);
   }

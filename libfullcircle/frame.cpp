@@ -7,7 +7,8 @@ using namespace fullcircle;
 Frame::Frame ( uint16_t x_dim, uint16_t y_dim)
   : _x_dim(x_dim)
   , _y_dim(y_dim)
-  , _pixels(x_dim * y_dim) {
+  , _pixels(boost::extents[_x_dim][_y_dim])
+{
     RGB_t black;
     black.red = black.green = black.blue = 0;
     for (uint16_t x=0; x<x_dim; x++) {
@@ -20,7 +21,8 @@ Frame::Frame ( uint16_t x_dim, uint16_t y_dim)
 Frame::Frame (Frame& rhs) 
   : _x_dim(rhs.x_dim())
   , _y_dim(rhs.y_dim())
-  , _pixels(_x_dim * _y_dim) {
+  , _pixels(boost::extents[_x_dim][_y_dim])
+{
     for (uint16_t x=0; x<_x_dim; ++x) {
       for (uint16_t y=0; y<_y_dim; ++y) {
         set_pixel(x, y, rhs.get_pixel(x,y)); 
@@ -57,7 +59,7 @@ void Frame::set_pixel(
     const RGB_t& color
 ) {
   check_coordinates(x,y);
-  _pixels[(y*_y_dim)+x]=color;
+  _pixels[x][y]=color;
 }
 
 const RGB_t Frame::get_pixel(
@@ -65,7 +67,7 @@ const RGB_t Frame::get_pixel(
     const uint16_t& y
   ) {
   check_coordinates(x,y);
-  return _pixels[(y*_y_dim)+x];
+  return _pixels[x][y];
 }
 
 

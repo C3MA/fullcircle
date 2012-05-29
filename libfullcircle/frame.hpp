@@ -4,6 +4,8 @@
 #include <libfullcircle/common.hpp>
 #include <vector>
 #include <ostream>
+#include <boost/multi_array.hpp>
+
 
 namespace fullcircle {
 
@@ -16,6 +18,9 @@ namespace fullcircle {
   class Frame {
     public:
       typedef std::tr1::shared_ptr<Frame> Ptr;
+      typedef boost::multi_array<RGB_t, 2> frame_array;
+      typedef frame_array::index index;
+
       Frame ( uint16_t x_dim, uint16_t y_dim);
       Frame (Frame& rhs);
       virtual ~Frame() {};
@@ -49,7 +54,7 @@ namespace fullcircle {
           const uint16_t& y);
       uint16_t _x_dim;
       uint16_t _y_dim;
-      std::vector<RGB_t> _pixels;
+      frame_array _pixels;
   };
 };
 
