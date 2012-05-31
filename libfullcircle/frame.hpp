@@ -21,7 +21,7 @@ namespace fullcircle {
       typedef boost::multi_array<RGB_t, 2> frame_array;
       typedef frame_array::index index;
 
-      Frame ( uint16_t x_dim, uint16_t y_dim);
+      Frame ( uint16_t width, uint16_t height);
       Frame (Frame& rhs);
       virtual ~Frame() {};
       void set_pixel(
@@ -40,8 +40,8 @@ namespace fullcircle {
           const uint16_t& x,
           const uint16_t& y
         );
-      const uint16_t x_dim() { return _x_dim; };
-      const uint16_t y_dim() { return _y_dim; };
+      const uint16_t width() { return _width; };
+      const uint16_t height() { return _height; };
       void dump_frame(std::ostream& os);
 
       Frame& operator= (const Frame& rhs);
@@ -52,8 +52,8 @@ namespace fullcircle {
       inline void check_coordinates(
           const uint16_t& x,
           const uint16_t& y);
-      uint16_t _x_dim;
-      uint16_t _y_dim;
+      uint16_t _width;
+      uint16_t _height;
       frame_array _pixels;
   };
 };

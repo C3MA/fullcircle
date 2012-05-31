@@ -5,10 +5,10 @@
 using namespace fullcircle;
 
 Sequence::Sequence ( const uint16_t& frames_per_second,
-    const uint16_t& x_dim, const uint16_t& y_dim)
+    const uint16_t& width, const uint16_t& height)
   : _fps(frames_per_second)
-  , _x_dim(x_dim)
-  , _y_dim(y_dim)
+  , _width(width)
+  , _height(height)
   , _generator_name()
   , _generator_version()
   , _frames()
@@ -16,8 +16,8 @@ Sequence::Sequence ( const uint16_t& frames_per_second,
 }
 
 void Sequence::add_frame(Frame::Ptr frame) {
-  if (frame->x_dim() != x_dim() || 
-      frame->y_dim() != y_dim())
+  if (frame->width() != width() || 
+      frame->height() != height())
     throw DataFormatException("Pixel dimension mismatch - cannot add frame.");
   _frames.push_back(frame);
 }
@@ -40,16 +40,16 @@ void Sequence::save(std::ostream& os,
   // Handle Metadata
   fullcircle::BinarySequenceMetadata* metadata=bseq.mutable_metadata();
   metadata->set_frames_per_second(_fps);
-  metadata->set_x_dim(x_dim());
-  metadata->set_y_dim(y_dim());
+  metadata->set_width(width());
+  metadata->set_height(height());
   metadata->set_generator_name(generator);
   metadata->set_generator_version(version);
   // Handle ALL teh frames
   fullcircle::Sequence::const_iterator it;
   for (it = begin(); it != end(); ++it) {
     fullcircle::BinaryFrame* binframe=bseq.add_frame();
-    for (uint16_t x=0; x<_x_dim; ++x) {
-      for (uint16_t y=0; y<_y_dim; ++y) {
+    for (uint16_t x=0; x<_width; ++x) {
+      for (uint16_t y=0; y<_height; ++y) {
         RGB_t pixel=(*it)->get_pixel(x,y);
         fullcircle::RGB_Value* binpixel=binframe->add_pixel();
         binpixel->set_red(pixel.red);
@@ -77,12 +77,12 @@ Sequence::Sequence(std::istream& is)
   //std::cout << "Debug: " << bseq.DebugString() << std::endl;
   fullcircle::BinarySequenceMetadata metadata=bseq.metadata();
   _fps=metadata.frames_per_second();
-  _x_dim=metadata.x_dim();
-  _y_dim=metadata.y_dim();
+  _width=metadata.width();
+  _height=metadata.height();
   _generator_name=metadata.generator_name();
   _generator_version=metadata.generator_version();
   for( int frameID = 0; frameID < bseq.frame_size(); frameID++) {
-    fullcircle::Frame::Ptr frame(new fullcircle::Frame(_x_dim, _y_dim));
+    fullcircle::Frame::Ptr frame(new fullcircle::Frame(_width, _height));
     fullcircle::BinaryFrame binframe=bseq.frame(frameID);
     for( int pixelID = 0; pixelID < binframe.pixel_size(); pixelID++) {
       fullcircle::RGB_Value binpixel=binframe.pixel(pixelID);
@@ -102,8 +102,8 @@ Frame::Ptr Sequence::get_frame(uint32_t frameid) {
 }
 
 bool Sequence::operator== (Sequence &rhs) {
-  if (x_dim() != rhs.x_dim() ||
-      y_dim() != rhs.y_dim() ||
+  if (width() != rhs.width() ||
+      height() != rhs.height() ||
       fps() != rhs.fps() ||
       size() != rhs.size()
       ) {

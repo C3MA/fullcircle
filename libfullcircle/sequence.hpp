@@ -13,15 +13,15 @@ namespace fullcircle {
       typedef std::vector<Frame::Ptr>::const_iterator const_iterator;
       Sequence (
           const uint16_t& frames_per_second, 
-          const uint16_t& x_dim, 
-          const uint16_t& y_dim);
+          const uint16_t& width, 
+          const uint16_t& height);
       Sequence (std::istream& is);
       virtual ~Sequence() {}; 
 
       void add_frame(Frame::Ptr frame);
       Frame::Ptr get_frame(uint32_t frameid);
-      uint16_t x_dim() const { return _x_dim; };
-      uint16_t y_dim() const { return _y_dim; };
+      uint16_t width() const { return _width; };
+      uint16_t height() const { return _height; };
       int fps() const { return _fps; };
       const std::string& generator_name() const { return _generator_name; };
       const std::string& generator_version() const { return _generator_version; };
@@ -41,8 +41,8 @@ namespace fullcircle {
       Sequence (const Sequence& original);
       Sequence& operator= (const Sequence& rhs);
       uint16_t _fps;
-      uint16_t _x_dim;
-      uint16_t _y_dim;
+      uint16_t _width;
+      uint16_t _height;
       std::string _generator_name;
       std::string _generator_version;
       std::vector<Frame::Ptr> _frames;

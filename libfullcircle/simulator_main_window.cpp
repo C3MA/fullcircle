@@ -54,15 +54,15 @@ void SimulatorMainWindow::draw_frame(int frameID) {
   _scene->clear();
   //QSize size=_ui->frame_slider->size();
   //std::cout << "Size: " << size.width() << "x" << size.height() << std::endl;
-  //qreal pixelwidth=size.width()/_seq->x_dim();
-  //qreal pixelheight=size.height()/_seq->y_dim();
-  qreal pixelwidth=800/_seq->x_dim();
-  qreal pixelheight=600/_seq->y_dim();
+  //qreal pixelwidth=size.width()/_seq->width();
+  //qreal pixelheight=size.height()/_seq->height();
+  qreal pixelwidth=800/_seq->width();
+  qreal pixelheight=600/_seq->height();
   //std::cout << "Pixel: " << pixelwidth << "x" << pixelheight << std::endl;
   fullcircle::Frame::Ptr frame=_seq->get_frame(frameID);
   QPen pen(Qt::green);
-  for (uint8_t x=0; x < _seq->x_dim(); ++x) {
-    for (uint8_t y=0; y < _seq->y_dim(); ++y) {
+  for (uint8_t x=0; x < _seq->width(); ++x) {
+    for (uint8_t y=0; y < _seq->height(); ++y) {
       RGB_t pixelcolor=frame->get_pixel(x,y);
       QBrush brush(
           QColor(pixelcolor.red, pixelcolor.green, pixelcolor.blue)

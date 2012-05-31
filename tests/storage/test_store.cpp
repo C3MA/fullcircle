@@ -106,8 +106,8 @@ BOOST_AUTO_TEST_CASE ( check_frame ) {
 
   std::cout << "### Testing equality operators" << std::endl; 
   fullcircle::Frame::Ptr f2(new fullcircle::Frame(4,4));
-  for (uint8_t x=0; x < f2->x_dim(); ++x) {
-    for (uint8_t y=0; y < f2->y_dim(); ++y) {
+  for (uint8_t x=0; x < f2->width(); ++x) {
+    for (uint8_t y=0; y < f2->height(); ++y) {
       f2->set_pixel(x, y, white);
     }
   }

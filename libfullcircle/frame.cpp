@@ -4,27 +4,27 @@
 
 using namespace fullcircle;
 
-Frame::Frame ( uint16_t x_dim, uint16_t y_dim)
-  : _x_dim(x_dim)
-  , _y_dim(y_dim)
-  , _pixels(boost::extents[_x_dim][_y_dim])
+Frame::Frame ( uint16_t width, uint16_t height)
+  : _width(width)
+  , _height(height)
+  , _pixels(boost::extents[_width][_height])
 {
     RGB_t black;
     black.red = black.green = black.blue = 0;
-    for (uint16_t x=0; x<x_dim; x++) {
-      for (uint16_t y=0; y<y_dim; y++) {
+    for (uint16_t x=0; x<width; x++) {
+      for (uint16_t y=0; y<height; y++) {
         set_pixel(x, y, black); 
       }
     }
 };
 
 Frame::Frame (Frame& rhs) 
-  : _x_dim(rhs.x_dim())
-  , _y_dim(rhs.y_dim())
-  , _pixels(boost::extents[_x_dim][_y_dim])
+  : _width(rhs.width())
+  , _height(rhs.height())
+  , _pixels(boost::extents[_width][_height])
 {
-    for (uint16_t x=0; x<_x_dim; ++x) {
-      for (uint16_t y=0; y<_y_dim; ++y) {
+    for (uint16_t x=0; x<_width; ++x) {
+      for (uint16_t y=0; y<_height; ++y) {
         set_pixel(x, y, rhs.get_pixel(x,y)); 
       }
     }
@@ -34,7 +34,7 @@ inline void Frame::check_coordinates (
     const uint16_t& x,
     const uint16_t& y ) 
 {
-  if ((x >= _x_dim) || (y >= _y_dim) ) 
+  if ((x >= _width) || (y >= _height) ) 
     // Not needed: || (x < 0) || (y < 0)) uint16_t cannot be negative
     throw DataFormatException("Pixel coordinates out of bound");
 }
@@ -72,8 +72,8 @@ const RGB_t Frame::get_pixel(
 
 
 void Frame::dump_frame(std::ostream& os) {
-  for (uint16_t y=0; y < _y_dim; ++y) {
-    for (uint16_t x=0; x < _x_dim; ++x) {
+  for (uint16_t y=0; y < _height; ++y) {
+    for (uint16_t x=0; x < _width; ++x) {
       RGB_t color=get_pixel(x,y);
       os.setf ( std::ios::hex, std::ios::basefield ); 
       os << "(" << (int)color.red << "," 
@@ -88,11 +88,11 @@ void Frame::dump_frame(std::ostream& os) {
 
 
 bool Frame::operator== (Frame &rhs) {
-  if (x_dim() != rhs.x_dim() ||
-      y_dim() != rhs.y_dim())
+  if (width() != rhs.width() ||
+      height() != rhs.height())
     return false;
-  for (uint16_t x=0; x < _x_dim; ++x) {
-    for (uint16_t y=0; y < _y_dim; ++y) {
+  for (uint16_t x=0; x < _width; ++x) {
+    for (uint16_t y=0; y < _height; ++y) {
       RGB_t thisc=get_pixel(x,y);
       RGB_t rhsc=rhs.get_pixel(x,y);
       if (thisc.red != rhsc.red ||
