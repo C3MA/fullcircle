@@ -2,5 +2,5 @@
 
 configure_file(testconfig.h.in ${CMAKE_BINARY_DIR}/testconfig.h)
 
-add_subdirectory(storage)
+add_subdirectory(sequences)
 
