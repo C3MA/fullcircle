@@ -44,7 +44,7 @@ fullcircle::Sequence::Ptr mk_demo_fullscreen() {
 	
 	for( uint32_t frameID = 0; frameID < 1000; ++frameID) {
 		fullcircle::Frame::Ptr frame(new fullcircle::Frame(10,5));
-		frame->fillWholeFrame(white);
+		frame->fill_whole(white);
 		
 		if (white.blue > 0 && white.blue <= 255) {
 			white.blue -= 2;
@@ -93,6 +93,43 @@ fullcircle::Sequence::Ptr mk_demo_fullscreen() {
 	return seq;
 }
 
+fullcircle::Sequence::Ptr mk_demo_fade() {
+	std::cout << "Generating fullscreen demo sequence." << std::endl;
+	
+	fullcircle::RGB_t from;
+	from.red = from.green = 0; from.blue = 255;
+	fullcircle::RGB_t to;
+	to.red = to.blue = 0; to.green = 255; 
+	fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(25,10,5));
+	
+	for( uint32_t frameID = 0; frameID < 50; ++frameID) {
+		fullcircle::Frame::Ptr frame(new fullcircle::Frame(10,5));
+		frame->fill_gradient_vertical(from, to);		
+		seq->add_frame(frame);		
+		frame->dump_frame(std::cout);
+	}
+	
+	for( uint32_t frameID = 0; frameID < 50; ++frameID) {
+		fullcircle::Frame::Ptr frame(new fullcircle::Frame(10,5));
+		frame->fill_gradient_horizontal(from, to);		
+		seq->add_frame(frame);		
+		frame->dump_frame(std::cout);
+	}
+	
+	/***** from blue to blue ... *******/
+	from.blue = 255; from.red = from.green = 0;
+	to.blue = 50; to.red = to.green = 0;
+	for( uint32_t frameID = 0; frameID < 50; ++frameID) {
+		fullcircle::Frame::Ptr frame(new fullcircle::Frame(10,5));
+		frame->fill_gradient_horizontal(from, to);		
+		seq->add_frame(frame);		
+		frame->dump_frame(std::cout);
+	}
+	
+	
+	return seq;
+}
+
 int main (int argc, char* argv[]) {
 
   try {
@@ -104,6 +141,7 @@ int main (int argc, char* argv[]) {
       ("version,v", "print version and exit")
       ("sequence,s", po::value<std::string>(), "the sequence file to use")
 	  ("fullscreen,f", po::value<std::string>(), "the sequence file to use [for a fullscreen animation]")
+  	  ("gradient,g", po::value<std::string>(), "the sequence file to use [for a gradient animation]")
       ;
     po::positional_options_description p;
 //    p.add("sequence", 1);
@@ -128,7 +166,7 @@ int main (int argc, char* argv[]) {
     }
 
 	int type = 0;
-    if (! vm.count("sequence") && !vm.count("fullscreen")) {
+    if (vm.count("sequence") + vm.count("fullscreen") + vm.count("gradient") <= 0) {
       std::cerr << "You must specify a sequence file." << std::endl;
       return 1;
     } else {
@@ -138,14 +176,12 @@ int main (int argc, char* argv[]) {
 		} else if (vm.count("fullscreen") > 0) {
 			sequencefile=vm["fullscreen"].as<std::string>();
 			type = 2;
+		} else if (vm.count("gradient") > 0) {
+			sequencefile=vm["gradient"].as<std::string>();
+			type = 3;
 		}
+		
     }
-
-	if (! vm.count("fullscreen")) {
-	  std::cerr << "You must specify a sequence file, to generate a fullscreen sequence." << std::endl;
-	  return 1;
-	} else {
-	}
 	  
     bfs::path sequence(sequencefile);
 
@@ -157,6 +193,9 @@ int main (int argc, char* argv[]) {
 				break;
 			case 2:
 				seq = mk_demo_fullscreen();
+				break;
+			case 3:
+				seq = mk_demo_fade();
 				break;
 			default:
 				break;

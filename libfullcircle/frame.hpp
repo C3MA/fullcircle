@@ -43,7 +43,9 @@ namespace fullcircle {
       const uint16_t width() { return _width; };
       const uint16_t height() { return _height; };
       void dump_frame(std::ostream& os);
-	  void fillWholeFrame(const RGB_t& color);
+	  void fill_whole(const RGB_t& color);
+	  void fill_gradient_horizontal(const RGB_t& from, const RGB_t& to);
+	  void fill_gradient_vertical(const RGB_t& from, const RGB_t& to);
 
       Frame& operator= (const Frame& rhs);
       bool operator==(Frame &rhs);
