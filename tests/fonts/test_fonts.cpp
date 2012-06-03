@@ -62,17 +62,18 @@ struct xbmtext_grammar
 		definition(const xbmtext_grammar &self) 
 		{ 
 			using namespace boost::spirit; 
+			// basic datatypes:
+			string = "\"" >> *~ch_p("\"") >> "\"";
+			
 			mapping = asciinum >> ":" >> image;
 			image = "[" >> number >> *("," >> number) >> "]"; 
 			number = int_p;
-			asciinum =  int_p;
-			description = "\"" << desckey << "\":\"" << descval << "\"";
+			asciinum = "\"" >>  int_p >> "\"";
 			desckey = string;
 			descval = string;
+			description = desckey >> ":" >> descval;
 			value = mapping | description;
 			object = "{" >> value >> *("," >> value) >> "}"; 
-			// basic datatypes:
-			string = "\"" >> *~ch_p("\"") >> "\"";
 		} 
 		
 		const boost::spirit::rule<Scanner> &start() 
