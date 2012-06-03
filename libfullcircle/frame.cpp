@@ -108,3 +108,11 @@ bool Frame::operator== (Frame &rhs) {
 bool Frame::operator!= (Frame &rhs) {
   return !(*this == rhs);
 }
+
+void Frame::fillWholeFrame(const RGB_t& color) {
+	for (uint16_t x=0; x < _width; ++x) {
+		for (uint16_t y=0; y < _height; ++y) {
+			_pixels[x][y] = color;
+		}
+	}
+}
