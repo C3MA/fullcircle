@@ -33,6 +33,102 @@ fullcircle::Sequence::Ptr mk_demo_sequence() {
   return seq;
 }
 
+fullcircle::Sequence::Ptr mk_demo_fullscreen() {
+	std::cout << "Generating fullscreen demo sequence." << std::endl;
+	
+	fullcircle::RGB_t white;
+	white.red = white.green = white.blue = 255;
+	fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(25,10,5));
+	
+	int endcounter = 0;
+	
+	for( uint32_t frameID = 0; frameID < 1000; ++frameID) {
+		fullcircle::Frame::Ptr frame(new fullcircle::Frame(10,5));
+		frame->fill_whole(white);
+		
+		if (white.blue > 0 && white.blue <= 255) {
+			white.blue -= 2;
+		} else if (white.green > 0 && white.green <= 255) {
+			white.green -= 2;
+		} else if (white.red > 0 && white.red <= 255) {
+			white.red -= 2;
+		} else {
+			endcounter++;
+			switch (endcounter) {
+				case 1:
+					white.blue = 255;
+					break;
+				case 2:
+					white.green = 255;
+					break;
+				case 3:
+					white.red = 255;
+					break;
+				case 4:
+					white.blue = 255;
+					white.green = 255;
+					white.red = 255;
+					endcounter = 0;
+					break;
+				default:
+					break;
+			}
+		}
+		
+		if (white.blue > 256) {
+			white.blue = 0;
+		}
+		if (white.green > 256) {
+			white.green = 0;
+		}
+		if (white.red > 256) {
+			white.red = 0;
+		}
+		
+		
+		seq->add_frame(frame);
+		
+		frame->dump_frame(std::cout);
+	}
+	return seq;
+}
+
+fullcircle::Sequence::Ptr mk_demo_fade() {
+	std::cout << "Generating fullscreen demo sequence." << std::endl;
+	
+	fullcircle::RGB_t from;
+	from.red = from.green = 0; from.blue = 255;
+	fullcircle::RGB_t to;
+	to.red = to.blue = 0; to.green = 255; 
+	fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(25,10,5));
+	
+	for( uint32_t frameID = 0; frameID < 50; ++frameID) {
+		fullcircle::Frame::Ptr frame(new fullcircle::Frame(10,5));
+		frame->fill_gradient_vertical(from, to);		
+		seq->add_frame(frame);		
+		frame->dump_frame(std::cout);
+	}
+	
+	for( uint32_t frameID = 0; frameID < 50; ++frameID) {
+		fullcircle::Frame::Ptr frame(new fullcircle::Frame(10,5));
+		frame->fill_gradient_horizontal(from, to);		
+		seq->add_frame(frame);		
+		frame->dump_frame(std::cout);
+	}
+	
+	/***** from blue to blue ... *******/
+	from.blue = 255; from.red = from.green = 0;
+	to.blue = 50; to.red = to.green = 0;
+	for( uint32_t frameID = 0; frameID < 50; ++frameID) {
+		fullcircle::Frame::Ptr frame(new fullcircle::Frame(10,5));
+		frame->fill_gradient_horizontal(from, to);		
+		seq->add_frame(frame);		
+		frame->dump_frame(std::cout);
+	}
+	
+	
+	return seq;
+}
 
 int main (int argc, char* argv[]) {
 
@@ -44,9 +140,11 @@ int main (int argc, char* argv[]) {
       ("help,h", "produce help message")
       ("version,v", "print version and exit")
       ("sequence,s", po::value<std::string>(), "the sequence file to use")
+	  ("fullscreen,f", po::value<std::string>(), "the sequence file to use [for a fullscreen animation]")
+  	  ("gradient,g", po::value<std::string>(), "the sequence file to use [for a gradient animation]")
       ;
     po::positional_options_description p;
-    p.add("sequence", 1);
+//    p.add("sequence", 1);
 
     po::variables_map vm;
     po::store(po::command_line_parser(argc, argv).
@@ -67,17 +165,41 @@ int main (int argc, char* argv[]) {
       return 0;
     }
 
-    if (! vm.count("sequence")) {
+	int type = 0;
+    if (vm.count("sequence") + vm.count("fullscreen") + vm.count("gradient") <= 0) {
       std::cerr << "You must specify a sequence file." << std::endl;
       return 1;
     } else {
-      sequencefile=vm["sequence"].as<std::string>();
+		if (vm.count("sequence") > 0) {
+			type = 1;
+			sequencefile=vm["sequence"].as<std::string>();
+		} else if (vm.count("fullscreen") > 0) {
+			sequencefile=vm["fullscreen"].as<std::string>();
+			type = 2;
+		} else if (vm.count("gradient") > 0) {
+			sequencefile=vm["gradient"].as<std::string>();
+			type = 3;
+		}
+		
     }
-
+	  
     bfs::path sequence(sequencefile);
 
     try {
-      fullcircle::Sequence::Ptr seq(mk_demo_sequence());
+		fullcircle::Sequence::Ptr seq;
+		switch (type) {
+			case 1:
+				seq = mk_demo_sequence();
+				break;
+			case 2:
+				seq = mk_demo_fullscreen();
+				break;
+			case 3:
+				seq = mk_demo_fade();
+				break;
+			default:
+				break;
+		}
       std::cout << "Saving sequence to file " << sequence << std::endl;
       std::fstream output(sequence.c_str(), 
           std::ios::out | std::ios::trunc | std::ios::binary);

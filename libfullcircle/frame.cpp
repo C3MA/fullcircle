@@ -108,3 +108,59 @@ bool Frame::operator== (Frame &rhs) {
 bool Frame::operator!= (Frame &rhs) {
   return !(*this == rhs);
 }
+
+void Frame::fill_whole(const RGB_t& color) {
+	for (uint16_t x=0; x < _width; ++x) {
+		for (uint16_t y=0; y < _height; ++y) {
+			_pixels[x][y] = color;
+		}
+	}
+}
+
+void Frame::fill_gradient_horizontal(const RGB_t& from, const RGB_t& to) {
+	RGB_t color = from;
+	int16_t diffBlue = to.blue - from.blue;
+	int16_t diffGreen = to.green - from.green;
+	int16_t diffRed = to.red - from.red;
+
+	std::cerr << "Diff red=" << diffRed << " green=" << diffGreen << " blue=" << diffBlue << std::endl;
+	
+	int16_t stepRed = diffRed / (_width - 1);
+	int16_t stepGreen = diffGreen / (_width -1);
+	int16_t stepBlue = diffBlue / (_width -1);
+	std::cerr << "Steps red=" << stepRed << " green=" << stepGreen << " blue=" << stepBlue << std::endl;
+	for (uint16_t x=0; x < _width; ++x) {
+		for (uint16_t y=0; y < _height; ++y) {
+			_pixels[x][y] = color;
+		}
+		// Set color for the next column
+		color.red = (color.red + stepRed) % 255;
+		color.green = (color.green + stepGreen) % 255;
+		color.blue = (color.blue + stepBlue) % 255;
+		if (x == _width - 2) // when we reched the last, update the value to the color we want reach
+			color = to;
+	}	
+}
+
+void Frame::fill_gradient_vertical(const RGB_t& from, const RGB_t& to) {
+	RGB_t color = from;
+	int16_t diffBlue = to.blue - from.blue;
+	int16_t diffGreen = to.green - from.green;
+	int16_t diffRed = to.red - from.red;
+	
+	uint16_t stepRed = diffRed / _height-1;
+	uint16_t stepGreen = diffGreen / _height - 1;
+	uint16_t stepBlue = diffBlue / _height - 1;
+	
+	for (uint16_t y=0; y < _height; ++y) {
+		for (uint16_t x=0; x < _width; ++x) {
+			_pixels[x][y] = color;
+		}
+		// Set color for the next row
+		color.red = (color.red + stepRed) % 255;
+		color.green = (color.green + stepGreen) % 255;
+		color.blue = (color.blue + stepBlue) % 255;
+		if (y == _height - 2) // when we reched the last, update the value to the color we want reach
+			color = to;
+	}
+}
