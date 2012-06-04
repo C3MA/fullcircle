@@ -29,13 +29,14 @@
 #include <boost/filesystem.hpp>
 
 #include <boost/spirit.hpp> 
+#include <boost/assign/std/vector.hpp>
 
 namespace bfs=boost::filesystem;
+using namespace boost::assign; // bring 'operator+()' into scope [needed for vector]
 
 /**
  * see http://www.boost.org/doc/libs/1_43_0/libs/test/doc/html/tutorials/hello-the-testing-world.html
  */
-
 BOOST_AUTO_TEST_CASE ( check_sanity ) {
   try {
     std::cout << "Demo test case: Checking world sanity." << std::endl;
@@ -51,9 +52,43 @@ BOOST_AUTO_TEST_CASE ( check_sanity ) {
   }
 }
 
+// test postion for this code
+std::vector<int> vars;
+int asciiChar = 0;
+
 struct xbmtext_grammar 
 : public boost::spirit::grammar<xbmtext_grammar> 
 { 
+	/******* these functions are neeeded to store the extracted data **********/
+	struct set_asciiChar 
+	{ 		
+		void operator()(const int d) const 
+		{ 
+			asciiChar = d;			
+		} 
+	};
+	
+	struct number_add {
+		void operator()(const int d) const
+		{
+			vars += d;
+		}
+	};
+	
+	struct map_add {
+		void operator()(const char *begin, const char *end) const 
+		{
+			std::cout << asciiChar << " = ";
+			for (int i=0; i < vars.size(); i++) {
+				std::cout << vars[i] << " ";
+			}
+			std::cout << std::endl;
+			vars.clear();
+		}
+	};
+	
+	
+	/******* The real scanning algorithm ************/
 	template <typename Scanner> 
 	struct definition 
 	{ 
@@ -61,25 +96,31 @@ struct xbmtext_grammar
 		
 		definition(const xbmtext_grammar &self) 
 		{ 
+			
 			using namespace boost::spirit; 
 			// basic datatypes:
 			string = "\"" >> *~ch_p("\"") >> "\"";
 			
-			mapping = asciinum >> ":" >> image;
+			mapping = (asciinum >> ":" >> image)[map_add()];
 			image = "[" >> number >> *("," >> number) >> "]"; 
-			number = int_p;
-			asciinum = "\"" >>  int_p >> "\"";
+			number = int_p[number_add()];
+			asciinum = 
+			
+				(	"\"" >> int_p[set_asciiChar()] >> "\"" )
+			 ;
 			desckey = string;
 			descval = string;
 			description = desckey >> ":" >> descval;
 			value = mapping | description;
 			object = "{" >> value >> *("," >> value) >> "}"; 
+			
 		} 
 		
 		const boost::spirit::rule<Scanner> &start() 
 		{ 
 			return object; 
-		} 
+		}
+		
 	}; 
 }; 
 
