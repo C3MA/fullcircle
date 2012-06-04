@@ -80,6 +80,24 @@ void Frame::set_pixel(
     }
 }
 
+void Frame::set_pixel_window(
+					  const uint16_t& x_start,
+					  const uint16_t& y_start,
+					  Frame::Ptr gigantic_frame
+					  )
+{
+	if (x_start + _width > gigantic_frame->width())
+		throw fullcircle::RenderException("gigantic screen is mini in the width");
+	if (y_start + _height >  gigantic_frame->height())
+		throw fullcircle::RenderException("gigantic screen is mini in the height");
+	
+	for (uint16_t x=0; x<_width; ++x) {
+		for (uint16_t y=0; y<_height; ++y) {
+			set_pixel(x, y, gigantic_frame->get_pixel(x_start + x, y_start + y)); 
+		}
+    }		
+}
+
 const RGB_t Frame::get_pixel(
     const uint16_t& x,
     const uint16_t& y

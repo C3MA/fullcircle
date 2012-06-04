@@ -143,8 +143,9 @@ fullcircle::Sequence::Ptr mk_demo_text() {
 	color.blue = 255; // now its blue ;-)
 	
 	fullcircle::FontRenderer::Ptr fr(new fullcircle::FontRenderer(10, 5));
+	fr->set_scrollspeed(500);
 	fr->load_font("font1.xbm"); // This file describes how to display each character
-	fr->write_text(seq, 0, 0, "C3",color);
+	fr->write_text(seq, 0, 0, "C3MA",color);
 	
 	return seq;
 }

@@ -89,6 +89,7 @@ struct xbmtext_grammar
 FontRenderer::FontRenderer ( uint16_t width, uint16_t height)
   : _width(width)
   , _height(height)
+  , _scrollspeed_ms(0)
 {
 
 };
@@ -178,9 +179,21 @@ void FontRenderer::load_font(std::string font_file) {
 	}
 }
 
-void FontRenderer::write_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, std::string text) {
+void FontRenderer::write_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, std::string text)
+{
+	if (text.size() == 0)
+		throw fullcircle::RenderException("No text to render was given");
 	
-	Frame::Ptr screen(new Frame(_width, _height));
+	int text_screen_width = _width;
+	
+	if (_scrollspeed_ms > 0)
+	{
+		// take the width of the first item (the same for all, because we have monospace)
+		Frame::Ptr item = _asciiMapping[text[0]];
+		text_screen_width = text.size() * item->width();
+	}
+	
+	Frame::Ptr screen(new Frame(text_screen_width, _height));
 	screen->fill_whole(COLOR_TRANSPARENT);	
 	std::cout << "We want to print: " << text << std::endl;
 	
@@ -193,8 +206,23 @@ void FontRenderer::write_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, st
 		std::cout << text[i] << " is : " << std::endl;
 		item->dump_frame(std::cout);
 		screen->set_pixel(i*item->width(),0, item);
+	}
+	if (_scrollspeed_ms == 0)
+	{   // add the simple text (when there is no scrolling)
 		sequence->add_frame(screen);
 	}
+	else
+	{
+		uint32_t timePerFrame = (sequence->fps() * _scrollspeed_ms / 1000);
+		Frame::Ptr actual_screen_part(new Frame(_width, _height));
+		for (uint16_t i=0; i < text_screen_width - _width; i++) {
+			actual_screen_part->set_pixel_window(i,0,screen);
+			for (uint32_t time=0; time < timePerFrame; time++) {
+				sequence->add_frame(actual_screen_part);
+			}
+		}
+	}
+
 }
 
 void FontRenderer::write_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, std::string text, RGB_t textColor)
