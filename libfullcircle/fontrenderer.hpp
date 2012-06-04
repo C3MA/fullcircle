@@ -14,7 +14,13 @@ namespace fullcircle {
       FontRenderer ( uint16_t width, uint16_t height);
       FontRenderer (Frame& rhs);
       virtual ~FontRenderer() {};
+	  
+	  /*
+	   * The data is generated and stored in a file
+	   * http://www.pentacom.jp/pentacom/bitfontmaker2/
+	   */
 	  void load_font(std::string font_file);
+	  
 	  void write_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, std::string text);
 	  
     private:
