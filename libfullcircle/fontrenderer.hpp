@@ -3,7 +3,9 @@
 
 #include <libfullcircle/common.hpp>
 #include <ostream>
-#include "sequence.hpp"
+#include <libfullcircle/sequence.hpp>
+#include <libfullcircle/frame.hpp>
+#include <map>
 
 namespace fullcircle {
 
@@ -11,6 +13,8 @@ namespace fullcircle {
     public:
       typedef std::tr1::shared_ptr<FontRenderer> Ptr;
 
+	  typedef std::map<uint8_t, Frame::Ptr> ascii_map_t;
+	  
       FontRenderer ( uint16_t width, uint16_t height);
       FontRenderer (Frame& rhs);
       virtual ~FontRenderer() {};
@@ -26,7 +30,7 @@ namespace fullcircle {
     private:
       uint16_t _width;
       uint16_t _height;
-	  
+	  ascii_map_t _asciiMapping;
   };
 };
 

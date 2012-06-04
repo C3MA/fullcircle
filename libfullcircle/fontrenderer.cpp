@@ -7,10 +7,11 @@
 #include <sstream>
 #include <exception>
 #include <fstream>
-
+#include <boost/format.hpp>
 
 using namespace boost::assign; // bring 'operator+()' into scope [needed for vector]
 using namespace fullcircle;
+
 
 typedef struct {
     uint8_t ascii;
@@ -84,8 +85,7 @@ struct xbmtext_grammar
 			description = desckey >> ":" >> descval;
 			value = mapping | description;
 			comment = "#" >> *~ch_p("{");
-			object = *(comment) >> "{" >> value >> *("," >> value) >> "}"; 
-			
+			object = *(comment) >> "{" >> value >> *("," >> value) >> "}";			
 		} 
 		
 		const boost::spirit::rule<Scanner> &start() 
@@ -122,7 +122,45 @@ void FontRenderer::load_font(std::string font_file) {
 		if (!pi.full)
 			throw fullcircle::DataFormatException("parsing data partially");
 		
+		/******* The data was extacted, so lets convert it ********/
 		
+		/*** Search for the width of one character (we have to search the widest) ****/
+		uint16_t item, count, maxWidth = 0, height, maxHeight = 0;
+		for (unsigned int i=0; i < completeMap.size(); i++) {
+			height=0;
+			for (unsigned int j=0; j < completeMap[i].map.size(); j++) {
+				item = completeMap[i].map[j];
+				count=0;
+				if (item > 0)
+					height++;
+				while (item > 0) {
+					item = item >> 1;
+					count++;
+				}
+				if (count > maxWidth)
+				{
+					maxWidth = count;
+					printf("maximum width is %2d found at %c\n",maxWidth, completeMap[i].ascii);
+					if (maxWidth > _width)
+					{
+						std::string msg = str( boost::format("maximum height overflow of %1 found at %2\n")
+											% maxWidth % completeMap[i].ascii);
+						throw fullcircle::DataFormatException(msg);
+					}
+				}
+			}
+			if (height > maxHeight)
+			{
+				maxHeight = height;
+				printf("maximum height is %2d found at %c\n",maxHeight, completeMap[i].ascii);
+				if (maxHeight > _height)
+				{
+					std::string msg = str (boost::format("maximum height overflow of %1 found at %2\n")
+									% maxHeight % completeMap[i].ascii);
+					throw fullcircle::DataFormatException(msg);
+				}
+			}
+		}
 	}
 	else
 	{

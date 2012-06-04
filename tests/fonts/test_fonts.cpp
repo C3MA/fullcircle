@@ -54,5 +54,15 @@ BOOST_AUTO_TEST_CASE ( check_font ) {
 	fr->load_font("font1.xbm");
 }
 
+BOOST_AUTO_TEST_CASE ( check_font_height_exception ) {
+	  try {
+		  fullcircle::FontRenderer::Ptr fr(new fullcircle::FontRenderer(10, 4));
+		  fr->load_font("font1.xbm");
+		  BOOST_FAIL("No Exception found, because the screen is not heigh enough");
+	  } catch (std::exception const & ex) {
+		  
+	  }
+	
+}
 
 //BOOST_AUTO_TEST_SUITE_END()
