@@ -71,8 +71,15 @@ namespace fullcircle {
 	  StoreException (const std::string reason) :
 		fullcircle::GenericException(reason) {};
 	  virtual ~StoreException() throw() {};
-
   };
+	
+	class RenderException : public GenericException {
+	public:
+		typedef std::tr1::shared_ptr<RenderException> Ptr;
+		RenderException (const std::string reason) :
+		fullcircle::GenericException(reason) {};
+		virtual ~RenderException() throw() {};	
+	};
 
 }
 
