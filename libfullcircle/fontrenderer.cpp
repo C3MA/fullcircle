@@ -12,7 +12,6 @@
 using namespace boost::assign; // bring 'operator+()' into scope [needed for vector]
 using namespace fullcircle;
 
-
 typedef struct {
     uint8_t ascii;
 	std::vector<uint16_t> map;
@@ -158,6 +157,25 @@ void FontRenderer::load_font(std::string font_file) {
 				}
 			}
 		}
+		
+		/*********** Now we can create the frames with the binary representation of the characters *********/
+		for (unsigned int i=0; i < gCompleteMap.size(); i++) {
+			Frame::Ptr repesentation(new Frame(maxWidth, maxHeight));
+			for (unsigned int y=0; y < maxHeight; y++) {
+				item = gCompleteMap[i].map[y];
+				count=0;
+				while (item > 0) {
+					if (item & 1 == 1) {
+						repesentation->set_pixel(count, y, COLOR_SET);
+					} else {
+						repesentation->set_pixel(count, y, COLOR_TRANSPARENT);
+					}
+					item = item >> 1;
+					count++;
+				}
+			}
+			_asciiMapping[gCompleteMap[i].ascii] = repesentation;
+		}
 	}
 	else
 	{
@@ -168,5 +186,6 @@ void FontRenderer::load_font(std::string font_file) {
 
 void FontRenderer::write_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, std::string text) {
 	//FIXME here is something to do !
+	
 }
 

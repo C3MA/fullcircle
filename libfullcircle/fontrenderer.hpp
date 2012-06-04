@@ -9,6 +9,9 @@
 
 namespace fullcircle {
 
+	static const RGB_t COLOR_SET = { 255, 255, 255 };
+	static const RGB_t COLOR_TRANSPARENT = { 0, 0, 0 };
+	
   class FontRenderer {
     public:
       typedef std::tr1::shared_ptr<FontRenderer> Ptr;
