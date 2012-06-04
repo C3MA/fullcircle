@@ -160,9 +160,9 @@ void FontRenderer::load_font(std::string font_file) {
 				count=0;
 				while (item > 0) {
 					if (item & 1 == 1) {
-						repesentation->set_pixel(count, y, COLOR_TRANSPARENT);
-					} else {
 						repesentation->set_pixel(count, y, COLOR_SET);
+					} else {
+						repesentation->set_pixel(count, y, COLOR_TRANSPARENT);
 					}
 					item = item >> 1;
 					count++;
@@ -197,3 +197,12 @@ void FontRenderer::write_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, st
 	}
 }
 
+void FontRenderer::write_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, std::string text, RGB_t textColor)
+{
+	uint32_t startFrame=sequence->size();
+	write_text(sequence, x, y, text);
+	uint32_t length=sequence->size();
+	for (; startFrame < length; startFrame++) {
+		sequence->get_frame(startFrame)->swap_color(COLOR_SET, textColor);
+	}
+}

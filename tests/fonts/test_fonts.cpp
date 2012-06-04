@@ -52,7 +52,7 @@ BOOST_AUTO_TEST_CASE ( check_sanity ) {
 BOOST_AUTO_TEST_CASE ( check_font ) {
 	fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(25,10,5));
 	fullcircle::FontRenderer::Ptr fr(new fullcircle::FontRenderer(10, 5));
-	fr->load_font("font1.xbm");
+	fr->load_font("font1.xbm"); // This file describes how to display each character
 	fr->write_text(seq, 0, 0, "C3");
 }
 

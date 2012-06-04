@@ -104,6 +104,17 @@ void Frame::dump_frame(std::ostream& os) {
   }
 }
 
+void Frame::swap_color(const RGB_t& from, const RGB_t& to)
+{
+	for (uint16_t x=0; x < _width; ++x) {
+		for (uint16_t y=0; y < _height; ++y) {
+			RGB_t thisc=get_pixel(x,y);
+			if (thisc.red == from.red && thisc.green == from.green && thisc.blue == from.blue) {
+				set_pixel(x, y, to);
+			}
+		}
+	}
+}
 
 bool Frame::operator== (Frame &rhs) {
   if (width() != rhs.width() ||
