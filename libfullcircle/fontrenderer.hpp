@@ -27,6 +27,7 @@ namespace fullcircle {
 	   * http://www.pentacom.jp/pentacom/bitfontmaker2/
 	   */
 	  void load_font(std::string font_file);
+	  void set_scrollspeed(uint16_t	scrollspeed_inms) { _scrollspeed_ms = scrollspeed_inms; }
 	  
 	  void write_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, std::string text);
 	  void write_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, std::string text, RGB_t textColor);
@@ -35,6 +36,7 @@ namespace fullcircle {
       uint16_t _width;
       uint16_t _height;
 	  ascii_map_t _asciiMapping;
+	  uint16_t	_scrollspeed_ms; // if the speed is zero, then there is no scrolling (currency are ,illiseconds)
   };
 };
 
