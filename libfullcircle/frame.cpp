@@ -62,6 +62,24 @@ void Frame::set_pixel(
   _pixels[x][y]=color;
 }
 
+void Frame::set_pixel(
+			   const uint16_t& x_start,
+			   const uint16_t& y_start,
+			   Frame::Ptr mini_frame
+			   )
+{
+	if (x_start + mini_frame->width() > _width)
+		throw fullcircle::RenderException("Screen is not wide enough");
+	if (y_start + mini_frame->height() > _height)
+		throw fullcircle::RenderException("Screen is not high enough");
+	
+	for (uint16_t x=0; x<mini_frame->width(); ++x) {
+		for (uint16_t y=0; y<mini_frame->height(); ++y) {
+			set_pixel(x_start + x, y_start + y, mini_frame->get_pixel(x,y)); 
+		}
+    }
+}
+
 const RGB_t Frame::get_pixel(
     const uint16_t& x,
     const uint16_t& y

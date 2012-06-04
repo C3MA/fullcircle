@@ -9,8 +9,8 @@
 
 namespace fullcircle {
 
-	static const RGB_t COLOR_SET = { 255, 255, 255 };
-	static const RGB_t COLOR_TRANSPARENT = { 0, 0, 0 };
+	static const RGB_t COLOR_SET = { 0, 0, 0 };
+	static const RGB_t COLOR_TRANSPARENT = { 255, 255, 255 };
 	
   class FontRenderer {
     public:

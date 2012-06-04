@@ -36,6 +36,11 @@ namespace fullcircle {
           const uint16_t& y,
           const RGB_t& color
         );
+	  void set_pixel(
+					 const uint16_t& x,
+					 const uint16_t& y,
+					 Frame::Ptr mini_frame
+					 );
       const RGB_t get_pixel(
           const uint16_t& x,
           const uint16_t& y

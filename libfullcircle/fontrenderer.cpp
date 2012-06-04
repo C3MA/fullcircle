@@ -160,9 +160,9 @@ void FontRenderer::load_font(std::string font_file) {
 				count=0;
 				while (item > 0) {
 					if (item & 1 == 1) {
-						repesentation->set_pixel(count, y, COLOR_SET);
-					} else {
 						repesentation->set_pixel(count, y, COLOR_TRANSPARENT);
+					} else {
+						repesentation->set_pixel(count, y, COLOR_SET);
 					}
 					item = item >> 1;
 					count++;
@@ -179,9 +179,12 @@ void FontRenderer::load_font(std::string font_file) {
 }
 
 void FontRenderer::write_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, std::string text) {
-	//FIXME here is something to do !
+	
+	Frame::Ptr screen(new Frame(_width, _height));
+	screen->fill_whole(COLOR_TRANSPARENT);	
 	std::cout << "We want to print: " << text << std::endl;
-	for (int i=0; i < text.size(); i++) {
+	
+	for (uint16_t i=0; i < text.size(); i++) {
 		Frame::Ptr item = _asciiMapping[text[i]];
 		if (item == 0)
 		{
@@ -189,6 +192,8 @@ void FontRenderer::write_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, st
 		}
 		std::cout << text[i] << " is : " << std::endl;
 		item->dump_frame(std::cout);
+		screen->set_pixel(i*item->width(),0, item);
+		sequence->add_frame(screen);
 	}
 }
 
