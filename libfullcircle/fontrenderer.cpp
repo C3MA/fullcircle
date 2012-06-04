@@ -6,9 +6,9 @@
 using namespace boost::assign; // bring 'operator+()' into scope [needed for vector]
 using namespace fullcircle;
 
-// test postion for this code
-std::vector<int> vars;
-int asciiChar;
+/*** This is not the best postion for this code, becase this makes it not threadsafe ***/
+std::vector<int> fullcircle::vars;
+int fullcircle::asciiChar = 0;
 
 struct xbmtext_grammar 
 : public boost::spirit::grammar<xbmtext_grammar> 
@@ -75,9 +75,8 @@ struct xbmtext_grammar
 			return object; 
 		}
 		
-	}; 
+	};
 };
-
 
 FontRenderer::FontRenderer ( uint16_t width, uint16_t height)
   : _width(width)

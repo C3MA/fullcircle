@@ -20,6 +20,7 @@ namespace fullcircle {
     private:
       uint16_t _width;
       uint16_t _height;
+	  
   };
 };
 
