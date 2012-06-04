@@ -12,9 +12,15 @@
 using namespace boost::assign; // bring 'operator+()' into scope [needed for vector]
 using namespace fullcircle;
 
+typedef struct {
+    uint8_t ascii;
+	std::vector<uint16_t> map;
+} AsciiMapping_t;
+
 /*** This is not the best postion for this code, becase this makes it not threadsafe ***/
-std::vector<int> fullcircle::vars;
+std::vector<uint16_t> fullcircle::vars;
 int fullcircle::asciiChar = 0;
+std::vector<AsciiMapping_t> fullcircle::completeMap;
 
 struct xbmtext_grammar 
 : public boost::spirit::grammar<xbmtext_grammar> 
@@ -38,11 +44,16 @@ struct xbmtext_grammar
 	struct map_add {
 		void operator()(const char *begin, const char *end) const 
 		{
-			std::cout << asciiChar << " = ";
+			printf("%d = ", asciiChar);
 			for (unsigned int i=0; i < vars.size(); i++) {
-				std::cout << vars[i] << " ";
+				printf("%d ", vars[i]);
 			}
 			std::cout << std::endl;
+			AsciiMapping_t map;
+			map.ascii = asciiChar;
+			map.map = vars;
+			completeMap += map;
+			asciiChar = 0;
 			vars.clear();
 		}
 	};
@@ -52,7 +63,7 @@ struct xbmtext_grammar
 	template <typename Scanner> 
 	struct definition 
 	{ 
-		boost::spirit::rule<Scanner> object, value, descval, desckey, description, asciinum, number, image, mapping, string;
+		boost::spirit::rule<Scanner> object, value, descval, desckey, description, asciinum, number, image, mapping, string, comment;
 		
 		definition(const xbmtext_grammar &self) 
 		{ 
@@ -72,7 +83,8 @@ struct xbmtext_grammar
 			descval = string;
 			description = desckey >> ":" >> descval;
 			value = mapping | description;
-			object = "{" >> value >> *("," >> value) >> "}"; 
+			comment = "#" >> *~ch_p("{");
+			object = *(comment) >> "{" >> value >> *("," >> value) >> "}"; 
 			
 		} 
 		
@@ -107,15 +119,16 @@ void FontRenderer::load_font(std::string font_file) {
 	boost::spirit::parse_info<> pi = boost::spirit::parse(buffer.str().c_str(), g, boost::spirit::space_p); 
 	if (pi.hit) 
 	{ 
-		if (pi.full) 
-			std::cout << "parsing all data successfully" << std::endl; 
-		else 
-			std::cout << "parsing data partially" << std::endl; 
-		std::cout << pi.length << " characters parsed" << std::endl;
-		//FIXME here is something to do !
-	} 
-	else 
-		std::cout << "parsing failed; stopped at '" << pi.stop << "'" << std::endl; 
+		if (!pi.full)
+			throw fullcircle::DataFormatException("parsing data partially");
+		
+		
+	}
+	else
+	{
+		std::string msg = ((std::string) "parsing failed; stopped at '") + pi.stop + "'";
+		throw fullcircle::DataFormatException(msg);
+	}
 }
 
 void FontRenderer::write_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, std::string text) {
