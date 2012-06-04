@@ -43,13 +43,7 @@ struct xbmtext_grammar
 	
 	struct map_add {
 		void operator()(const char *begin, const char *end) const 
-		{
-			printf("%d = ", gAsciiChar);
-			for (unsigned int i=0; i < gVars.size(); i++) {
-				printf("%d ", gVars[i]);
-			}
-			std::cout << std::endl;
-			
+		{			
 			AsciiMapping_t map;
 			map.ascii = gAsciiChar;
 			map.map = gVars;
