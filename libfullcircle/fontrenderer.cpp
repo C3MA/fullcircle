@@ -180,6 +180,15 @@ void FontRenderer::load_font(std::string font_file) {
 
 void FontRenderer::write_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, std::string text) {
 	//FIXME here is something to do !
-	
+	std::cout << "We want to print: " << text << std::endl;
+	for (int i=0; i < text.size(); i++) {
+		Frame::Ptr item = _asciiMapping[text[i]];
+		if (item == 0)
+		{
+			throw fullcircle::RenderException("Could not find all character representation");
+		}
+		std::cout << text[i] << " is : " << std::endl;
+		item->dump_frame(std::cout);
+	}
 }
 
