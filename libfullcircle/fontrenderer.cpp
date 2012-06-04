@@ -19,9 +19,9 @@ typedef struct {
 } AsciiMapping_t;
 
 /*** This is not the best postion for this code, becase this makes it not threadsafe ***/
-std::vector<uint16_t> fullcircle::vars;
-int fullcircle::asciiChar = 0;
-std::vector<AsciiMapping_t> fullcircle::completeMap;
+std::vector<uint16_t> fullcircle::gVars;
+int fullcircle::gAsciiChar = 0;
+std::vector<AsciiMapping_t> fullcircle::gCompleteMap;
 
 struct xbmtext_grammar 
 : public boost::spirit::grammar<xbmtext_grammar> 
@@ -31,31 +31,32 @@ struct xbmtext_grammar
 	{ 		
 		void operator()(const int d) const 
 		{ 
-			asciiChar = d;			
+			gAsciiChar = d;			
 		} 
 	};
 	
 	struct number_add {
 		void operator()(const int d) const
 		{
-			vars += d;
+			gVars += d;
 		}
 	};
 	
 	struct map_add {
 		void operator()(const char *begin, const char *end) const 
 		{
-			printf("%d = ", asciiChar);
-			for (unsigned int i=0; i < vars.size(); i++) {
-				printf("%d ", vars[i]);
+			printf("%d = ", gAsciiChar);
+			for (unsigned int i=0; i < gVars.size(); i++) {
+				printf("%d ", gVars[i]);
 			}
 			std::cout << std::endl;
+			
 			AsciiMapping_t map;
-			map.ascii = asciiChar;
-			map.map = vars;
-			completeMap += map;
-			asciiChar = 0;
-			vars.clear();
+			map.ascii = gAsciiChar;
+			map.map = gVars;
+			gCompleteMap += map;
+			gAsciiChar = 0;
+			gVars.clear();
 		}
 	};
 	
@@ -67,8 +68,7 @@ struct xbmtext_grammar
 		boost::spirit::rule<Scanner> object, value, descval, desckey, description, asciinum, number, image, mapping, string, comment;
 		
 		definition(const xbmtext_grammar &self) 
-		{ 
-			
+		{ 	
 			using namespace boost::spirit; 
 			// basic datatypes:
 			string = "\"" >> *~ch_p("\"") >> "\"";
@@ -76,10 +76,7 @@ struct xbmtext_grammar
 			mapping = (asciinum >> ":" >> image)[map_add()];
 			image = "[" >> number >> *("," >> number) >> "]"; 
 			number = int_p[number_add()];
-			asciinum = 
-			
-			(	"\"" >> int_p[set_asciiChar()] >> "\"" )
-			;
+			asciinum = "\"" >> int_p[set_asciiChar()] >> "\"";
 			desckey = string;
 			descval = string;
 			description = desckey >> ":" >> descval;
@@ -126,10 +123,10 @@ void FontRenderer::load_font(std::string font_file) {
 		
 		/*** Search for the width of one character (we have to search the widest) ****/
 		uint16_t item, count, maxWidth = 0, height, maxHeight = 0;
-		for (unsigned int i=0; i < completeMap.size(); i++) {
+		for (unsigned int i=0; i < gCompleteMap.size(); i++) {
 			height=0;
-			for (unsigned int j=0; j < completeMap[i].map.size(); j++) {
-				item = completeMap[i].map[j];
+			for (unsigned int j=0; j < gCompleteMap[i].map.size(); j++) {
+				item = gCompleteMap[i].map[j];
 				count=0;
 				if (item > 0)
 					height++;
@@ -140,11 +137,11 @@ void FontRenderer::load_font(std::string font_file) {
 				if (count > maxWidth)
 				{
 					maxWidth = count;
-					printf("maximum width is %2d found at %c\n",maxWidth, completeMap[i].ascii);
+//					printf("maximum width is %2d found at %c\n",maxWidth, completeMap[i].ascii);
 					if (maxWidth > _width)
 					{
 						std::string msg = str( boost::format("maximum height overflow of %1 found at %2\n")
-											% maxWidth % completeMap[i].ascii);
+											% maxWidth % gCompleteMap[i].ascii);
 						throw fullcircle::DataFormatException(msg);
 					}
 				}
@@ -152,11 +149,11 @@ void FontRenderer::load_font(std::string font_file) {
 			if (height > maxHeight)
 			{
 				maxHeight = height;
-				printf("maximum height is %2d found at %c\n",maxHeight, completeMap[i].ascii);
+//				printf("maximum height is %2d found at %c\n",maxHeight, completeMap[i].ascii);
 				if (maxHeight > _height)
 				{
 					std::string msg = str (boost::format("maximum height overflow of %1 found at %2\n")
-									% maxHeight % completeMap[i].ascii);
+									% maxHeight % gCompleteMap[i].ascii);
 					throw fullcircle::DataFormatException(msg);
 				}
 			}
