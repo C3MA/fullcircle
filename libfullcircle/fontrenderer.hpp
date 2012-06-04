@@ -29,6 +29,7 @@ namespace fullcircle {
 	  void load_font(std::string font_file);
 	  
 	  void write_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, std::string text);
+	  void write_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, std::string text, RGB_t textColor);
 	  
     private:
       uint16_t _width;

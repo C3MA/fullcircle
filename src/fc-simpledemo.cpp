@@ -4,6 +4,7 @@
 #include <boost/filesystem.hpp>
 #include <libfullcircle/sequence.hpp>
 #include <libfullcircle/frame.hpp>
+#include <libfullcircle/fontrenderer.hpp>
 #include <boost/program_options.hpp>
 #include <boost/program_options/positional_options.hpp>
 namespace po = boost::program_options;
@@ -94,7 +95,7 @@ fullcircle::Sequence::Ptr mk_demo_fullscreen() {
 }
 
 fullcircle::Sequence::Ptr mk_demo_fade() {
-	std::cout << "Generating fullscreen demo sequence." << std::endl;
+	std::cout << "Generating gradient demo sequence." << std::endl;
 	
 	fullcircle::RGB_t from;
 	from.red = from.green = 0; from.blue = 255;
@@ -130,6 +131,24 @@ fullcircle::Sequence::Ptr mk_demo_fade() {
 	return seq;
 }
 
+fullcircle::Sequence::Ptr mk_demo_text() {
+	std::cout << "Generating text demo sequence." << std::endl;
+	fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(25,10,5));
+	
+	fullcircle::RGB_t color;
+	color.red = color.green = color.blue = 0; 
+	fullcircle::Frame::Ptr frame(new fullcircle::Frame(10,5));
+	frame->fill_whole(color); // is white at the moment
+	seq->add_frame(frame);
+	color.blue = 255; // now its blue ;-)
+	
+	fullcircle::FontRenderer::Ptr fr(new fullcircle::FontRenderer(10, 5));
+	fr->load_font("font1.xbm"); // This file describes how to display each character
+	fr->write_text(seq, 0, 0, "C3",color);
+	
+	return seq;
+}
+
 int main (int argc, char* argv[]) {
 
   try {
@@ -142,6 +161,7 @@ int main (int argc, char* argv[]) {
       ("sequence,s", po::value<std::string>(), "the sequence file to use")
 	  ("fullscreen,f", po::value<std::string>(), "the sequence file to use [for a fullscreen animation]")
   	  ("gradient,g", po::value<std::string>(), "the sequence file to use [for a gradient animation]")
+	  ("text,t", po::value<std::string>(), "the sequence file to use [for a text animation]")
       ;
     po::positional_options_description p;
 //    p.add("sequence", 1);
@@ -166,7 +186,7 @@ int main (int argc, char* argv[]) {
     }
 
 	int type = 0;
-    if (vm.count("sequence") + vm.count("fullscreen") + vm.count("gradient") <= 0) {
+    if (vm.count("sequence") + vm.count("fullscreen") + vm.count("gradient") + vm.count("text") <= 0) {
       std::cerr << "You must specify a sequence file." << std::endl;
       return 1;
     } else {
@@ -179,6 +199,9 @@ int main (int argc, char* argv[]) {
 		} else if (vm.count("gradient") > 0) {
 			sequencefile=vm["gradient"].as<std::string>();
 			type = 3;
+		} else if (vm.count("text") > 0) {
+			sequencefile=vm["text"].as<std::string>();
+			type = 4;
 		}
 		
     }
@@ -196,6 +219,9 @@ int main (int argc, char* argv[]) {
 				break;
 			case 3:
 				seq = mk_demo_fade();
+				break;
+			case 4:
+				seq = mk_demo_text();
 				break;
 			default:
 				break;

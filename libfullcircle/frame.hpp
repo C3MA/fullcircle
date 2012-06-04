@@ -36,6 +36,11 @@ namespace fullcircle {
           const uint16_t& y,
           const RGB_t& color
         );
+	  void set_pixel(
+					 const uint16_t& x,
+					 const uint16_t& y,
+					 Frame::Ptr mini_frame
+					 );
       const RGB_t get_pixel(
           const uint16_t& x,
           const uint16_t& y
@@ -46,6 +51,7 @@ namespace fullcircle {
 	  void fill_whole(const RGB_t& color);
 	  void fill_gradient_horizontal(const RGB_t& from, const RGB_t& to);
 	  void fill_gradient_vertical(const RGB_t& from, const RGB_t& to);
+	  void swap_color(const RGB_t& from, const RGB_t& to);
 
       Frame& operator= (const Frame& rhs);
       bool operator==(Frame &rhs);

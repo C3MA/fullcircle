@@ -179,9 +179,12 @@ void FontRenderer::load_font(std::string font_file) {
 }
 
 void FontRenderer::write_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, std::string text) {
-	//FIXME here is something to do !
+	
+	Frame::Ptr screen(new Frame(_width, _height));
+	screen->fill_whole(COLOR_TRANSPARENT);	
 	std::cout << "We want to print: " << text << std::endl;
-	for (int i=0; i < text.size(); i++) {
+	
+	for (uint16_t i=0; i < text.size(); i++) {
 		Frame::Ptr item = _asciiMapping[text[i]];
 		if (item == 0)
 		{
@@ -189,6 +192,17 @@ void FontRenderer::write_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, st
 		}
 		std::cout << text[i] << " is : " << std::endl;
 		item->dump_frame(std::cout);
+		screen->set_pixel(i*item->width(),0, item);
+		sequence->add_frame(screen);
 	}
 }
 
+void FontRenderer::write_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, std::string text, RGB_t textColor)
+{
+	uint32_t startFrame=sequence->size();
+	write_text(sequence, x, y, text);
+	uint32_t length=sequence->size();
+	for (; startFrame < length; startFrame++) {
+		sequence->get_frame(startFrame)->swap_color(COLOR_SET, textColor);
+	}
+}
