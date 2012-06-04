@@ -190,7 +190,7 @@ void FontRenderer::write_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, st
 	{
 		// take the width of the first item (the same for all, because we have monospace)
 		Frame::Ptr item = _asciiMapping[text[0]];
-		text_screen_width = text.size() * item->width();
+		text_screen_width = text.size() * item->width() + _width /*we need a white page for last page*/;
 	}
 	
 	Frame::Ptr screen(new Frame(text_screen_width, _height));
@@ -203,8 +203,6 @@ void FontRenderer::write_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, st
 		{
 			throw fullcircle::RenderException("Could not find all character representation");
 		}
-		std::cout << text[i] << " is : " << std::endl;
-		item->dump_frame(std::cout);
 		screen->set_pixel(i*item->width(),0, item);
 	}
 	if (_scrollspeed_ms == 0)
@@ -218,8 +216,12 @@ void FontRenderer::write_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, st
 		for (uint16_t i=0; i < text_screen_width - _width; i++) {
 			actual_screen_part->set_pixel_window(i,0,screen);
 			for (uint32_t time=0; time < timePerFrame; time++) {
-				sequence->add_frame(actual_screen_part);
+				Frame::Ptr copy(new Frame(actual_screen_part->width(), actual_screen_part->height()));
+				copy->set_pixel(0,0,actual_screen_part); // make a deep copy for the sequence
+				sequence->add_frame(copy);
 			}
+			std::cout << "position is " << (i + 1)  << " is : " << std::endl;
+			actual_screen_part->dump_frame(std::cout);
 		}
 	}
 
