@@ -215,9 +215,9 @@ void FontRenderer::write_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, st
 		Frame::Ptr actual_screen_part(new Frame(_width, _height));
 		for (uint16_t i=0; i < text_screen_width - _width; i++) {
 			actual_screen_part->set_pixel_window(i,0,screen);
+			Frame::Ptr copy(new Frame(actual_screen_part->width(), actual_screen_part->height()));
+			copy->set_pixel(0,0,actual_screen_part); // make a deep copy for the sequence
 			for (uint32_t time=0; time < timePerFrame; time++) {
-				Frame::Ptr copy(new Frame(actual_screen_part->width(), actual_screen_part->height()));
-				copy->set_pixel(0,0,actual_screen_part); // make a deep copy for the sequence
 				sequence->add_frame(copy);
 			}
 			std::cout << "position is " << (i + 1)  << " is : " << std::endl;
