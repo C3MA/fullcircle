@@ -89,28 +89,5 @@ BOOST_AUTO_TEST_CASE ( check_test_sprite ) {
 
 }
 
-BOOST_AUTO_TEST_CASE ( check_frame ) {
-  init_color();
-  Q_INIT_RESOURCE(sprites);
-  std::cout << "### Testing lovely space invader sprites." << std::endl;
 
-  fullcircle::SpriteIO::Ptr sprite_io(new fullcircle::SpriteIO());
-  fullcircle::Frame::Ptr invader(
-      sprite_io->load(std::string(":/sprites/space_invader_8x8.png")));
-
-  invader->dump_frame(std::cout);
-
-  // create an example sequence for visual debugging
-  fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(10,8,8));
-  for( uint8_t i = 0; i < 100; ++i) {
-    seq->add_frame(invader);
-  }
-
-  bfs::path binfile(TEST_SPRITE_FILE);
-  std::fstream output(binfile.c_str(), 
-      std::ios::out | std::ios::trunc | std::ios::binary);
-  seq->save(output, "test_sprites", "current");
-  output.close();
-
-}
 //BOOST_AUTO_TEST_SUITE_END()
