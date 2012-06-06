@@ -4,7 +4,7 @@
 #include <boost/filesystem.hpp>
 #include <libfullcircle/sequence.hpp>
 #include <libfullcircle/frame.hpp>
-#include <libfullcircle/fontrenderer.hpp>
+//#include <libfullcircle/fontrenderer.hpp>
 #include <boost/program_options.hpp>
 #include <boost/program_options/positional_options.hpp>
 namespace po = boost::program_options;
@@ -131,24 +131,24 @@ fullcircle::Sequence::Ptr mk_demo_fade() {
 	return seq;
 }
 
-fullcircle::Sequence::Ptr mk_demo_text() {
-	std::cout << "Generating text demo sequence." << std::endl;
-	fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(25,10,5));
-	
-	fullcircle::RGB_t color;
-	color.red = color.green = color.blue = 0; 
-	fullcircle::Frame::Ptr frame(new fullcircle::Frame(10,5));
-	frame->fill_whole(color); // is white at the moment
-	seq->add_frame(frame);
-	color.blue = 255; // now its blue ;-)
-	
-	fullcircle::FontRenderer::Ptr fr(new fullcircle::FontRenderer(10, 5));
-	fr->set_scrollspeed(500); // time in milliseconds
-	fr->load_font("font1.xbm"); // This file describes how to display each character
-	fr->write_text(seq, 0, 0, "C3MA",color);
-	
-	return seq;
-}
+//fullcircle::Sequence::Ptr mk_demo_text() {
+//	std::cout << "Generating text demo sequence." << std::endl;
+//	fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(25,10,5));
+//	
+//	fullcircle::RGB_t color;
+//	color.red = color.green = color.blue = 0; 
+//	fullcircle::Frame::Ptr frame(new fullcircle::Frame(10,5));
+//	frame->fill_whole(color); // is white at the moment
+//	seq->add_frame(frame);
+//	color.blue = 255; // now its blue ;-)
+//	
+//	fullcircle::FontRenderer::Ptr fr(new fullcircle::FontRenderer(10, 5));
+//	fr->set_scrollspeed(500); // time in milliseconds
+//	fr->load_font("font1.xbm"); // This file describes how to display each character
+//	fr->write_text(seq, 0, 0, "C3MA",color);
+//	
+//	return seq;
+//}
 
 int main (int argc, char* argv[]) {
 
@@ -222,7 +222,8 @@ int main (int argc, char* argv[]) {
 				seq = mk_demo_fade();
 				break;
 			case 4:
-				seq = mk_demo_text();
+	//			seq = mk_demo_text();
+        std::cout << "Text demo not available right now." << std::endl;
 				break;
 			default:
 				break;
