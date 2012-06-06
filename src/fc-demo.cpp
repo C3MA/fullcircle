@@ -6,7 +6,7 @@
 #include <libfullcircle/sequence.hpp>
 #include <libfullcircle/frame.hpp>
 #include <libfullcircle/sprite_io.hpp>
-//#include <libfullcircle/fontrenderer.hpp>
+#include <libfullcircle/fontrenderer.hpp>
 #include <boost/program_options.hpp>
 #include <boost/program_options/positional_options.hpp>
 namespace po = boost::program_options;
@@ -150,24 +150,22 @@ fullcircle::Sequence::Ptr mk_demo_spaceinvader() {
   return seq;
 }
 
-//fullcircle::Sequence::Ptr mk_demo_text() {
-//	std::cout << "Generating text demo sequence." << std::endl;
-//	fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(25,8,8));
-//	
-//	fullcircle::RGB_t color;
-//	color.red = color.green = color.blue = 0; 
-//	fullcircle::Frame::Ptr frame(new fullcircle::Frame(8,8));
-//	frame->fill_whole(color); // is white at the moment
-//	seq->add_frame(frame);
-//	color.blue = 255; // now its blue ;-)
-//	
-//	fullcircle::FontRenderer::Ptr fr(new fullcircle::FontRenderer(10, 5));
-//	fr->set_scrollspeed(500); // time in milliseconds
-//	fr->load_font("font1.xbm"); // This file describes how to display each character
-//	fr->write_text(seq, 0, 0, "C3MA",color);
-//	
-//	return seq;
-//}
+fullcircle::Sequence::Ptr mk_demo_text() {
+	std::cout << "Generating text demo sequence." << std::endl;
+	fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(25,8,8));
+	
+	fullcircle::RGB_t color;
+	color.red = color.green = color.blue = 0; 
+	fullcircle::Frame::Ptr frame(new fullcircle::Frame(8,8));
+	frame->fill_whole(color); // is white at the moment
+	seq->add_frame(frame);
+	color.blue = 255; // now its blue ;-)
+	
+	fullcircle::FontRenderer::Ptr fr(new fullcircle::FontRenderer(8, 8));
+	fr->scroll_text(seq, 1, 0, "C3MA", 500 /* time in milliseconds */, color);
+	
+	return seq;
+}
 
 int main (int argc, char* argv[]) {
 
@@ -211,19 +209,6 @@ int main (int argc, char* argv[]) {
       return 1;
     } else {
       sequencefile=vm["sequence"].as<std::string>();
-      //if (vm.count("sequence") > 0) {
-      //  type = 1;
-      //} else if (vm.count("fullscreen") > 0) {
-      //  sequencefile=vm["fullscreen"].as<std::string>();
-      //  type = 2;
-      //} else if (vm.count("gradient") > 0) {
-      //  sequencefile=vm["gradient"].as<std::string>();
-      //  type = 3;
-      //} else if (vm.count("text") > 0) {
-      //  sequencefile=vm["text"].as<std::string>();
-      //  type = 4;
-      //}
-
     }
 
     bfs::path sequence(sequencefile);
@@ -237,8 +222,7 @@ int main (int argc, char* argv[]) {
       if (vm.count("gradient") > 0) 
           seq = (*seq) << mk_demo_fade();
       if (vm.count("sequence") > 0) 
-          //			seq = mk_demo_text();
-          std::cout << "Text demo not available right now." << std::endl;
+          seq = (*seq) << mk_demo_text();
       if (vm.count("sprite") > 0) 
           seq = (*seq) << mk_demo_spaceinvader();
 

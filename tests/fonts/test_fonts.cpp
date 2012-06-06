@@ -57,12 +57,16 @@ BOOST_AUTO_TEST_CASE ( check_font ) {
 }
 
 BOOST_AUTO_TEST_CASE ( check_font_height_exception ) {
+	std::cout << "----- Waiting for Exception -------" << std::endl;
 	  try {
+		  fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(25,10,5));
 		  fullcircle::FontRenderer::Ptr fr(new fullcircle::FontRenderer(10, 4));
+    	  fr->write_text(seq, 0, 0, "C3");
 		  BOOST_FAIL("No Exception found, because the screen is not heigh enough");
 	  } catch (std::exception const & ex) {
 		  
 	  }	
+	std::cout << "----- Exception was found -------" << std::endl;
 }
 
 BOOST_AUTO_TEST_CASE ( check_font_scrolling ) {
