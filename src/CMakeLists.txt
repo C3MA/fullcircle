@@ -1,6 +1,6 @@
 # -*- mode: cmake; -*-
 set(fc-simulator_src fc-simulator.cpp)
-set(fc-simpledemo_src fc-simpledemo.cpp)
+set(fc-demo_src fc-demo.cpp)
 
 include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_CURRENT_SOURCE_DIR} 
@@ -13,8 +13,8 @@ add_executable(fc-simulator
   ${SAMPLE_UI_HDRS} 
   )
 
-add_executable(fc-simpledemo
-  ${fc-simpledemo_src}
+add_executable(fc-demo
+  ${fc-demo_src}
   )
 
 
@@ -24,7 +24,7 @@ target_link_libraries(fc-simulator
   ${QT_LIBRARIES}
   )
 
-target_link_libraries(fc-simpledemo
+target_link_libraries(fc-demo
   fullcircle 
   ${Boost_LIBRARIES}
   )
@@ -32,6 +32,6 @@ target_link_libraries(fc-simpledemo
 # sensor programs to the install target
 INSTALL(PROGRAMS 
   ${CMAKE_CURRENT_BINARY_DIR}/fc-simulator
-  ${CMAKE_CURRENT_BINARY_DIR}/fc-simpledemo
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-demo
   DESTINATION bin)
 
