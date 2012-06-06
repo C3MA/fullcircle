@@ -126,3 +126,21 @@ bool Sequence::operator== (Sequence &rhs) {
 bool Sequence::operator!= (Sequence &rhs) {
   return !(*this == rhs);
 }
+
+
+Sequence::Ptr Sequence::operator+ (Sequence::Ptr rhs) {
+  if (rhs->fps() != fps())
+    throw DataFormatException("Sequence FPS mismatch - cannot add frame.");
+  Sequence::Ptr retval(new Sequence(
+        _fps, 
+        _width, 
+        _height));
+  fullcircle::Sequence::const_iterator it;
+  for (it = this->begin(); it != this->end(); ++it) {
+    retval->add_frame(*it);
+  }
+  for (it = rhs->begin(); it != rhs->end(); ++it) {
+    retval->add_frame(*it);
+  }
+  return retval;
+}
