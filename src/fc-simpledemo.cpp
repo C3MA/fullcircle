@@ -231,16 +231,16 @@ int main (int argc, char* argv[]) {
     try {
       fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(25,8,8));
       if (vm.count("sequence") > 0) 
-          seq = (*seq) + mk_demo_sequence();
+        seq = (*seq) << mk_demo_sequence();
       if (vm.count("fullscreen") > 0) 
-          seq = (*seq) + mk_demo_fullscreen();
+          seq = (*seq) << mk_demo_fullscreen();
       if (vm.count("gradient") > 0) 
-          seq = (*seq) + mk_demo_fade();
+          seq = (*seq) << mk_demo_fade();
       if (vm.count("sequence") > 0) 
           //			seq = mk_demo_text();
           std::cout << "Text demo not available right now." << std::endl;
       if (vm.count("sprite") > 0) 
-          seq = (*seq) + mk_demo_spaceinvader();
+          seq = (*seq) << mk_demo_spaceinvader();
 
       std::cout << "Saving sequence to file " << sequence << std::endl;
       std::fstream output(sequence.c_str(), 

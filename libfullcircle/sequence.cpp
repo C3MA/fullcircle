@@ -128,7 +128,7 @@ bool Sequence::operator!= (Sequence &rhs) {
 }
 
 
-Sequence::Ptr Sequence::operator+ (Sequence::Ptr rhs) {
+Sequence::Ptr Sequence::operator<< (Sequence::Ptr rhs) {
   if (rhs->fps() != fps())
     throw DataFormatException("Sequence FPS mismatch - cannot add frame.");
   Sequence::Ptr retval(new Sequence(

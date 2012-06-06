@@ -164,16 +164,16 @@ BOOST_AUTO_TEST_CASE ( check_sequence ) {
   }
   BOOST_REQUIRE(seq->size() == framecount);
 
-  std::cout << "Testing sequence concatenation with the PLUS operator" << std::endl;
+  std::cout << "Testing sequence concatenation with the APPEND operator" << std::endl;
   fullcircle::Sequence::Ptr big_seq;
-  big_seq = (*seq) + seq;
+  big_seq = (*seq) << seq;
   BOOST_REQUIRE(big_seq->size() == 2*seq->size());
 
   fullcircle::Sequence::Ptr damaged_seq(new fullcircle::Sequence(2,4,4));
   fullcircle::Frame::Ptr f5(new fullcircle::Frame(4,4));
   damaged_seq->add_frame(f5);
    try {
-    big_seq = (*big_seq) + damaged_seq;
+    big_seq = (*big_seq) << damaged_seq;
     BOOST_FAIL( "Was able to add a damaged sequence." );
   } catch (fullcircle::GenericException const& ex) {
     std::cout << "Caught expected exception: " << ex.what() << std::endl;
