@@ -56,6 +56,13 @@ BOOST_AUTO_TEST_CASE ( check_font ) {
 	seq->dump(std::cout);
 }
 
+BOOST_AUTO_TEST_CASE ( check_font_offset ) {
+	fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(25,15,8));
+	fullcircle::FontRenderer::Ptr fr(new fullcircle::FontRenderer(15, 8));
+	fr->write_text(seq, 1, 2, "C3");
+	seq->dump(std::cout);
+}
+
 BOOST_AUTO_TEST_CASE ( check_font_height_exception ) {
 	std::cout << "----- Waiting for Exception -------" << std::endl;
 	  try {
@@ -72,7 +79,7 @@ BOOST_AUTO_TEST_CASE ( check_font_height_exception ) {
 BOOST_AUTO_TEST_CASE ( check_font_scrolling ) {
 	fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(25,10,5));
 	fullcircle::FontRenderer::Ptr fr(new fullcircle::FontRenderer(10, 5));
-	fr->scroll_text(seq, 0, 0, "C3MA", 500);
+	fr->scroll_text(seq, 0, 0, "C3MA", 500);	
 }
 
 //BOOST_AUTO_TEST_SUITE_END()

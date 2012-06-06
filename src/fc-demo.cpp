@@ -162,7 +162,7 @@ fullcircle::Sequence::Ptr mk_demo_text() {
 	color.blue = 255; // now its blue ;-)
 	
 	fullcircle::FontRenderer::Ptr fr(new fullcircle::FontRenderer(8, 8));
-	fr->scroll_text(seq, 1, 0, "C3MA", 500 /* time in milliseconds */, color);
+	fr->scroll_text(seq, 1, 2, "C3MA", 500 /* time in milliseconds */, color);
 	
 	return seq;
 }

@@ -20,10 +20,10 @@ namespace fullcircle {
       FontRenderer (Frame& rhs);
       virtual ~FontRenderer() {};
 	  	  
-	  void write_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, std::string text);
-	  void write_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, std::string text, RGB_t textColor);
-	  void scroll_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, std::string text, uint16_t	scrollspeed_inms);
-	  void scroll_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, std::string text, uint16_t	scrollspeed_inms, RGB_t textColor);
+	  void write_text(Sequence::Ptr sequence, uint16_t x_offset, uint16_t y_offset, std::string text);
+	  void write_text(Sequence::Ptr sequence, uint16_t x_offset, uint16_t y_offset, std::string text, RGB_t textColor);
+	  void scroll_text(Sequence::Ptr sequence, uint16_t x_offset, uint16_t y_offset, std::string text, uint16_t	scrollspeed_inms);
+	  void scroll_text(Sequence::Ptr sequence, uint16_t x_offset, uint16_t y_offset, std::string text, uint16_t	scrollspeed_inms, RGB_t textColor);
 	  
 	  
     private:

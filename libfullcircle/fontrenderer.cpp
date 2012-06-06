@@ -12,23 +12,25 @@ FontRenderer::FontRenderer ( uint16_t width, uint16_t height)
 	Q_INIT_RESOURCE(sprites);
 };
 
-void FontRenderer::write_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, std::string text)
+void FontRenderer::write_text(Sequence::Ptr sequence, uint16_t x_offset, uint16_t y_offset, std::string text)
 {
-	scroll_text(sequence, x, y, text, 0);
+	scroll_text(sequence, x_offset, y_offset, text, 0);
 }
 
-void FontRenderer::write_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, std::string text, RGB_t textColor)
+void FontRenderer::write_text(Sequence::Ptr sequence, uint16_t x_offset, uint16_t y_offset, std::string text, RGB_t textColor)
 {
 	uint32_t startFrame=sequence->size();
-	write_text(sequence, x, y, text);
+	write_text(sequence, x_offset, y_offset, text);
 	uint32_t length=sequence->size();
 	for (; startFrame < length; startFrame++) {
 		sequence->get_frame(startFrame)->swap_color(COLOR_SET, textColor);
 	}
 }
 
-void FontRenderer::scroll_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, std::string text, 
-							   uint16_t	scrollspeed_ms)
+
+void FontRenderer::scroll_text(Sequence::Ptr sequence, uint16_t x_offset, uint16_t y_offset, 
+							   std::string text, 
+							   uint16_t	scrollspeed_ms /* When the scrollspeed is 0, then there is no scrolling */)
 {
 	if (text.size() == 0)
 		throw fullcircle::RenderException("No text to render was given");
@@ -41,7 +43,7 @@ void FontRenderer::scroll_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, s
 		Frame::Ptr item = searchCharacter(text[0]);
 		if (item->width() == 0 && item->height() == 0)
 			throw fullcircle::RenderException("We have big problems!");
-		text_screen_width = text.size() * item->width() + _width /*we need a white page for last page*/;
+		text_screen_width = text.size() * (item->width() + 1) /*we need some space after the last character*/ + x_offset;
 	}
 	
 	Frame::Ptr screen(new Frame(text_screen_width, _height));
@@ -54,7 +56,7 @@ void FontRenderer::scroll_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, s
 		{
 			throw fullcircle::RenderException("Could not find all character representation");
 		}
-		screen->set_pixel(i*item->width(),0, item);
+		screen->set_pixel(x_offset + i*item->width(),y_offset, item);
 	}
 	if (scrollspeed_ms == 0)
 	{   // add the simple text (when there is no scrolling)
@@ -65,23 +67,21 @@ void FontRenderer::scroll_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, s
 		uint32_t timePerFrame = (sequence->fps() * scrollspeed_ms / 1000);
 		Frame::Ptr actual_screen_part(new Frame(_width, _height));
 		for (uint16_t i=0; i < text_screen_width - _width; i++) {
-			actual_screen_part->set_pixel_window(i,0,screen);
+			actual_screen_part->set_pixel_window(i, 0, screen);
 			Frame::Ptr copy(new Frame(actual_screen_part->width(), actual_screen_part->height()));
 			copy->set_pixel(0,0,actual_screen_part); // make a deep copy for the sequence
 			for (uint32_t time=0; time < timePerFrame; time++) {
 				sequence->add_frame(copy);
 			}
-			std::cout << "position is " << (i + 1)  << " is : " << std::endl;
-			actual_screen_part->dump_frame(std::cout);
 		}
 	}
 }
 
-void FontRenderer::scroll_text(Sequence::Ptr sequence, uint16_t x, uint16_t y, std::string text, 
+void FontRenderer::scroll_text(Sequence::Ptr sequence, uint16_t x_offset, uint16_t y_offset, std::string text, 
 							   uint16_t	scrollspeed_inms, RGB_t textColor)
 {
 	uint32_t startFrame=sequence->size();
-	scroll_text(sequence, x, y, text, scrollspeed_inms);
+	scroll_text(sequence, x_offset, y_offset, text, scrollspeed_inms);
 	uint32_t length=sequence->size();
 	for (; startFrame < length; startFrame++) {
 		sequence->get_frame(startFrame)->swap_color(COLOR_SET, textColor);
