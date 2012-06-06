@@ -53,6 +53,25 @@ BOOST_AUTO_TEST_CASE ( check_font ) {
 	fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(25,10,5));
 	fullcircle::FontRenderer::Ptr fr(new fullcircle::FontRenderer(10, 5));
 	fr->write_text(seq, 0, 0, "C3");
+		
+	seq->dump(std::cout);
+}
+
+BOOST_AUTO_TEST_CASE ( check_font_color ) {
+	fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(25,10,5));
+	fullcircle::FontRenderer::Ptr fr(new fullcircle::FontRenderer(10, 5));
+	fullcircle::RGB_t blue;
+	blue.red = blue.green = 0; blue.blue = 255;
+	fr->write_text(seq, 0, 0, "MA", blue);
+		
+	/*
+	 
+	 fullcircle::RGB_t setcolor0=seq->get_pixel(1,0);
+	 BOOST_REQUIRE(setcolor0.red == 252);
+	 BOOST_REQUIRE(setcolor0.green == 255);
+	 BOOST_REQUIRE(setcolor0.blue == 255);
+	 */
+	
 	seq->dump(std::cout);
 }
 
