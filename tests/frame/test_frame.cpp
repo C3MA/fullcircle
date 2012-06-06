@@ -76,4 +76,25 @@ BOOST_AUTO_TEST_CASE ( check_gradient ) {
 }
 
 
+
+BOOST_AUTO_TEST_CASE ( check_frame_add ) {
+	fullcircle::RGB_t color1, color2, pixel;
+	color1.blue = 255; color1.red = color1.green = 0;
+	fullcircle::Frame::Ptr frame(new fullcircle::Frame(10,5));
+	frame->fill_whole(color1);		
+	
+	color2.red = color2.blue = 0; color2.green = 255;
+	fullcircle::Frame::Ptr frame2(new fullcircle::Frame(10,5));
+	frame->fill_whole(color2);		
+	
+	fullcircle::Frame::Ptr sum = frame + frame2;
+	
+	// Check last pixel
+	pixel = sum->get_pixel(sum->width()-1, 0);
+	BOOST_CHECK_EQUAL (pixel.blue, 255);
+	BOOST_CHECK_EQUAL (pixel.green, 255);
+	BOOST_CHECK_EQUAL (pixel.red, 0);
+}
+
+
 //BOOST_AUTO_TEST_SUITE_END()

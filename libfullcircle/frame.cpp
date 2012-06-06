@@ -156,6 +156,24 @@ bool Frame::operator!= (Frame &rhs) {
   return !(*this == rhs);
 }
 
+Frame& Frame::operator+ (Frame& rhs) {
+	if ((rhs.width() != _width) || (rhs.height() != _height))
+		throw fullcircle::DataFormatException("Difference frame resolutions");
+	Frame::Ptr sum(new Frame(rhs.width(), rhs.height()));
+	RGB_t tmp, frame1c, frame2c;
+	for (uint16_t x=0; x < _width; ++x) {
+		for (uint16_t y=0; y < _height; ++y) {
+			frame1c = get_pixel(x, y);
+			frame2c = rhs.get_pixel(x, y);
+			tmp.red = frame1c.red + frame2c.red;
+			tmp.green = frame1c.green + frame2c.green;
+			tmp.blue = frame1c.blue + frame2c.blue;
+			sum->set_pixel(x, y, tmp);
+		}
+	}
+	return (*sum);
+}
+
 void Frame::fill_whole(const RGB_t& color) {
 	for (uint16_t x=0; x < _width; ++x) {
 		for (uint16_t y=0; y < _height; ++y) {
