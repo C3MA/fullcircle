@@ -64,14 +64,52 @@ BOOST_AUTO_TEST_CASE ( check_font_color ) {
 	blue.red = blue.green = 0; blue.blue = 255;
 	fr->write_text(seq, 0, 0, "MA", blue);
 		
-	/*
-	 
-	 fullcircle::RGB_t setcolor0=seq->get_pixel(1,0);
-	 BOOST_REQUIRE(setcolor0.red == 252);
-	 BOOST_REQUIRE(setcolor0.green == 255);
-	 BOOST_REQUIRE(setcolor0.blue == 255);
-	 */
-	
+	/* only check some parts of the generated text ... */
+	BOOST_CHECK_EQUAL(1, seq->size());
+	BOOST_CHECK_EQUAL(10, seq->get_frame(0)->width());
+	 /* vertical first line from the M */
+	 fullcircle::RGB_t setcolor0=seq->get_frame(0)->get_pixel(0,0);
+	 BOOST_CHECK_EQUAL(0, setcolor0.red);
+	 BOOST_CHECK_EQUAL(0, setcolor0.green);
+	 BOOST_CHECK_EQUAL(255, setcolor0.blue);
+	setcolor0=seq->get_frame(0)->get_pixel(0,1);
+	BOOST_CHECK_EQUAL(0, setcolor0.red);
+	BOOST_CHECK_EQUAL(0, setcolor0.green);
+	BOOST_CHECK_EQUAL(255, setcolor0.blue);
+	setcolor0=seq->get_frame(0)->get_pixel(0,2);
+	BOOST_CHECK_EQUAL(0, setcolor0.red);
+	BOOST_CHECK_EQUAL(0, setcolor0.green);
+	BOOST_CHECK_EQUAL(255, setcolor0.blue);
+	setcolor0=seq->get_frame(0)->get_pixel(0,3);
+	BOOST_CHECK_EQUAL(0, setcolor0.red);
+	BOOST_CHECK_EQUAL(0, setcolor0.green);
+	BOOST_CHECK_EQUAL(255, setcolor0.blue);
+	setcolor0=seq->get_frame(0)->get_pixel(0,4);
+	BOOST_CHECK_EQUAL(0, setcolor0.red);
+	BOOST_CHECK_EQUAL(0, setcolor0.green);
+	BOOST_CHECK_EQUAL(255, setcolor0.blue);
+	/* last vertical line from the A */
+	setcolor0=seq->get_frame(0)->get_pixel(9,0);
+	BOOST_CHECK_EQUAL(0, setcolor0.red);
+	BOOST_CHECK_EQUAL(0, setcolor0.green);
+	BOOST_CHECK_EQUAL(255, setcolor0.blue);
+	setcolor0=seq->get_frame(0)->get_pixel(9,1);
+	BOOST_CHECK_EQUAL(0, setcolor0.red);
+	BOOST_CHECK_EQUAL(0, setcolor0.green);
+	BOOST_CHECK_EQUAL(255, setcolor0.blue);
+	setcolor0=seq->get_frame(0)->get_pixel(9,2);
+	BOOST_CHECK_EQUAL(0, setcolor0.red);
+	BOOST_CHECK_EQUAL(0, setcolor0.green);
+	BOOST_CHECK_EQUAL(255, setcolor0.blue);
+	setcolor0=seq->get_frame(0)->get_pixel(9,3);
+	BOOST_CHECK_EQUAL(0, setcolor0.red);
+	BOOST_CHECK_EQUAL(0, setcolor0.green);
+	BOOST_CHECK_EQUAL(255, setcolor0.blue);
+	setcolor0=seq->get_frame(0)->get_pixel(9,4);
+	BOOST_CHECK_EQUAL(0, setcolor0.red);
+	BOOST_CHECK_EQUAL(0, setcolor0.green);
+	BOOST_CHECK_EQUAL(255, setcolor0.blue);
+		
 	seq->dump(std::cout);
 }
 
