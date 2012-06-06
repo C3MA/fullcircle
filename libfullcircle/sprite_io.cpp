@@ -7,6 +7,10 @@ using namespace fullcircle;
 Frame::Ptr SpriteIO::load(const std::string& filename) {
   //std::cout << "Attempting to load " << filename << std::endl;
   QImage* image=new QImage(filename.c_str());
+  if (image == NULL)
+  {
+	  throw fullcircle::RenderException("Could not load image");  
+  }
   //std::cout << "Found width: " << image->width()
   //  << ", height: " << image->height() << std::endl;
   Frame::Ptr retval(new Frame(image->width(), image->height()));

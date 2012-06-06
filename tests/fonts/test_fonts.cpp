@@ -52,14 +52,13 @@ BOOST_AUTO_TEST_CASE ( check_sanity ) {
 BOOST_AUTO_TEST_CASE ( check_font ) {
 	fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(25,10,5));
 	fullcircle::FontRenderer::Ptr fr(new fullcircle::FontRenderer(10, 5));
-	fr->load_font("font1.xbm"); // This file describes how to display each character
 	fr->write_text(seq, 0, 0, "C3");
+	seq->dump(std::cout);
 }
 
 BOOST_AUTO_TEST_CASE ( check_font_height_exception ) {
 	  try {
 		  fullcircle::FontRenderer::Ptr fr(new fullcircle::FontRenderer(10, 4));
-		  fr->load_font("font1.xbm");
 		  BOOST_FAIL("No Exception found, because the screen is not heigh enough");
 	  } catch (std::exception const & ex) {
 		  
@@ -69,9 +68,7 @@ BOOST_AUTO_TEST_CASE ( check_font_height_exception ) {
 BOOST_AUTO_TEST_CASE ( check_font_scrolling ) {
 	fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(25,10,5));
 	fullcircle::FontRenderer::Ptr fr(new fullcircle::FontRenderer(10, 5));
-	fr->load_font("font1.xbm");
-	fr->set_scrollspeed(500);
-	fr->write_text(seq, 0, 0, "C3MA");
+	fr->scroll_text(seq, 0, 0, "C3MA", 500);
 }
 
 //BOOST_AUTO_TEST_SUITE_END()
