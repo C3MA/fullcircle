@@ -186,7 +186,7 @@ int main (int argc, char* argv[]) {
       return 0;
     }
 
-	int type = 0;
+    int type = 0;
     if (vm.count("sequence") + vm.count("fullscreen") + vm.count("gradient") + vm.count("text") <= 0) {
       std::cerr << "You must specify a sequence file." << std::endl;
       return 1;

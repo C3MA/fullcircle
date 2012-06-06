@@ -53,7 +53,7 @@ int main (int argc, char* argv[]) {
     bfs::path sequence(sequencefile);
 
     QApplication app(argc, argv);
-    Q_INIT_RESOURCE(default);
+    Q_INIT_RESOURCE(sprites);
 
     try {
       std::cout << "Loading sequence from file " << sequence << std::endl;

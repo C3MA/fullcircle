@@ -1,0 +1,6 @@
+<RCC>
+  <qresource>
+    <file>sprites/space_invader_8x8.png</file>
+    <file>sprites/test_sprite_2x2.png</file>
+  </qresource>
+</RCC>

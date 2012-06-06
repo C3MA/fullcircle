@@ -13,7 +13,7 @@ include_directories(${CMAKE_SOURCE_DIR}
 file(GLOB fullcircle_src *.cpp *.hpp)
 set(fullcircle_hdr simulator_main_window.hpp)
 set(fullcircle_forms simulator.ui)
-set(fullcircle_resources default.qrc)
+set(fullcircle_resources sprites.qrc)
 QT4_WRAP_UI(fullcircle_hdr_forms ${fullcircle_forms})
 QT4_WRAP_CPP(fullcircle_hdr_moc ${fullcircle_hdr} OPTIONS -DBOOST_TT_HAS_OPERATOR_HPP_INCLUDED)
 QT4_ADD_RESOURCES(fullcircle_rcc_resources ${fullcircle_resources})
