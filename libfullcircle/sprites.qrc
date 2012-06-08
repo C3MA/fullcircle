@@ -3,8 +3,16 @@
     <file>sprites/space_invader_8x8.png</file>
     <file>sprites/test_sprite_2x2.png</file>
     <file>sprites/fonts/font1_5x5_A.png</file>
+    <file>sprites/fonts/font1_5x5_B.png</file>	
     <file>sprites/fonts/font1_5x5_C.png</file>
+    <file>sprites/fonts/font1_5x5_D.png</file>
     <file>sprites/fonts/font1_5x5_E.png</file>
+    <file>sprites/fonts/font1_5x5_F.png</file>
+    <file>sprites/fonts/font1_5x5_G.png</file>		
+    <file>sprites/fonts/font1_5x5_H.png</file>
+    <file>sprites/fonts/font1_5x5_I.png</file>
+    <file>sprites/fonts/font1_5x5_J.png</file>
+    <file>sprites/fonts/font1_5x5_K.png</file>				
     <file>sprites/fonts/font1_5x5_M.png</file>
     <file>sprites/fonts/font1_5x5_3.png</file>
   </qresource>
