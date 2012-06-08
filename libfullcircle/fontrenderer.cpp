@@ -10,7 +10,16 @@ FontRenderer::FontRenderer ( uint16_t width, uint16_t height)
   , _height(height)
 {
 	Q_INIT_RESOURCE(sprites);
+	// Set the default font size of five times five
+	_font_width = 5;
+	_font_height = 5;
 };
+
+void FontRenderer::setSize(uint16_t font_width, uint16_t font_height)
+{
+	_font_width = font_width;
+	_font_height = font_height;
+}
 
 void FontRenderer::write_text(Sequence::Ptr sequence, uint16_t x_offset, uint16_t y_offset, std::string text)
 {
@@ -92,7 +101,7 @@ Frame::Ptr FontRenderer::searchCharacter(char c)
 {
 	fullcircle::SpriteIO::Ptr sprite_io(new fullcircle::SpriteIO());
 	QString resource;
-	resource.sprintf(":/sprites/fonts/font1_5x5_%c.png", c);
+	resource.sprintf(":/sprites/fonts/font1_%dx%d_%c.png", _font_width, _font_height, c);
 	printf("Ressource for %c is %s\n", c, qPrintable( resource ));
 	return sprite_io->load(std::string(resource.toAscii()));
 }

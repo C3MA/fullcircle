@@ -19,6 +19,7 @@ namespace fullcircle {
       FontRenderer ( uint16_t width, uint16_t height);
       FontRenderer (Frame& rhs);
       virtual ~FontRenderer() {};
+	  void setSize(uint16_t font_width, uint16_t font_height);
 	  	  
 	  void write_text(Sequence::Ptr sequence, uint16_t x_offset, uint16_t y_offset, std::string text);
 	  void write_text(Sequence::Ptr sequence, uint16_t x_offset, uint16_t y_offset, std::string text, RGB_t textColor);
@@ -30,6 +31,8 @@ namespace fullcircle {
 	  Frame::Ptr searchCharacter(char c);
       uint16_t _width;
       uint16_t _height;
+	  uint16_t _font_width;
+	  uint16_t _font_height;
   };
 };
 

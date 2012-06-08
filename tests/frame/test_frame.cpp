@@ -78,6 +78,8 @@ BOOST_AUTO_TEST_CASE ( check_gradient ) {
 
 
 BOOST_AUTO_TEST_CASE ( check_frame_add ) {
+	BOOST_FAIL("this tests FAILS at COMPILING! The operator stuff is not my area (Ollo)");
+#if 0
 	fullcircle::RGB_t color1, color2, pixel;
 	color1.blue = 255; color1.red = color1.green = 0;
 	fullcircle::Frame::Ptr frame(new fullcircle::Frame(10,5));
@@ -97,6 +99,7 @@ BOOST_AUTO_TEST_CASE ( check_frame_add ) {
 	BOOST_CHECK_EQUAL (pixel.blue, 255);
 	BOOST_CHECK_EQUAL (pixel.green, 255);
 	BOOST_CHECK_EQUAL (pixel.red, 0);
+#endif
 }
 
 
