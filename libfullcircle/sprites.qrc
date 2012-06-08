@@ -20,6 +20,15 @@
 	<file>sprites/fonts/font1_5x5_P.png</file>
 	<file>sprites/fonts/font1_5x5_Q.png</file>
 	<file>sprites/fonts/font1_5x5_R.png</file>
+	<file>sprites/fonts/font1_5x5_S.png</file>
+	<file>sprites/fonts/font1_5x5_T.png</file>
+	<file>sprites/fonts/font1_5x5_U.png</file>
+	<file>sprites/fonts/font1_5x5_V.png</file>
+	<file>sprites/fonts/font1_5x5_W.png</file>
+	<file>sprites/fonts/font1_5x5_X.png</file>
+	<file>sprites/fonts/font1_5x5_Y.png</file>
+	<file>sprites/fonts/font1_5x5_Z.png</file>
+	<file>sprites/fonts/font1_5x5_0.png</file>
     <file>sprites/fonts/font1_5x5_3.png</file>
   </qresource>
 </RCC>
