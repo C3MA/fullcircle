@@ -87,10 +87,13 @@ BOOST_AUTO_TEST_CASE ( check_frame_add ) {
 	fullcircle::Frame::Ptr frame2(new fullcircle::Frame(10,5));
 	frame->fill_whole(color2);		
 	
-	fullcircle::Frame::Ptr sum = frame + frame2;
+	fullcircle::Frame& f = new fullcircle::Frame(10,5);
+	fullcircle::Frame& f2 = new fullcircle::Frame(10,5);
+	
+	fullcircle::Frame sum = f + f2;
 	
 	// Check last pixel
-	pixel = sum->get_pixel(sum->width()-1, 0);
+	pixel = sum.get_pixel(sum.width()-1, 0);
 	BOOST_CHECK_EQUAL (pixel.blue, 255);
 	BOOST_CHECK_EQUAL (pixel.green, 255);
 	BOOST_CHECK_EQUAL (pixel.red, 0);

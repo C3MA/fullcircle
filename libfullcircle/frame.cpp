@@ -156,8 +156,8 @@ bool Frame::operator!= (Frame &rhs) {
   return !(*this == rhs);
 }
 
-Frame& Frame::operator+ (Frame& rhs) {
-	if ((rhs.width() != _width) || (rhs.height() != _height))
+const Frame& Frame::operator+(const Frame& rhs) {
+/*	if ((rhs.width() != this._width) || (rhs.height() != this._height))
 		throw fullcircle::DataFormatException("Difference frame resolutions");
 	Frame::Ptr sum(new Frame(rhs.width(), rhs.height()));
 	RGB_t tmp, frame1c, frame2c;
@@ -171,7 +171,7 @@ Frame& Frame::operator+ (Frame& rhs) {
 			sum->set_pixel(x, y, tmp);
 		}
 	}
-	return (*sum);
+	return (*sum);*/
 }
 
 void Frame::fill_whole(const RGB_t& color) {

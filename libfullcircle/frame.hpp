@@ -61,7 +61,7 @@ namespace fullcircle {
       Frame& operator= (const Frame& rhs);
       bool operator==(Frame &rhs);
       bool operator!=(Frame &rhs);
-	  Frame& operator+ (Frame& rhs);
+	  const Frame& operator+(const Frame& rhs);
 
     private:
       inline void check_coordinates(
