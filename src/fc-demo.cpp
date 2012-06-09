@@ -164,6 +164,9 @@ fullcircle::Sequence::Ptr mk_demo_text() {
 	fullcircle::FontRenderer::Ptr fr(new fullcircle::FontRenderer(8, 8));
 	fr->scroll_text(seq, 1, 2, "C3MA", 500 /* time in milliseconds */, color);
 	
+	color.red = color.green = color.blue = 0; color.red = 255; 
+	fr->scroll_text(seq, 1, 2, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", 300 /* time in milliseconds */, color);
+	
 	return seq;
 }
 
