@@ -29,6 +29,14 @@
 	<file>sprites/fonts/font1_5x5_Y.png</file>
 	<file>sprites/fonts/font1_5x5_Z.png</file>
 	<file>sprites/fonts/font1_5x5_0.png</file>
+	<file>sprites/fonts/font1_5x5_1.png</file>
+	<file>sprites/fonts/font1_5x5_2.png</file>
     <file>sprites/fonts/font1_5x5_3.png</file>
+	<file>sprites/fonts/font1_5x5_4.png</file>
+	<file>sprites/fonts/font1_5x5_5.png</file>
+	<file>sprites/fonts/font1_5x5_6.png</file>
+	<file>sprites/fonts/font1_5x5_7.png</file>
+	<file>sprites/fonts/font1_5x5_8.png</file>
+	<file>sprites/fonts/font1_5x5_9.png</file>
   </qresource>
 </RCC>
