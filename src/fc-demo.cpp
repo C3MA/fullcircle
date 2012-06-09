@@ -166,6 +166,8 @@ fullcircle::Sequence::Ptr mk_demo_text() {
 	
 	color.red = color.green = color.blue = 0; color.red = 255; 
 	fr->scroll_text(seq, 1, 2, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", 300 /* time in milliseconds */, color);
+	color.red = color.green = color.blue = 0; color.green = 255; 
+	fr->scroll_text(seq, 1, 2, "0123456789 10", 300 /* time in milliseconds */, color);
 	
 	return seq;
 }

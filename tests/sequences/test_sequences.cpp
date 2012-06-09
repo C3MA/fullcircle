@@ -225,4 +225,29 @@ BOOST_AUTO_TEST_CASE ( check_sequence_storage ) {
 
   google::protobuf::ShutdownProtobufLibrary();
 }
+
+BOOST_AUTO_TEST_CASE ( check_sequence_trim ) {
+	init_color();
+	std::cout << "### Testing trim the end of a sequence." << std::endl;
+	fullcircle::RGB_t white;
+	white.red = white.green = white.blue = 255;
+	
+	fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(10,4,4));
+	fullcircle::Frame::Ptr f1(new fullcircle::Frame(4,4));
+	fullcircle::Frame::Ptr f_empty(new fullcircle::Frame(4,4));
+	fullcircle::Frame::Ptr f_empty2(new fullcircle::Frame(4,4));
+	f1->set_pixel(0, 0, 255, 255, 255);
+	f1->set_pixel(1, 0, white);
+	f1->set_pixel(2, 0, red);
+	seq->add_frame(f1);
+	seq->add_frame(f_empty);
+	seq->add_frame(f_empty);
+	seq->add_frame(f_empty2);
+	seq->add_frame(f_empty2);
+	seq->dump(std::cout);
+	seq->trim_end();
+    BOOST_CHECK_EQUAL (1, seq->size());
+	seq->dump(std::cout);	
+}
+
 //BOOST_AUTO_TEST_SUITE_END()

@@ -48,7 +48,6 @@ void FontRenderer::scroll_text(Sequence::Ptr sequence, uint16_t x_offset, uint16
 		
 	if (scrollspeed_ms > 0)
 	{
-		// take the width of the first item (the same for all, because we have monospace)
 		Frame::Ptr item = searchCharacter('M'); // this is the widest character
 		if (item->width() == 0 && item->height() == 0)
 			throw fullcircle::RenderException("We have big problems!");
@@ -85,6 +84,7 @@ void FontRenderer::scroll_text(Sequence::Ptr sequence, uint16_t x_offset, uint16
 				sequence->add_frame(copy);
 			}
 		}
+		sequence->trim_end();
 	}
 }
 
@@ -103,7 +103,14 @@ Frame::Ptr FontRenderer::searchCharacter(char c)
 {
 	fullcircle::SpriteIO::Ptr sprite_io(new fullcircle::SpriteIO());
 	QString resource;
-	resource.sprintf(":/sprites/fonts/font1_%dx%d_%c.png", _font_width, _font_height, c);
-	printf("Ressource for %c is %s\n", c, qPrintable( resource ));
+	switch (c) {
+		case ' ':
+			resource.sprintf(":/sprites/fonts/font1_%dx%d_SPACE.png", _font_width, _font_height);
+			break;
+		default: // all normal characters
+			resource.sprintf(":/sprites/fonts/font1_%dx%d_%c.png", _font_width, _font_height, c);
+			break;
+	}
+//	printf("Ressource for %c is %s\n", c, qPrintable( resource ));
 	return sprite_io->load(std::string(resource.toAscii()));
 }

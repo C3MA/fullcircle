@@ -123,6 +123,18 @@ bool Sequence::operator== (Sequence &rhs) {
   return true;
 }
 
+void Sequence::trim_end()
+{
+	uint32_t length = size(); // use this as endmark (we have uint -> always > 0)
+	for (uint32_t frameID=length - 1; frameID < length; frameID--) {
+		fullcircle::Frame::Ptr item = get_frame(frameID);
+		if (item->is_black())
+		{
+			_frames.erase(_frames.begin() + frameID);
+		}
+	}
+}
+
 bool Sequence::operator!= (Sequence &rhs) {
   return !(*this == rhs);
 }

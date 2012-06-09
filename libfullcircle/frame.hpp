@@ -57,7 +57,7 @@ namespace fullcircle {
 	  void fill_gradient_horizontal(const RGB_t& from, const RGB_t& to);
 	  void fill_gradient_vertical(const RGB_t& from, const RGB_t& to);
 	  void swap_color(const RGB_t& from, const RGB_t& to);
-
+	  bool is_black();
       Frame& operator= (const Frame& rhs);
       bool operator==(Frame &rhs);
       bool operator!=(Frame &rhs);

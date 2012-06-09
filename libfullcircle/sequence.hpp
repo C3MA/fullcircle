@@ -26,6 +26,7 @@ namespace fullcircle {
       const std::string& generator_name() const { return _generator_name; };
       const std::string& generator_version() const { return _generator_version; };
       uint32_t size() const { return _frames.size(); };
+	  void trim_end();
       void dump(std::ostream& os);
       void save(std::ostream& os,
           const std::string& generator,

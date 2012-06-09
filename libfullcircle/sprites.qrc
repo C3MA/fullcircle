@@ -38,5 +38,6 @@
 	<file>sprites/fonts/font1_5x5_7.png</file>
 	<file>sprites/fonts/font1_5x5_8.png</file>
 	<file>sprites/fonts/font1_5x5_9.png</file>
+	<file>sprites/fonts/font1_5x5_SPACE.png</file>
   </qresource>
 </RCC>
