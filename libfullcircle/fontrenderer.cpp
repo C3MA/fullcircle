@@ -49,7 +49,7 @@ void FontRenderer::scroll_text(Sequence::Ptr sequence, uint16_t x_offset, uint16
 	if (scrollspeed_ms > 0)
 	{
 		// take the width of the first item (the same for all, because we have monospace)
-		Frame::Ptr item = searchCharacter(text[0]);
+		Frame::Ptr item = searchCharacter('M'); // this is the widest character
 		if (item->width() == 0 && item->height() == 0)
 			throw fullcircle::RenderException("We have big problems!");
 		text_screen_width = text.size() * (item->width() + 1) /*we need some space after the last character*/ + x_offset;
@@ -59,13 +59,15 @@ void FontRenderer::scroll_text(Sequence::Ptr sequence, uint16_t x_offset, uint16
 	screen->fill_whole(COLOR_TRANSPARENT);	
 	std::cout << "We want to print: " << text << std::endl;
 	
+	int xcount = 0;
 	for (uint16_t i=0; i < text.size(); i++) {
 		Frame::Ptr item = searchCharacter(text[i]);
 		if (item == 0)
 		{
 			throw fullcircle::RenderException("Could not find all character representation");
 		}
-		screen->set_pixel(x_offset + i*item->width(),y_offset, item);
+		screen->set_pixel(x_offset + xcount, y_offset, item);
+		xcount += item->width();
 	}
 	if (scrollspeed_ms == 0)
 	{   // add the simple text (when there is no scrolling)
