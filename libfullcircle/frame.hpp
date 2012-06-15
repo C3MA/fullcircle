@@ -46,30 +46,30 @@ namespace fullcircle {
 							const uint16_t& y,
 							Frame::Ptr gigantic_frame
 							);
-      const RGB_t get_pixel(
-          const uint16_t& x,
-          const uint16_t& y
+    const RGB_t get_pixel(
+        const uint16_t& x,
+        const uint16_t& y
         );
-      const uint16_t width() { return _width; };
-      const uint16_t height() { return _height; };
-      void dump_frame(std::ostream& os);
-	  void fill_whole(const RGB_t& color);
-	  void fill_gradient_horizontal(const RGB_t& from, const RGB_t& to);
-	  void fill_gradient_vertical(const RGB_t& from, const RGB_t& to);
-	  void swap_color(const RGB_t& from, const RGB_t& to);
+    const uint16_t width() { return _width; };
+    const uint16_t height() { return _height; };
+    void dump_frame(std::ostream& os);
+    void fill_whole(const RGB_t& color);
+    void fill_gradient_horizontal(const RGB_t& from, const RGB_t& to);
+    void fill_gradient_vertical(const RGB_t& from, const RGB_t& to);
+    void swap_color(const RGB_t& from, const RGB_t& to);
 
-      Frame& operator= (const Frame& rhs);
-      bool operator==(Frame &rhs);
-      bool operator!=(Frame &rhs);
-	  const Frame& operator+(const Frame& rhs);
+    Frame& operator= (const Frame& rhs);
+    bool operator==(Frame &rhs);
+    bool operator!=(Frame &rhs);
+    Frame::Ptr operator+(Frame::Ptr rhs);
 
     private:
-      inline void check_coordinates(
-          const uint16_t& x,
-          const uint16_t& y);
-      uint16_t _width;
-      uint16_t _height;
-      frame_array _pixels;
+    inline void check_coordinates(
+        const uint16_t& x,
+        const uint16_t& y);
+    uint16_t _width;
+    uint16_t _height;
+    frame_array _pixels;
   };
 };
 
