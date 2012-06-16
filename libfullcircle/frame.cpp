@@ -169,28 +169,42 @@ bool Frame::operator!= (Frame &rhs) {
   return !(*this == rhs);
 }
 
-const Frame& Frame::operator+(const Frame& rhs) {
-/*	if ((rhs.width() != this._width) || (rhs.height() != this._height))
-		throw fullcircle::DataFormatException("Difference frame resolutions");
-	Frame::Ptr sum(new Frame(rhs.width(), rhs.height()));
-	RGB_t tmp, frame1c, frame2c;
-	for (uint16_t x=0; x < _width; ++x) {
-		for (uint16_t y=0; y < _height; ++y) {
-			frame1c = get_pixel(x, y);
-			frame2c = rhs.get_pixel(x, y);
-			tmp.red = frame1c.red + frame2c.red;
-			tmp.green = frame1c.green + frame2c.green;
-			tmp.blue = frame1c.blue + frame2c.blue;
-			sum->set_pixel(x, y, tmp);
+Frame::Ptr Frame::operator+(Frame::Ptr rhs) {
+	if ((rhs->width() != width()) || (rhs->height() != height()))
+		throw fullcircle::DataFormatException("Different frame resolutions");
+	Frame::Ptr sum(new Frame(width(), height()));
+	RGB_t c_lhs, c_rhs;
+	for (uint16_t x=0; x < width(); ++x) {
+		for (uint16_t y=0; y < height(); ++y) {
+			c_lhs = get_pixel(x, y);
+			c_rhs = rhs->get_pixel(x, y);
+/*      std::cout << "lhs: r: " << c_lhs.red
+        << " g: " << c_lhs.green
+        << " b: " << c_lhs.blue
+        << std::endl;
+      std::cout << "rhs: r: " << c_rhs.red
+        << " g: " << c_rhs.green
+        << " b: " << c_rhs.blue
+        << std::endl;*/
+      // An uint8_t overflow can occur. Make sure we're safe.
+      uint16_t r, g, b = 0;
+			r = c_lhs.red + c_rhs.red;
+			g = c_lhs.green + c_rhs.green;
+			b = c_lhs.blue + c_rhs.blue;
+      if (r>255) r=255;
+      if (g>255) g=255;
+      if (b>255) b=255;
+/*      std::cout << "r: " << r << " g: " << g << " b: " << b << std::endl; */
+			sum->set_pixel(x, y, (uint8_t) r, (uint8_t) g, (uint8_t)b);
 		}
 	}
-	return (*sum);*/
+	return sum;
 }
 
 void Frame::fill_whole(const RGB_t& color) {
-	for (uint16_t x=0; x < _width; ++x) {
-		for (uint16_t y=0; y < _height; ++y) {
-			_pixels[x][y] = color;
+	for (uint16_t x=0; x < width(); ++x) {
+		for (uint16_t y=0; y < height(); ++y) {
+			set_pixel(x, y, color);
 		}
 	}
 }

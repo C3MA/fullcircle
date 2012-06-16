@@ -78,29 +78,81 @@ BOOST_AUTO_TEST_CASE ( check_gradient ) {
 
 
 BOOST_AUTO_TEST_CASE ( check_frame_add ) {
-	BOOST_FAIL("this tests FAILS at COMPILING! The operator stuff is not my area (Ollo)");
-#if 0
+  std::cout << "### testing PLUS operator for frames" << std::endl;
 	fullcircle::RGB_t color1, color2, pixel;
 	color1.blue = 255; color1.red = color1.green = 0;
 	fullcircle::Frame::Ptr frame(new fullcircle::Frame(10,5));
 	frame->fill_whole(color1);		
+  std::cout << "First frame:" << std::endl;
+  frame->dump_frame(std::cout);
 	
-	color2.red = color2.blue = 0; color2.green = 255;
+	color2.blue = color2.red = 0; color2.green = 255;
 	fullcircle::Frame::Ptr frame2(new fullcircle::Frame(10,5));
-	frame->fill_whole(color2);		
+	frame2->fill_whole(color2);		
+  std::cout << "Second frame:" << std::endl;
+  frame2->dump_frame(std::cout);
 	
-	fullcircle::Frame& f = new fullcircle::Frame(10,5);
-	fullcircle::Frame& f2 = new fullcircle::Frame(10,5);
-	
-	fullcircle::Frame sum = f + f2;
+	fullcircle::Frame::Ptr sum = (*frame) + frame2;
+  std::cout << "Sum of two frames:" << std::endl;
+  sum->dump_frame(std::cout);
 	
 	// Check last pixel
-	pixel = sum.get_pixel(sum.width()-1, 0);
-	BOOST_CHECK_EQUAL (pixel.blue, 255);
-	BOOST_CHECK_EQUAL (pixel.green, 255);
+	pixel = sum->get_pixel(0, 0);
 	BOOST_CHECK_EQUAL (pixel.red, 0);
-#endif
+	BOOST_CHECK_EQUAL (pixel.green, 255);
+	BOOST_CHECK_EQUAL (pixel.blue, 255);
 }
 
+BOOST_AUTO_TEST_CASE ( check_frame_add_white ) {
+	std::cout << "### testing PLUS operator for frames (white pages)" << std::endl;
+	fullcircle::RGB_t color1, color2, pixel;
+	color1.blue = color1.red = color1.green = 0;
+	fullcircle::Frame::Ptr frame(new fullcircle::Frame(10,5));
+	frame->fill_whole(color1);		
+	std::cout << "First frame:" << std::endl;
+	frame->dump_frame(std::cout);
+	
+	color2.blue = color2.red = color2.green = 0;
+	fullcircle::Frame::Ptr frame2(new fullcircle::Frame(10,5));
+	frame2->fill_whole(color2);		
+	std::cout << "Second frame:" << std::endl;
+	frame2->dump_frame(std::cout);
+	
+	fullcircle::Frame::Ptr sum = (*frame) + frame2;
+	std::cout << "Sum of two frames:" << std::endl;
+	sum->dump_frame(std::cout);
+	
+	// Check last pixel
+	pixel = sum->get_pixel(0, 0);
+	BOOST_CHECK_EQUAL (pixel.red, 0);
+	BOOST_CHECK_EQUAL (pixel.green, 0);
+	BOOST_CHECK_EQUAL (pixel.blue, 0);
+}
+
+BOOST_AUTO_TEST_CASE ( check_frame_add_overflow ) {
+	std::cout << "### testing PLUS operator for frames (overflow)" << std::endl;
+	fullcircle::RGB_t color1, color2, pixel;
+	color1.blue = color1.red = 128; color1.green = 160;
+	fullcircle::Frame::Ptr frame(new fullcircle::Frame(10,5));
+	frame->fill_whole(color1);		
+	std::cout << "First frame:" << std::endl;
+	frame->dump_frame(std::cout);
+	
+	color2.blue = color2.red = color2.green = 120;
+	fullcircle::Frame::Ptr frame2(new fullcircle::Frame(10,5));
+	frame2->fill_whole(color2);		
+	std::cout << "Second frame:" << std::endl;
+	frame2->dump_frame(std::cout);
+	
+	fullcircle::Frame::Ptr sum = (*frame) + frame2;
+	std::cout << "Sum of two frames:" << std::endl;
+	sum->dump_frame(std::cout);
+	
+	// Check last pixel
+	pixel = sum->get_pixel(0, 0);
+	BOOST_CHECK_EQUAL (pixel.red, 248);
+	BOOST_CHECK_EQUAL (pixel.green, 255);
+	BOOST_CHECK_EQUAL (pixel.blue, 248);
+}
 
 //BOOST_AUTO_TEST_SUITE_END()
