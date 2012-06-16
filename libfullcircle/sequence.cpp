@@ -171,8 +171,8 @@ Sequence::Ptr Sequence::add(uint32_t frame_offset, Sequence::Ptr rhs)
 	}
 	
 	// now create the overlay of the two sequences
-	for (uint32_t frameID=frame_offset; frameID < rhs->size(); ++frameID) {
-		fullcircle::Frame::Ptr other = rhs->get_frame(frameID);
+	for (uint32_t frameID=frame_offset; (frameID - frame_offset) < rhs->size(); ++frameID) {
+		fullcircle::Frame::Ptr other = rhs->get_frame(frameID - frame_offset);
 		if (frameID < size()) {
 			fullcircle::Frame::Ptr local = get_frame(frameID);
 			fullcircle::Frame::Ptr sum = (*local) + other;
