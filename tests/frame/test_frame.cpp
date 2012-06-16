@@ -88,7 +88,7 @@ BOOST_AUTO_TEST_CASE ( check_frame_add ) {
 	
 	color2.blue = color2.red = 0; color2.green = 255;
 	fullcircle::Frame::Ptr frame2(new fullcircle::Frame(10,5));
-	frame->fill_whole(color2);		
+	frame2->fill_whole(color2);		
   std::cout << "Second frame:" << std::endl;
   frame2->dump_frame(std::cout);
 	
@@ -98,9 +98,9 @@ BOOST_AUTO_TEST_CASE ( check_frame_add ) {
 	
 	// Check last pixel
 	pixel = sum->get_pixel(0, 0);
-	BOOST_CHECK_EQUAL (pixel.blue, 255);
-	BOOST_CHECK_EQUAL (pixel.green, 255);
 	BOOST_CHECK_EQUAL (pixel.red, 0);
+	BOOST_CHECK_EQUAL (pixel.green, 255);
+	BOOST_CHECK_EQUAL (pixel.blue, 255);
 }
 
 
