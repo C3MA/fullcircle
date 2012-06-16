@@ -165,14 +165,14 @@ Frame::Ptr Frame::operator+(Frame::Ptr rhs) {
 		for (uint16_t y=0; y < height(); ++y) {
 			c_lhs = get_pixel(x, y);
 			c_rhs = rhs->get_pixel(x, y);
-      std::cout << "lhs: r: " << c_lhs.red
+/*      std::cout << "lhs: r: " << c_lhs.red
         << " g: " << c_lhs.green
         << " b: " << c_lhs.blue
         << std::endl;
       std::cout << "rhs: r: " << c_rhs.red
         << " g: " << c_rhs.green
         << " b: " << c_rhs.blue
-        << std::endl;
+        << std::endl;*/
       // An uint8_t overflow can occur. Make sure we're safe.
       uint16_t r, g, b = 0;
 			r = c_lhs.red + c_rhs.red;
@@ -181,7 +181,7 @@ Frame::Ptr Frame::operator+(Frame::Ptr rhs) {
       if (r>255) r=255;
       if (g>255) g=255;
       if (b>255) b=255;
-      std::cout << "r: " << r << " g: " << g << " b: " << b << std::endl;
+/*      std::cout << "r: " << r << " g: " << g << " b: " << b << std::endl; */
 			sum->set_pixel(x, y, (uint8_t) r, (uint8_t) g, (uint8_t)b);
 		}
 	}
