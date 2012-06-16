@@ -253,26 +253,26 @@ BOOST_AUTO_TEST_CASE ( check_sequence_trim ) {
 BOOST_AUTO_TEST_CASE ( check_sequence_add ) {
 	init_color();
 	std::cout << "################## Testing the addition of two sequences." << std::endl;
-	fullcircle::RGB_t white, pixel;
-	white.red = white.green = white.blue = 255;
+	fullcircle::RGB_t color1, pixel;
+	color1.red = color1.green = color1.blue = 255;
 	
 	fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(10,4,4));
 	fullcircle::Frame::Ptr f1(new fullcircle::Frame(4,4));
 	fullcircle::Frame::Ptr f_empty(new fullcircle::Frame(4,4));
-	f1->fill_whole(white);
+	f1->fill_whole(color1);
 	seq->add_frame(f1);
 	seq->add_frame(f_empty);
 	seq->add_frame(f_empty);
-	seq->dump(std::cout);
+	//seq->dump(std::cout);
 	
 	fullcircle::Sequence::Ptr seq2(new fullcircle::Sequence(10,4,4));
     fullcircle::Frame::Ptr f2(new fullcircle::Frame(4,4));
 	fullcircle::Frame::Ptr f_empty2(new fullcircle::Frame(4,4));
-	f2->fill_whole(white);
+	f2->fill_whole(color1);
 	seq2->add_frame(f_empty2);
 	seq2->add_frame(f2);
 	seq2->add_frame(f_empty2);
-	seq2->dump(std::cout);
+	//seq2->dump(std::cout);
 	
 	fullcircle::Sequence::Ptr sum = (*seq) + seq2;
 	
@@ -289,8 +289,134 @@ BOOST_AUTO_TEST_CASE ( check_sequence_add ) {
 	BOOST_CHECK_EQUAL (pixel.red, 0);
 	BOOST_CHECK_EQUAL (pixel.green, 0);
 	BOOST_CHECK_EQUAL (pixel.blue, 0);	
-	std::cout << "####### The sum is the following:" << std::endl;
-	seq->dump(std::cout);	
+	//std::cout << "####### The sum is the following:" << std::endl;
+	//sum->dump(std::cout);	
+}
+
+BOOST_AUTO_TEST_CASE ( check_sequence_add_overflow ) {
+	init_color();
+	std::cout << "################## Testing the addition of two sequences (with overflow in the first frame)." << std::endl;
+	fullcircle::RGB_t color1, pixel;
+	color1.red = color1.green = color1.blue = 160;
+	
+	fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(10,4,4));
+	fullcircle::Frame::Ptr f1(new fullcircle::Frame(4,4));
+	fullcircle::Frame::Ptr f_empty(new fullcircle::Frame(4,4));
+	f1->fill_whole(color1);
+	seq->add_frame(f1);
+	seq->add_frame(f_empty);
+	seq->add_frame(f1);
+	//seq->dump(std::cout);
+	
+	fullcircle::Sequence::Ptr seq2(new fullcircle::Sequence(10,4,4));
+    fullcircle::Frame::Ptr f2(new fullcircle::Frame(4,4));
+	fullcircle::Frame::Ptr f_empty2(new fullcircle::Frame(4,4));
+	f2->fill_whole(color1);
+	seq2->add_frame(f2);
+	seq2->add_frame(f2);
+	seq2->add_frame(f_empty2);
+	//seq2->dump(std::cout);
+	
+	fullcircle::Sequence::Ptr sum = (*seq) + seq2;
+	
+    BOOST_CHECK_EQUAL (3, sum->size());
+	pixel = sum->get_frame(0)->get_pixel(0, 0); // fetch the first pixel from the first frame
+	BOOST_CHECK_EQUAL (pixel.red, 255);
+	BOOST_CHECK_EQUAL (pixel.green, 255);
+	BOOST_CHECK_EQUAL (pixel.blue, 255);
+	pixel = sum->get_frame(1)->get_pixel(0, 0); // fetch the first pixel from the second frame
+	BOOST_CHECK_EQUAL (pixel.red, 160);
+	BOOST_CHECK_EQUAL (pixel.green, 160);
+	BOOST_CHECK_EQUAL (pixel.blue, 160);
+	pixel = sum->get_frame(2)->get_pixel(0, 0); // fetch the first pixel from the third frame
+	BOOST_CHECK_EQUAL (pixel.red, 160);
+	BOOST_CHECK_EQUAL (pixel.green, 160);
+	BOOST_CHECK_EQUAL (pixel.blue, 160);	
+	//std::cout << "####### The sum is the following:" << std::endl;
+	//sum->dump(std::cout);	
+}
+
+BOOST_AUTO_TEST_CASE ( check_sequence_add_different_length ) {
+	init_color();
+	std::cout << "################## Testing the addition of two sequences (with different lengths)." << std::endl;
+	fullcircle::RGB_t color1, pixel;
+	color1.red = color1.green = color1.blue = 160;
+	
+	fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(10,4,4));
+	fullcircle::Frame::Ptr f1(new fullcircle::Frame(4,4));
+	fullcircle::Frame::Ptr f_empty(new fullcircle::Frame(4,4));
+	f1->fill_whole(color1);
+	seq->add_frame(f1);
+	seq->add_frame(f_empty);
+	seq->add_frame(f1);
+	//seq->dump(std::cout);
+	
+	fullcircle::Sequence::Ptr seq2(new fullcircle::Sequence(10,4,4));
+    fullcircle::Frame::Ptr f2(new fullcircle::Frame(4,4));
+	f2->fill_whole(color1);
+	seq2->add_frame(f2);
+	seq2->add_frame(f2);
+	//seq2->dump(std::cout);
+	
+	fullcircle::Sequence::Ptr sum = (*seq) + seq2;
+	
+    BOOST_CHECK_EQUAL (3, sum->size());
+	pixel = sum->get_frame(0)->get_pixel(0, 0); // fetch the first pixel from the first frame
+	BOOST_CHECK_EQUAL (pixel.red, 255);
+	BOOST_CHECK_EQUAL (pixel.green, 255);
+	BOOST_CHECK_EQUAL (pixel.blue, 255);
+	pixel = sum->get_frame(1)->get_pixel(0, 0); // fetch the first pixel from the second frame
+	BOOST_CHECK_EQUAL (pixel.red, 160);
+	BOOST_CHECK_EQUAL (pixel.green, 160);
+	BOOST_CHECK_EQUAL (pixel.blue, 160);
+	pixel = sum->get_frame(2)->get_pixel(0, 0); // fetch the first pixel from the third frame
+	BOOST_CHECK_EQUAL (pixel.red, 160);
+	BOOST_CHECK_EQUAL (pixel.green, 160);
+	BOOST_CHECK_EQUAL (pixel.blue, 160);	
+	//std::cout << "####### The sum is the following:" << std::endl;
+	//sum->dump(std::cout);	
+}
+
+BOOST_AUTO_TEST_CASE ( check_sequence_add_different_length2 ) {
+	init_color();
+	std::cout << "################## Testing the addition of two sequences (with different length of frames, second variation)." << std::endl;
+	fullcircle::RGB_t color1, pixel;
+	color1.red = color1.green = color1.blue = 160;
+	
+	fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(10,4,4));
+	fullcircle::Frame::Ptr f1(new fullcircle::Frame(4,4));
+	fullcircle::Frame::Ptr f_empty(new fullcircle::Frame(4,4));
+	f1->fill_whole(color1);
+	seq->add_frame(f1);
+	seq->add_frame(f_empty);
+	//seq->dump(std::cout);
+	
+	fullcircle::Sequence::Ptr seq2(new fullcircle::Sequence(10,4,4));
+    fullcircle::Frame::Ptr f2(new fullcircle::Frame(4,4));
+	fullcircle::Frame::Ptr f_empty2(new fullcircle::Frame(4,4));
+	f2->fill_whole(color1);
+	seq2->add_frame(f2);
+	seq2->add_frame(f2);
+	seq2->add_frame(f_empty2);
+	//seq2->dump(std::cout);
+	
+	fullcircle::Sequence::Ptr sum = (*seq) + seq2;
+	
+    BOOST_CHECK_EQUAL (3, sum->size());
+	pixel = sum->get_frame(0)->get_pixel(0, 0); // fetch the first pixel from the first frame
+	BOOST_CHECK_EQUAL (pixel.red, 255);
+	BOOST_CHECK_EQUAL (pixel.green, 255);
+	BOOST_CHECK_EQUAL (pixel.blue, 255);
+	pixel = sum->get_frame(1)->get_pixel(0, 0); // fetch the first pixel from the second frame
+	BOOST_CHECK_EQUAL (pixel.red, 160);
+	BOOST_CHECK_EQUAL (pixel.green, 160);
+	BOOST_CHECK_EQUAL (pixel.blue, 160);
+	pixel = sum->get_frame(2)->get_pixel(0, 0); // fetch the first pixel from the third frame
+	BOOST_CHECK_EQUAL (pixel.red, 0);
+	BOOST_CHECK_EQUAL (pixel.green, 0);
+	BOOST_CHECK_EQUAL (pixel.blue, 0);	
+	//std::cout << "####### The sum is the following:" << std::endl;
+	//sum->dump(std::cout);	
 }
 
 //BOOST_AUTO_TEST_SUITE_END()

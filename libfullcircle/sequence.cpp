@@ -172,13 +172,14 @@ Sequence::Ptr Sequence::operator+(Sequence::Ptr rhs) {
 			std::cout << "addition of frames " << frameID << std::endl;
 		} else {
 			retval->add_frame(other);
-			std::cout << "added of frames " << frameID << std::endl;
+			std::cout << "append of frames " << frameID << std::endl;
 		}
 	}
 	// add the possible rest of local frames
 	for (uint32_t frameID=rhs->size(); frameID < size(); ++frameID) {
 		fullcircle::Frame::Ptr local = get_frame(frameID);
 		retval->add_frame(local);
+		std::cout << "append rest of frames " << frameID << std::endl;
 	}
 	
 	return retval;
