@@ -250,4 +250,33 @@ BOOST_AUTO_TEST_CASE ( check_sequence_trim ) {
 	seq->dump(std::cout);	
 }
 
+BOOST_AUTO_TEST_CASE ( check_sequence_add ) {
+	init_color();
+	std::cout << "### Testing the addition of two sequences." << std::endl;
+	fullcircle::RGB_t white;
+	white.red = white.green = white.blue = 255;
+	
+	fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(10,4,4));
+	fullcircle::Frame::Ptr f1(new fullcircle::Frame(4,4));
+	fullcircle::Frame::Ptr f_empty(new fullcircle::Frame(4,4));
+	f1->fill_whole(white);
+	seq->add_frame(f1);
+	seq->add_frame(f_empty);
+	seq->add_frame(f_empty);
+	seq->dump(std::cout);
+	
+	fullcircle::Sequence::Ptr seq2(new fullcircle::Sequence(10,4,4));
+    fullcircle::Frame::Ptr f2(new fullcircle::Frame(4,4));
+	f2->fill_whole(white);
+	seq2->add_frame(f_empty);
+	seq2->add_frame(f2);
+	seq2->add_frame(f_empty);
+	seq2->dump(std::cout);
+	
+	fullcircle::Sequence::Ptr sum = (*seq) + seq2;
+	
+    BOOST_CHECK_EQUAL (3, sum->size());
+	seq->dump(std::cout);	
+}
+
 //BOOST_AUTO_TEST_SUITE_END()

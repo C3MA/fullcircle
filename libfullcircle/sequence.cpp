@@ -142,7 +142,7 @@ bool Sequence::operator!= (Sequence &rhs) {
 
 Sequence::Ptr Sequence::operator<< (Sequence::Ptr rhs) {
   if (rhs->fps() != fps())
-    throw DataFormatException("Sequence FPS mismatch - cannot add frame.");
+    throw DataFormatException("Sequence FPS mismatch - cannot append frame.");
   Sequence::Ptr retval(new Sequence(
         _fps, 
         _width, 
@@ -155,4 +155,25 @@ Sequence::Ptr Sequence::operator<< (Sequence::Ptr rhs) {
     retval->add_frame(*it);
   }
   return retval;
+}
+
+Sequence::Ptr Sequence::operator+(Sequence::Ptr rhs) {
+	if (rhs->fps() != fps())
+		throw DataFormatException("Sequence FPS mismatch - cannot add frame.");
+	Sequence::Ptr retval(new Sequence(_fps, 
+									  _width, 
+									  _height));
+	
+	for (uint32_t frameID=0; frameID < rhs->size(); ++frameID) {
+		fullcircle::Frame::Ptr l_frame = rhs->get_frame(frameID);
+		if (frameID < size()) {
+			fullcircle::Frame::Ptr s_frame = get_frame(frameID);
+			fullcircle::Frame::Ptr sum = (*l_frame) + s_frame;
+			retval->add_frame(sum);
+		} else {
+			retval->add_frame(l_frame);
+		}
+	}
+	
+	return retval;
 }

@@ -35,9 +35,11 @@ namespace fullcircle {
         return (_frames.begin()); };
       const_iterator end() const {
         return (_frames.end()); };
+	  
       bool operator== (Sequence &rhs);
       bool operator!= (Sequence &rhs);
       Sequence::Ptr operator<< (Sequence::Ptr rhs);
+	  Sequence::Ptr operator+(Sequence::Ptr rhs);
 
     private:
       Sequence (const Sequence& original);
