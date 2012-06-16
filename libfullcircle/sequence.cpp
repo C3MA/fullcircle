@@ -157,13 +157,21 @@ Sequence::Ptr Sequence::operator<< (Sequence::Ptr rhs) {
   return retval;
 }
 
-Sequence::Ptr Sequence::operator+(Sequence::Ptr rhs) {
+Sequence::Ptr Sequence::add(uint32_t frame_offset, Sequence::Ptr rhs)
+{
 	if (rhs->fps() != fps())
 		throw DataFormatException("Sequence FPS mismatch - cannot add frame.");
 	Sequence::Ptr retval(new Sequence(_fps, 
 									  _width, 
 									  _height));
-	for (uint32_t frameID=0; frameID < rhs->size(); ++frameID) {
+	// add all the frames from the old sequence before the overlay logic starts
+	for (uint32_t frameID=0; frameID < frame_offset; ++frameID) {
+		fullcircle::Frame::Ptr local = get_frame(frameID);
+		retval->add_frame(local);
+	}
+	
+	// now create the overlay of the two sequences
+	for (uint32_t frameID=frame_offset; frameID < rhs->size(); ++frameID) {
 		fullcircle::Frame::Ptr other = rhs->get_frame(frameID);
 		if (frameID < size()) {
 			fullcircle::Frame::Ptr local = get_frame(frameID);
@@ -180,4 +188,8 @@ Sequence::Ptr Sequence::operator+(Sequence::Ptr rhs) {
 	}
 	
 	return retval;
+}
+
+Sequence::Ptr Sequence::operator+(Sequence::Ptr rhs) {
+	return add(0, rhs);
 }

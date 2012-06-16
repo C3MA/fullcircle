@@ -28,6 +28,7 @@ namespace fullcircle {
       uint32_t size() const { return _frames.size(); };
 	  void trim_end();
       void dump(std::ostream& os);
+	  Sequence::Ptr add(uint32_t frame_offset, Sequence::Ptr rhs);
       void save(std::ostream& os,
           const std::string& generator,
           const std::string& version);
