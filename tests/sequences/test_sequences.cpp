@@ -267,10 +267,11 @@ BOOST_AUTO_TEST_CASE ( check_sequence_add ) {
 	
 	fullcircle::Sequence::Ptr seq2(new fullcircle::Sequence(10,4,4));
     fullcircle::Frame::Ptr f2(new fullcircle::Frame(4,4));
+	fullcircle::Frame::Ptr f_empty2(new fullcircle::Frame(4,4));
 	f2->fill_whole(white);
-	seq2->add_frame(f_empty);
+	seq2->add_frame(f_empty2);
 	seq2->add_frame(f2);
-	seq2->add_frame(f_empty);
+	seq2->add_frame(f_empty2);
 	seq2->dump(std::cout);
 	
 	fullcircle::Sequence::Ptr sum = (*seq) + seq2;
