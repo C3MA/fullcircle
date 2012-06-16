@@ -465,4 +465,79 @@ BOOST_AUTO_TEST_CASE ( check_sequence_add_offset ) {
 //	sum->dump(std::cout);	
 }
 
+BOOST_AUTO_TEST_CASE ( check_sequence_add_offset2 ) {
+	init_color();
+	std::cout << "################## Testing the addition of two sequences (with an offset, variation2)." << std::endl;
+	fullcircle::RGB_t color1, pixel;
+	color1.red = color1.green = color1.blue = 160;
+	
+	fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(10,4,4));
+	fullcircle::Frame::Ptr f1(new fullcircle::Frame(4,4));
+	fullcircle::Frame::Ptr f_empty(new fullcircle::Frame(4,4));
+	f1->fill_whole(color1);
+	seq->add_frame(f1);
+	seq->add_frame(f1);
+	//	seq->dump(std::cout);
+	
+	fullcircle::Sequence::Ptr seq2(new fullcircle::Sequence(10,4,4));
+    fullcircle::Frame::Ptr f2(new fullcircle::Frame(4,4));
+	fullcircle::Frame::Ptr f_empty2(new fullcircle::Frame(4,4));
+	f2->fill_whole(color1);
+	seq2->add_frame(f2);
+	seq2->add_frame(f_empty2);
+	//	seq2->dump(std::cout);
+	
+	fullcircle::Sequence::Ptr sum = seq->add(2, seq2);
+	
+    BOOST_CHECK_EQUAL (4, sum->size());
+	pixel = sum->get_frame(0)->get_pixel(0, 0); // fetch the first pixel from the first frame
+	BOOST_CHECK_EQUAL (pixel.red, 160);
+	BOOST_CHECK_EQUAL (pixel.green, 160);
+	BOOST_CHECK_EQUAL (pixel.blue, 160);
+	pixel = sum->get_frame(1)->get_pixel(0, 0); // fetch the first pixel from the second frame
+	BOOST_CHECK_EQUAL (pixel.red, 160);
+	BOOST_CHECK_EQUAL (pixel.green, 160);
+	BOOST_CHECK_EQUAL (pixel.blue, 160);
+	pixel = sum->get_frame(2)->get_pixel(0, 0); // fetch the first pixel from the third frame
+	BOOST_CHECK_EQUAL (pixel.red, 160);
+	BOOST_CHECK_EQUAL (pixel.green, 160);
+	BOOST_CHECK_EQUAL (pixel.blue, 160);	
+	pixel = sum->get_frame(3)->get_pixel(0, 0); // fetch the first pixel from the fourth frame
+	BOOST_CHECK_EQUAL (pixel.red, 0);
+	BOOST_CHECK_EQUAL (pixel.green, 0);
+	BOOST_CHECK_EQUAL (pixel.blue, 0);	
+	//	std::cout << "####### The sum is the following:" << std::endl;
+	//	sum->dump(std::cout);	
+}
+
+BOOST_AUTO_TEST_CASE ( check_sequence_add_offset3 ) {
+	init_color();
+	std::cout << "################## Testing the addition of two sequences (with an offset, variation3)." << std::endl;
+	fullcircle::RGB_t color1, pixel;
+	color1.red = color1.green = color1.blue = 160;
+	
+	fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(10,4,4));
+	fullcircle::Frame::Ptr f1(new fullcircle::Frame(4,4));
+	fullcircle::Frame::Ptr f_empty(new fullcircle::Frame(4,4));
+	f1->fill_whole(color1);
+	seq->add_frame(f1);
+	seq->add_frame(f1);
+	//	seq->dump(std::cout);
+	
+	fullcircle::Sequence::Ptr seq2(new fullcircle::Sequence(10,4,4));
+    fullcircle::Frame::Ptr f2(new fullcircle::Frame(4,4));
+	fullcircle::Frame::Ptr f_empty2(new fullcircle::Frame(4,4));
+	f2->fill_whole(color1);
+	seq2->add_frame(f2);
+	seq2->add_frame(f_empty2);
+	//	seq2->dump(std::cout);
+	try {
+		fullcircle::Sequence::Ptr sum = seq->add(3, seq2);
+		BOOST_FAIL( "There was no Exception, even if the sequence was too short" );
+	} catch (fullcircle::GenericException& ex) {
+		//std::cout << "Caught exception: " << ex.what() << std::endl;
+	}
+	
+}
+
 //BOOST_AUTO_TEST_SUITE_END()

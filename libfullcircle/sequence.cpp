@@ -161,6 +161,8 @@ Sequence::Ptr Sequence::add(uint32_t frame_offset, Sequence::Ptr rhs)
 {
 	if (rhs->fps() != fps())
 		throw DataFormatException("Sequence FPS mismatch - cannot add frame.");
+	if (frame_offset > size())
+		throw DataFormatException("The offset is larger than the size of this sequence");
 	Sequence::Ptr retval(new Sequence(_fps, 
 									  _width, 
 									  _height));
