@@ -80,6 +80,9 @@ void SimulatorMainWindow::on_stop_PB_clicked() {
 }
 
 void SimulatorMainWindow::on_play_PB_clicked() {
+  if (_current_frame = _seq->size()) {
+    _current_frame = 0;
+  }
   int timer_interval =(1000/_seq->fps());
   _timer->start(timer_interval);
 }
