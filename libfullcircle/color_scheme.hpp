@@ -1,6 +1,8 @@
 #ifndef LIBFULLCIRCLE_COLOR_SCHEME_HPP
 #define LIBFULLCIRCLE_COLOR_SCHEME_HPP 1
 
+#include <libfullcircle/common.hpp>
+
 namespace fullcircle {
 
   typedef struct {
@@ -14,6 +16,8 @@ namespace fullcircle {
   class ColorScheme {
     public:
       typedef std::tr1::shared_ptr<ColorScheme> Ptr;
+      ColorScheme() {};
+      virtual ~ColorScheme() {};
       virtual RGB_t get_primary() const = 0;
       virtual RGB_t get_secondary() const = 0;
       virtual RGB_t get_3rd() const = 0;

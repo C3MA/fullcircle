@@ -8,6 +8,7 @@
 #include <libfullcircle/sprite_io.hpp>
 #include <libfullcircle/fontrenderer.hpp>
 #include <libfullcircle/perlin_noise.hpp>
+#include <libfullcircle/color_scheme_smash.hpp>
 #include <boost/program_options.hpp>
 #include <boost/program_options/positional_options.hpp>
 namespace po = boost::program_options;
@@ -176,30 +177,38 @@ fullcircle::Sequence::Ptr mk_demo_text() {
 fullcircle::Sequence::Ptr mk_perlin_noise() {
   std::cout << "Generating Perlin noise demo sequence." << std::endl;
 
-  fullcircle::RGB_t white;
-  white.red = white.green = white.blue = 255;
+  fullcircle::ColorScheme::Ptr smash(new fullcircle::ColorSchemeSmash());
   fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(25,8,8));
 
   fullcircle::PerlinNoise::Ptr noize(new fullcircle::PerlinNoise(
-      4,    // octaves
+      5,    // octaves
       .42, // freq
-      4.4,   // amplitude
-      42    // seed
+      2.4,   // amplitude
+      23    // seed
     ));
 
   for( uint32_t frameID = 0; frameID < 100; ++frameID) {
     fullcircle::Frame::Ptr frame(new fullcircle::Frame(8,8));
-    frame->fill_whole(white);
+    frame->fill_whole(smash->get_background());
     for( uint16_t x = 0; x < 8; ++x) {
       for( uint16_t y = 0; y < 8; ++y) {
         float n=noize->get_3d(x/8.0f, y/8.0f, frameID/10.0f);
-        uint8_t red=(uint8_t) 255*n;
-        std::cout << "X: " << x << ", Y: " << y 
-          << ": " << n  << " red: " << (unsigned int)red << std::endl;
-        frame->set_pixel(x,y,red,0,0);
+        // determine color
+        if (0<=n && n<0.3) {
+          frame->set_pixel(x,y,smash->get_background());
+        } else if (0.3<=n && n<0.7) {
+          frame->set_pixel(x,y,smash->get_secondary());
+        } else if (0.7<=n && n<=1.0) {
+          frame->set_pixel(x,y,smash->get_primary());
+        } else {
+          std::cout << "Error: Unknown noise value: " << n << std::endl;
+        }
       }
-      seq->add_frame(frame);
     }
+    seq->add_frame(frame);
+    seq->add_frame(frame);
+    seq->add_frame(frame);
+    seq->add_frame(frame);
   }
   return seq;
 }
