@@ -203,6 +203,8 @@ fullcircle::Sequence::Ptr mk_perlin_noise() {
         } else {
           std::cout << "Error: Unknown noise value: " << n << std::endl;
         }
+        // TODO: Implement fading, see
+        // http://www.gamedev.net/topic/484062-fade-rgb-value-to-black-or-white/
       }
     }
     seq->add_frame(frame);
