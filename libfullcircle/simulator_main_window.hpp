@@ -6,6 +6,9 @@
 #include <libfullcircle/common.hpp>
 #include <libfullcircle/ui_simulator.h>
 #include <libfullcircle/sequence.hpp>
+#include <boost/filesystem.hpp>
+
+namespace bfs=boost::filesystem;
 
 namespace fullcircle {
 
@@ -14,11 +17,13 @@ namespace fullcircle {
 
     public:
       typedef std::tr1::shared_ptr<SimulatorMainWindow> Ptr;
-      SimulatorMainWindow (Sequence::Ptr seq);
+      SimulatorMainWindow (bfs::path sequence_file);
       virtual ~SimulatorMainWindow();
+
     private slots:
       void on_play_PB_clicked();
       void on_stop_PB_clicked();
+      void on_reload_PB_clicked();
       void draw_frame(int frameID);
       void draw_next_frame();
 
@@ -30,9 +35,11 @@ namespace fullcircle {
     private:
       SimulatorMainWindow (const SimulatorMainWindow& original);
       SimulatorMainWindow& operator= (const SimulatorMainWindow& rhs);
+      void load_sequence();
       Ui::SimpleUI* _ui;
       QGraphicsScene* _scene;
       Sequence::Ptr _seq;
+      bfs::path _sequence_file;
       QTimer* _timer;
       int _current_frame;
   };

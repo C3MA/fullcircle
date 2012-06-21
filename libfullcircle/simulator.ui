@@ -82,7 +82,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Play</string>
+         <string>&amp;Play</string>
         </property>
        </widget>
       </item>
@@ -96,7 +96,21 @@
          </font>
         </property>
         <property name="text">
-         <string>Stop</string>
+         <string>&amp;Stop</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="reload_PB">
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>&amp;Reload</string>
         </property>
        </widget>
       </item>
@@ -106,7 +120,7 @@
   </widget>
  </widget>
  <resources>
-  <include location="default.qrc"/>
+  <include location="sprites.qrc"/>
  </resources>
  <connections/>
 </ui>
