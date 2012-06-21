@@ -13,31 +13,31 @@
     <file>sprites/fonts/font1_5x5_I.png</file>
     <file>sprites/fonts/font1_5x5_J.png</file>
     <file>sprites/fonts/font1_5x5_K.png</file>
-	<file>sprites/fonts/font1_5x5_L.png</file>
+    <file>sprites/fonts/font1_5x5_L.png</file>
     <file>sprites/fonts/font1_5x5_M.png</file>
-	<file>sprites/fonts/font1_5x5_N.png</file>
-	<file>sprites/fonts/font1_5x5_O.png</file>
-	<file>sprites/fonts/font1_5x5_P.png</file>
-	<file>sprites/fonts/font1_5x5_Q.png</file>
-	<file>sprites/fonts/font1_5x5_R.png</file>
-	<file>sprites/fonts/font1_5x5_S.png</file>
-	<file>sprites/fonts/font1_5x5_T.png</file>
-	<file>sprites/fonts/font1_5x5_U.png</file>
-	<file>sprites/fonts/font1_5x5_V.png</file>
-	<file>sprites/fonts/font1_5x5_W.png</file>
-	<file>sprites/fonts/font1_5x5_X.png</file>
-	<file>sprites/fonts/font1_5x5_Y.png</file>
-	<file>sprites/fonts/font1_5x5_Z.png</file>
-	<file>sprites/fonts/font1_5x5_0.png</file>
-	<file>sprites/fonts/font1_5x5_1.png</file>
-	<file>sprites/fonts/font1_5x5_2.png</file>
+    <file>sprites/fonts/font1_5x5_N.png</file>
+    <file>sprites/fonts/font1_5x5_O.png</file>
+    <file>sprites/fonts/font1_5x5_P.png</file>
+    <file>sprites/fonts/font1_5x5_Q.png</file>
+    <file>sprites/fonts/font1_5x5_R.png</file>
+    <file>sprites/fonts/font1_5x5_S.png</file>
+    <file>sprites/fonts/font1_5x5_T.png</file>
+    <file>sprites/fonts/font1_5x5_U.png</file>
+    <file>sprites/fonts/font1_5x5_V.png</file>
+    <file>sprites/fonts/font1_5x5_W.png</file>
+    <file>sprites/fonts/font1_5x5_X.png</file>
+    <file>sprites/fonts/font1_5x5_Y.png</file>
+    <file>sprites/fonts/font1_5x5_Z.png</file>
+    <file>sprites/fonts/font1_5x5_0.png</file>
+    <file>sprites/fonts/font1_5x5_1.png</file>
+    <file>sprites/fonts/font1_5x5_2.png</file>
     <file>sprites/fonts/font1_5x5_3.png</file>
-	<file>sprites/fonts/font1_5x5_4.png</file>
-	<file>sprites/fonts/font1_5x5_5.png</file>
-	<file>sprites/fonts/font1_5x5_6.png</file>
-	<file>sprites/fonts/font1_5x5_7.png</file>
-	<file>sprites/fonts/font1_5x5_8.png</file>
-	<file>sprites/fonts/font1_5x5_9.png</file>
-	<file>sprites/fonts/font1_5x5_SPACE.png</file>
+    <file>sprites/fonts/font1_5x5_4.png</file>
+    <file>sprites/fonts/font1_5x5_5.png</file>
+    <file>sprites/fonts/font1_5x5_6.png</file>
+    <file>sprites/fonts/font1_5x5_7.png</file>
+    <file>sprites/fonts/font1_5x5_8.png</file>
+    <file>sprites/fonts/font1_5x5_9.png</file>
+    <file>sprites/fonts/font1_5x5_SPACE.png</file>
   </qresource>
 </RCC>

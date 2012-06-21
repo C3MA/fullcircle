@@ -27,9 +27,31 @@
 #include <libfullcircle/sequence.hpp>
 #include <libfullcircle/sequence.pb.h>
 #include <boost/filesystem.hpp>
+#include <QApplication>
 #include <libfullcircle/fontrenderer.hpp>
 
 namespace bfs=boost::filesystem;
+
+/***
+ * We use a global fixture to initialize the sprites exactly once.
+ * Remember, this must be done once per binary.
+ */
+struct GlobalSetup {
+    GlobalSetup() 
+      : has_loaded_sprites(false)
+    { 
+      if (! has_loaded_sprites) {
+        std::cout << "Setup of QT sprites." << std::endl;
+        Q_INIT_RESOURCE(sprites);
+        has_loaded_sprites = true;
+      }
+    }
+    ~GlobalSetup()  { std::cout << "global teardown" << std::endl; }
+    bool has_loaded_sprites;
+};
+
+BOOST_GLOBAL_FIXTURE( GlobalSetup );
+
 
 /**
  * see http://www.boost.org/doc/libs/1_43_0/libs/test/doc/html/tutorials/hello-the-testing-world.html

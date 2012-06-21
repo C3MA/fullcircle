@@ -174,6 +174,12 @@ fullcircle::Sequence::Ptr mk_demo_text() {
 
 int main (int argc, char* argv[]) {
 
+  /*** 
+   * Careful! This must be in the top level namespace of any binary, and must
+   * be called only once. Just leave it here.
+   */
+	Q_INIT_RESOURCE(sprites);
+
   try {
     std::ostringstream oss;
     oss << "Usage: " << argv[0] << " ACTION [additional options]";

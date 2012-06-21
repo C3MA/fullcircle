@@ -27,6 +27,7 @@ target_link_libraries(fc-simulator
 target_link_libraries(fc-demo
   fullcircle 
   ${Boost_LIBRARIES}
+  ${QT_LIBRARIES}
   )
 
 # sensor programs to the install target
