@@ -43,9 +43,11 @@
 #define LOG(msg) 
 #endif
 
-#include <libfullcircle/error.hpp>
 #include <stdint.h>
 #include <string>
+
+#include <libfullcircle/error.hpp>
+#include <libfullcircle/color_scheme.hpp>
 
 namespace fullcircle {
   class VersionInfo {

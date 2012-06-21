@@ -9,12 +9,6 @@
 
 namespace fullcircle {
 
-  typedef struct {
-    uint16_t red;
-    uint16_t green;
-    uint16_t blue;
-  } RGB_t;
-
   class Frame {
     public:
       typedef std::tr1::shared_ptr<Frame> Ptr;
