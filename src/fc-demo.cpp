@@ -207,10 +207,10 @@ fullcircle::Sequence::Ptr mk_perlin_noise() {
         // http://www.gamedev.net/topic/484062-fade-rgb-value-to-black-or-white/
       }
     }
-    seq->add_frame(frame);
-    seq->add_frame(frame);
-    seq->add_frame(frame);
-    seq->add_frame(frame);
+    if (seq->size() == 0)
+      seq->add_frame(frame);
+    else
+      seq->append_fade(frame,4);
   }
   return seq;
 }

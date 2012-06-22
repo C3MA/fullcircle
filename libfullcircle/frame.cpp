@@ -244,9 +244,9 @@ void Frame::fill_gradient_vertical(const RGB_t& from, const RGB_t& to) {
 	uint16_t stepGreen = diffGreen / _height - 1;
 	uint16_t stepBlue = diffBlue / _height - 1;
 	
-	for (uint16_t y=0; y < _height; ++y) {
-		for (uint16_t x=0; x < _width; ++x) {
-			_pixels[x][y] = color;
+	for (uint16_t y=0; y < height(); ++y) {
+		for (uint16_t x=0; x < width(); ++x) {
+      set_pixel(x, y, color);
 		}
 		// Set color for the next row
 		color.red = (color.red + stepRed) % 255;

@@ -20,27 +20,31 @@ namespace fullcircle {
 
       void add_frame(Frame::Ptr frame);
       Frame::Ptr get_frame(uint32_t frameid);
+      Frame::Ptr get_last_frame();
       uint16_t width() const { return _width; };
       uint16_t height() const { return _height; };
       int fps() const { return _fps; };
       const std::string& generator_name() const { return _generator_name; };
       const std::string& generator_version() const { return _generator_version; };
       uint32_t size() const { return _frames.size(); };
-	  void trim_end();
+      void trim_end();
       void dump(std::ostream& os);
-	  Sequence::Ptr add(uint32_t frame_offset, Sequence::Ptr rhs);
+      Sequence::Ptr add(uint32_t frame_offset, Sequence::Ptr rhs);
       void save(std::ostream& os,
           const std::string& generator,
           const std::string& version);
       const_iterator begin() const {
-        return (_frames.begin()); };
+        return (_frames.begin()); 
+      };
       const_iterator end() const {
-        return (_frames.end()); };
-	  
+        return (_frames.end()); 
+      };
+      void append_fade(Frame::Ptr end, uint16_t steps);
+
       bool operator== (Sequence &rhs);
       bool operator!= (Sequence &rhs);
       Sequence::Ptr operator<< (Sequence::Ptr rhs);
-	  Sequence::Ptr operator+(Sequence::Ptr rhs);
+      Sequence::Ptr operator+(Sequence::Ptr rhs);
 
     private:
       Sequence (const Sequence& original);
