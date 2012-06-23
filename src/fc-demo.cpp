@@ -135,7 +135,6 @@ fullcircle::Sequence::Ptr mk_demo_fade() {
 	return seq;
 }
 
-
 fullcircle::Sequence::Ptr mk_demo_spaceinvader() {
   Q_INIT_RESOURCE(sprites);
   std::cout << "### Testing lovely space invader sprites." << std::endl;
@@ -181,7 +180,7 @@ fullcircle::Sequence::Ptr mk_perlin_noise() {
   fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(25,8,8));
 
   fullcircle::PerlinNoise::Ptr noize(new fullcircle::PerlinNoise(
-      5,    // octaves
+      4,    // octaves
       .42, // freq
       2.4,   // amplitude
       23    // seed
@@ -195,22 +194,20 @@ fullcircle::Sequence::Ptr mk_perlin_noise() {
         float n=noize->get_3d(x/8.0f, y/8.0f, frameID/10.0f);
         // determine color
         if (0<=n && n<0.3) {
-          frame->set_pixel(x,y,smash->get_background());
+          frame->set_pixel(x,y,smash->get_primary());
         } else if (0.3<=n && n<0.7) {
           frame->set_pixel(x,y,smash->get_secondary());
         } else if (0.7<=n && n<=1.0) {
-          frame->set_pixel(x,y,smash->get_primary());
+          frame->set_pixel(x,y,smash->get_background());
         } else {
           std::cout << "Error: Unknown noise value: " << n << std::endl;
         }
-        // TODO: Implement fading, see
-        // http://www.gamedev.net/topic/484062-fade-rgb-value-to-black-or-white/
       }
     }
     if (seq->size() == 0)
       seq->add_frame(frame);
     else
-      seq->append_fade(frame,4);
+      seq->append_fade(frame,5);
   }
   return seq;
 }
