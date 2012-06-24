@@ -1,6 +1,7 @@
 # -*- mode: cmake; -*-
 set(fc-simulator_src fc-simulator.cpp)
 set(fc-demo_src fc-demo.cpp)
+set(fc-server_src server.cpp)
 
 include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_CURRENT_SOURCE_DIR} 
@@ -17,6 +18,9 @@ add_executable(fc-demo
   ${fc-demo_src}
   )
 
+add_executable(fc-server
+  ${fc-server_src}
+  )
 
 target_link_libraries(fc-simulator 
   fullcircle 
@@ -26,6 +30,10 @@ target_link_libraries(fc-simulator
 
 target_link_libraries(fc-demo
   fullcircle 
+  ${Boost_LIBRARIES}
+  )
+
+target_link_libraries(fc-server
   ${Boost_LIBRARIES}
   )
 
