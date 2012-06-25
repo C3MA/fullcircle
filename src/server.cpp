@@ -10,6 +10,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/asio.hpp>
+#include <boost/array.hpp>
 
 using boost::asio::ip::tcp;
 
@@ -35,14 +36,37 @@ public:
 		return socket_;
 	}
 	
+	void handle_read(const boost::system::error_code &ec, std::size_t bytes_transferred) 
+	{ 
+		if (!ec) 
+		{ 
+			std::cout << "received: " << std::string(a_buffer.data(), bytes_transferred) << std::endl;			
+			socket_.async_read_some( boost::asio::buffer(a_buffer), 
+									boost::bind(&tcp_connection::handle_read, shared_from_this(),
+												boost::asio::placeholders::error,
+												boost::asio::placeholders::bytes_transferred));
+		} else {
+			std::cerr << "Could not read incoming data." << std::endl;
+		}
+	}
+	
 	void start()
 	{
 		message_ = make_daytime_string();
-		
+		socket_.async_read_some( boost::asio::buffer(a_buffer), 
+								boost::bind(&tcp_connection::handle_read, shared_from_this(),
+											boost::asio::placeholders::error,
+											boost::asio::placeholders::bytes_transferred));
+		// on a new created socket, write a answer with the time
 		boost::asio::async_write(socket_, boost::asio::buffer(message_),
 								 boost::bind(&tcp_connection::handle_write, shared_from_this(),
 											 boost::asio::placeholders::error,
 											 boost::asio::placeholders::bytes_transferred));
+	}
+	
+	std::string get_client_ip()
+	{
+		return "FIXME";//FIXME get the ip address of the connected client
 	}
 	
 private:
@@ -53,9 +77,14 @@ private:
 	void handle_write(const boost::system::error_code& /*error*/,
 					  size_t bytes_transferred)
 	{
-		std::cout << "" << bytes_transferred << " bytes received" << std::endl;
-	}
+		std::cout << "" << bytes_transferred << " bytes written" << std::endl;
+		socket_.async_read_some( boost::asio::buffer(a_buffer), 
+								boost::bind(&tcp_connection::handle_read, shared_from_this(),
+											boost::asio::placeholders::error,
+											boost::asio::placeholders::bytes_transferred));
+	} 
 	
+	boost::array<char, 4096> a_buffer;
 	tcp::socket socket_;
 	std::string message_;
 };
