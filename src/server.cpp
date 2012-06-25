@@ -11,6 +11,7 @@
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
+#include <boost/format.hpp>
 
 using boost::asio::ip::tcp;
 
@@ -33,60 +34,70 @@ public:
 	
 	tcp::socket& socket()
 	{
-		return socket_;
+		return a_socket;
 	}
 	
 	void handle_read(const boost::system::error_code &ec, std::size_t bytes_transferred) 
 	{ 
 		if (!ec) 
 		{ 
-			std::cout << "received: " << std::string(a_buffer.data(), bytes_transferred) << std::endl;			
-			socket_.async_read_some( boost::asio::buffer(a_buffer), 
+			std::cerr << get_client() << " | received: " << std::string(a_buffer.data(), bytes_transferred) << std::endl;			
+			a_socket.async_read_some( boost::asio::buffer(a_buffer), 
 									boost::bind(&tcp_connection::handle_read, shared_from_this(),
 												boost::asio::placeholders::error,
 												boost::asio::placeholders::bytes_transferred));
 		} else {
-			std::cerr << "Could not read incoming data." << std::endl;
+			std::cerr << get_client() << " | Could not read incoming data." << std::endl;
 		}
 	}
 	
 	void start()
 	{
-		message_ = make_daytime_string();
-		socket_.async_read_some( boost::asio::buffer(a_buffer), 
+		a_message = make_daytime_string();
+		a_socket.async_read_some( boost::asio::buffer(a_buffer), 
 								boost::bind(&tcp_connection::handle_read, shared_from_this(),
 											boost::asio::placeholders::error,
 											boost::asio::placeholders::bytes_transferred));
 		// on a new created socket, write a answer with the time
-		boost::asio::async_write(socket_, boost::asio::buffer(message_),
+		boost::asio::async_write(a_socket, boost::asio::buffer(a_message),
 								 boost::bind(&tcp_connection::handle_write, shared_from_this(),
 											 boost::asio::placeholders::error,
 											 boost::asio::placeholders::bytes_transferred));
 	}
 	
-	std::string get_client_ip()
-	{
-		return "FIXME";//FIXME get the ip address of the connected client
+	std::string get_client()
+	{	
+		if (!a_socket.is_open())
+		{
+			return "<Nobody>";
+		}
+		else
+		{
+			return str( boost::format("%1%:%2%") % 
+					   a_socket.remote_endpoint().address().to_string() % 
+					   a_socket.remote_endpoint().port());
+		}
 	}
 	
 private:
-	tcp_connection(boost::asio::io_service& io_service)    : socket_(io_service)
+	tcp_connection(boost::asio::io_service& io_service)    : a_socket(io_service)
 	{
+		std::cerr << get_client() << " | A new visitor arrived " << std::endl; 
 	}
 	
 	void handle_write(const boost::system::error_code& /*error*/,
 					  size_t bytes_transferred)
 	{
-		std::cout << "" << bytes_transferred << " bytes written" << std::endl;
-		socket_.async_read_some( boost::asio::buffer(a_buffer), 
+		std::cerr << get_client() << " | " << bytes_transferred << " bytes written" << std::endl;
+		a_socket.async_read_some( boost::asio::buffer(a_buffer), 
 								boost::bind(&tcp_connection::handle_read, shared_from_this(),
 											boost::asio::placeholders::error,
 											boost::asio::placeholders::bytes_transferred));
 	} 
 	
 	boost::array<char, 4096> a_buffer;
-	tcp::socket socket_;
-	std::string message_;
+	tcp::socket a_socket;
+	std::string a_message;
 };
 
 class tcp_server
