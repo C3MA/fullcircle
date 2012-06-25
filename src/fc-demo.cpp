@@ -9,6 +9,7 @@
 #include <libfullcircle/fontrenderer.hpp>
 #include <libfullcircle/perlin_noise.hpp>
 #include <libfullcircle/color_scheme_smash.hpp>
+#include <libfullcircle/sfx/frame_fader.hpp>
 #include <boost/program_options.hpp>
 #include <boost/program_options/positional_options.hpp>
 namespace po = boost::program_options;
@@ -178,12 +179,13 @@ fullcircle::Sequence::Ptr mk_perlin_noise() {
 
   fullcircle::ColorScheme::Ptr smash(new fullcircle::ColorSchemeSmash());
   fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(25,8,8));
+  fullcircle::FrameFader::Ptr fader(new fullcircle::FrameFader(5,25));
 
   fullcircle::PerlinNoise::Ptr noize(new fullcircle::PerlinNoise(
-      4,    // octaves
+      3,    // octaves
       .42, // freq
       2.4,   // amplitude
-      23    // seed
+      42    // seed
     ));
 
   for( uint32_t frameID = 0; frameID < 100; ++frameID) {
@@ -207,7 +209,7 @@ fullcircle::Sequence::Ptr mk_perlin_noise() {
     if (seq->size() == 0)
       seq->add_frame(frame);
     else
-      seq->append_fade(frame,5);
+      seq = (*seq) << fader->fade(seq->get_last_frame(), frame);
   }
   return seq;
 }

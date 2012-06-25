@@ -39,7 +39,6 @@ namespace fullcircle {
       const_iterator end() const {
         return (_frames.end()); 
       };
-      void append_fade(Frame::Ptr end, uint16_t steps);
 
       bool operator== (Sequence &rhs);
       bool operator!= (Sequence &rhs);
