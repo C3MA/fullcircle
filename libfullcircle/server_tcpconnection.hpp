@@ -8,19 +8,22 @@
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
+#include <boost/unordered_map.hpp>
+#include "server_client_handle.hpp"
 
 namespace fullcircle {
 	
 	using boost::asio::ip::tcp;
+	typedef boost::unordered_map<int, ClientHandle*> MapOfClients; 
 	
 	class tcp_connection : public boost::enable_shared_from_this<tcp_connection>
 	{
 	public:
-		typedef boost::shared_ptr<tcp_connection> pointer;
+		typedef boost::shared_ptr<tcp_connection> Ptr;
 		
-		static pointer create(boost::asio::io_service& io_service)
+		static Ptr create(boost::asio::io_service& io_service)
 		{
-			return pointer(new tcp_connection(io_service));
+			return Ptr(new tcp_connection(io_service));
 		}
 		
 		tcp::socket& socket()
@@ -52,9 +55,10 @@ namespace fullcircle {
 	private:
 		void start_accept();
 		
-		void handle_accept(tcp_connection::pointer new_connection, const boost::system::error_code& error);
+		void handle_accept(tcp_connection::Ptr new_connection, const boost::system::error_code& error);
 		
 		tcp::acceptor _acceptor;
+		MapOfClients  _clients;
 	};
 };
 
