@@ -34,6 +34,7 @@ target_link_libraries(fc-demo
   )
 
 target_link_libraries(fc-server
+  fullcircle
   ${Boost_LIBRARIES}
   )
 
