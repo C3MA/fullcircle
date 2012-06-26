@@ -21,6 +21,8 @@ void tcp_connection::handle_read(const boost::system::error_code &ec, std::size_
 								 boost::bind(&tcp_connection::handle_read, shared_from_this(),
 											 boost::asio::placeholders::error,
 											 boost::asio::placeholders::bytes_transferred));
+	} else if (ec == boost::asio::error::eof) {
+		std::cerr << get_client() << " | left." << std::endl;
 	} else {
 		std::cerr << get_client() << " | Could not read incoming data." << std::endl;
 	}
