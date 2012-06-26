@@ -25,7 +25,7 @@ namespace fullcircle {
 		
 		tcp::socket& socket()
 		{
-			return a_socket;
+			return _socket;
 		}
 		
 		void handle_read(const boost::system::error_code &ec, std::size_t bytes_transferred);
@@ -33,16 +33,16 @@ namespace fullcircle {
 		
 		void start();
 	private:
-		tcp_connection(boost::asio::io_service& io_service)    : a_socket(io_service)
+		tcp_connection(boost::asio::io_service& io_service)    : _socket(io_service)
 		{
 			std::cerr << get_client() << " | A new visitor arrived " << std::endl; 
 		}
 		
 		std::string get_client();
 		
-		boost::array<char, 4096> a_buffer;
-		tcp::socket a_socket;
-		std::string a_message;
+		boost::array<char, 4096> _buffer;
+		tcp::socket _socket;
+		std::string _message;
 	};
 	
 	class tcp_server
@@ -54,7 +54,7 @@ namespace fullcircle {
 		
 		void handle_accept(tcp_connection::pointer new_connection, const boost::system::error_code& error);
 		
-		tcp::acceptor a_acceptor;
+		tcp::acceptor _acceptor;
 	};
 };
 
