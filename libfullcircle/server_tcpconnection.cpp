@@ -1,4 +1,5 @@
 #include "server_tcpconnection.hpp"
+#include "server_client_handle.hpp"
 #include <iostream>
 #include <boost/format.hpp>
 
@@ -16,7 +17,8 @@ void tcp_connection::handle_read(const boost::system::error_code &ec, std::size_
 { 
 	if (!ec) 
 	{ 
-		std::cerr << get_client() << " | received: " << std::string(_buffer.data(), bytes_transferred) << std::endl;			
+		std::cerr << get_client() << " | received: " << std::string(_buffer.data(), bytes_transferred) << std::endl;
+		_handle->parse(std::string(_buffer.data(), bytes_transferred));
 		_socket.async_read_some( boost::asio::buffer(_buffer), 
 								 boost::bind(&tcp_connection::handle_read, shared_from_this(),
 											 boost::asio::placeholders::error,
@@ -97,4 +99,10 @@ void tcp_server::handle_accept(tcp_connection::Ptr new_connection, const boost::
 	}
 	
 	
+}
+
+uint32_t tcp_server::get_other_registered_clients()
+{
+	//FIXME do something
+	return 1;
 }

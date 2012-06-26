@@ -54,6 +54,7 @@ namespace fullcircle {
 	{
 	public:
 		tcp_server(boost::asio::io_service& io_service);
+		uint32_t get_other_registered_clients();
 	private:
 		void start_accept(ClientHandle::Ptr handle);
 		

@@ -10,15 +10,20 @@ namespace fullcircle {
   class tcp_server;
 	
   class ClientHandle {
-    public:
+  public:
+	  enum State {ONLINE, REGISTERED, WRITING, KICKED};
       typedef boost::shared_ptr<ClientHandle> Ptr;
 
       ClientHandle(std::string ipAddrPort, tcp_server* server);
       ClientHandle (ClientHandle& rhs);
       virtual ~ClientHandle() {};
 	  std::string get_key() { return _key; }
-    private:
-	  uint8_t	  _state;
+	  bool	is_active();
+	  void	parse(std::string message);
+  private:
+	  bool	is_writing();
+	  
+	  State	  _state;
 	  std::string _key;
 	  tcp_server* _server;
   };
