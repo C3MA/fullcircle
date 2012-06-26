@@ -20,6 +20,7 @@ namespace fullcircle {
 	{
 	public:
 		typedef boost::shared_ptr<tcp_connection> Ptr;
+		tcp_connection(boost::asio::io_service& io_service, ClientHandle::Ptr handle);
 		
 		static Ptr create(boost::asio::io_service& io_service, ClientHandle::Ptr handle)
 		{
@@ -27,7 +28,7 @@ namespace fullcircle {
 		}
 		
 		tcp::socket& socket()
-		{
+		{ 
 			return _socket;
 		}
 		
@@ -36,14 +37,8 @@ namespace fullcircle {
 		
 		void start();
 		std::string get_client();
-	private:
-		tcp_connection(boost::asio::io_service& io_service, ClientHandle::Ptr handle) : 
-			_socket(io_service),
-			_handle(handle)
-		{
-			
-		}		
 		
+	private:
 		ClientHandle::Ptr		 _handle;
 		boost::array<char, 4096> _buffer;
 		tcp::socket _socket;

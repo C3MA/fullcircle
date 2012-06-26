@@ -13,6 +13,13 @@ std::string make_daytime_string()
 	return ctime(&now);
 }
 
+tcp_connection::tcp_connection(boost::asio::io_service& io_service, ClientHandle::Ptr handle) : 
+	_socket(io_service),
+	_handle(handle)
+{
+	
+}		
+
 void tcp_connection::handle_read(const boost::system::error_code &ec, std::size_t bytes_transferred) 
 { 
 	if (!ec) 

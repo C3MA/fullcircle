@@ -30,5 +30,4 @@ namespace fullcircle {
 };
 
 
-#endif /* LIBFULLCIRCLE_FRAME_HPP */
-
+#endif /* LIBFULLCIRCLE_SERVER_CLIENT_HANDLE_HPP */
