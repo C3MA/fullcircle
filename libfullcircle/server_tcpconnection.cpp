@@ -68,7 +68,7 @@ void tcp_connection::handle_write(const boost::system::error_code& /*error*/, si
 
 tcp_server::tcp_server(boost::asio::io_service& io_service): _acceptor(io_service, tcp::endpoint(tcp::v4(), 2342))
 {
-	ClientHandle::Ptr dummy(new ClientHandle("dummy"));
+	ClientHandle::Ptr dummy(new ClientHandle("dummy", this));
 	start_accept(dummy);
 }
 
@@ -88,11 +88,11 @@ void tcp_server::handle_accept(tcp_connection::Ptr new_connection, const boost::
 		std::cerr << new_connection->get_client() << " | A new visitor arrived, other: " << _clients.size() << std::endl;
 		
 		// add this client to the hashmap
-		ClientHandle::Ptr new_handle(new ClientHandle(new_connection->get_client()));			
+		ClientHandle::Ptr new_handle(new ClientHandle(new_connection->get_client(), this));			
 		_clients[new_handle->get_key()] = new_handle; 
 		start_accept(new_handle);
 	} else {
-		ClientHandle::Ptr dummy(new ClientHandle("dummy"));
+		ClientHandle::Ptr dummy(new ClientHandle("dummy", this));
 		start_accept(dummy);
 	}
 	
