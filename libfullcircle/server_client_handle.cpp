@@ -5,3 +5,7 @@
 using namespace fullcircle;
 
 
+ClientHandle::ClientHandle( std::string ipAddrPort) : _key(ipAddrPort)
+{
+	
+}

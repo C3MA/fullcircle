@@ -68,12 +68,13 @@ void tcp_connection::handle_write(const boost::system::error_code& /*error*/, si
 
 tcp_server::tcp_server(boost::asio::io_service& io_service): _acceptor(io_service, tcp::endpoint(tcp::v4(), 2342))
 {
-	start_accept();
+	ClientHandle::Ptr dummy(new ClientHandle("dummy"));
+	start_accept(dummy);
 }
 
-void tcp_server::start_accept()
+void tcp_server::start_accept(ClientHandle::Ptr handle)
 {
-	tcp_connection::Ptr new_connection = tcp_connection::create(_acceptor.get_io_service());
+	tcp_connection::Ptr new_connection = tcp_connection::create(_acceptor.get_io_service(), handle);
 	_acceptor.async_accept(new_connection->socket(),
 						   boost::bind(&tcp_server::handle_accept, this, new_connection,
 									   boost::asio::placeholders::error));
@@ -84,7 +85,16 @@ void tcp_server::handle_accept(tcp_connection::Ptr new_connection, const boost::
 	if (!error)
 	{
 		new_connection->start();
+		std::cerr << new_connection->get_client() << " | A new visitor arrived, other: " << _clients.size() << std::endl;
+		
+		// add this client to the hashmap
+		ClientHandle::Ptr new_handle(new ClientHandle(new_connection->get_client()));			
+		_clients[new_handle->get_key()] = new_handle; 
+		start_accept(new_handle);
+	} else {
+		ClientHandle::Ptr dummy(new ClientHandle("dummy"));
+		start_accept(dummy);
 	}
 	
-	start_accept();
+	
 }

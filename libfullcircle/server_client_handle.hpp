@@ -10,12 +10,13 @@ namespace fullcircle {
     public:
       typedef boost::shared_ptr<ClientHandle> Ptr;
 
-      ClientHandle( std::string ipAddrPort);
+      ClientHandle(std::string ipAddrPort);
       ClientHandle (ClientHandle& rhs);
       virtual ~ClientHandle() {};
+	  std::string get_key() { return _key; }
     private:
-	  uint8_t _state;
-	  
+	  uint8_t	  _state;
+	  std::string _key;
   };
 };
 
