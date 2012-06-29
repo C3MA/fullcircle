@@ -23,7 +23,7 @@ float PerlinNoise::get_2d(float x, float y)
 
 float PerlinNoise::get_3d(float x, float y, float z)
 {
-  std::cout << "Input: " << x << ", " << y << ", " << z << std::endl;
+  //std::cout << "Input: " << x << ", " << y << ", " << z << std::endl;
   float vec[3];
   vec[0] = x;
   vec[1] = y;

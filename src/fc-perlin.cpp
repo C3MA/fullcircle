@@ -73,7 +73,7 @@ int main (int argc, char* argv[]) {
     oss << "Usage: " << argv[0] << " ACTION [additional options]";
     po::options_description desc(oss.str());
     desc.add_options()
-      ("help,h", "produce help message")
+      ("help", "produce help message")
       ("version,v", "print version and exit")
       ("sequence,s", po::value<std::string>(), "the sequence file to use")
       ("hash,h", po::value<std::string>(), "the seed hash for the visualization")
@@ -103,14 +103,14 @@ int main (int argc, char* argv[]) {
     }
 
     if (vm.count("sequence") != 1 ) {
-      std::cerr << "You must specify a sequence file." << std::endl;
+      std::cerr << "You must specify a sequence file (-s <filename>)." << std::endl;
       return 1;
     } else {
       sequencefile=vm["sequence"].as<std::string>();
     }
 
     if (vm.count("hash") != 1 ) {
-      std::cerr << "You must specify an hash." << std::endl;
+      std::cerr << "You must specify an hash (-h <hash>)." << std::endl;
       return 1;
     } else {
       hash=vm["hash"].as<std::string>();
@@ -121,6 +121,12 @@ int main (int argc, char* argv[]) {
     uint8_t fps=12;
     uint8_t width=16;
     uint8_t height=9;
+    // Construct seed
+    uint64_t seed=0;
+    for( uint16_t i = 0; i < hash.length(); ++i) {
+      seed += hash[i];
+    }
+    std::cout << "Constructed seed " << (uint16_t) seed << " from hash." << std::endl;
 
     try {
       fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(12,16,9));
@@ -128,7 +134,7 @@ int main (int argc, char* argv[]) {
 
       seq = (*seq) << mk_perlin_noise(
           colors,
-          42, // seed
+          (uint16_t) seed, 
           fps,
           width,
           height

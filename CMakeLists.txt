@@ -16,7 +16,7 @@ set(CMAKE_VERBOSE_MAKEFILE true)
 ENABLE_TESTING()
 
 set(V_MAJOR 0)
-set(V_MINOR 1)
+set(V_MINOR 2)
 set(V_PATCH 0)
 
 # add a path where some libraries might be stored
