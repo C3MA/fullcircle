@@ -1,6 +1,7 @@
 # -*- mode: cmake; -*-
 set(fc-simulator_src fc-simulator.cpp)
 set(fc-demo_src fc-demo.cpp)
+set(fc-perlin_src fc-perlin.cpp)
 
 include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_CURRENT_SOURCE_DIR} 
@@ -17,6 +18,9 @@ add_executable(fc-demo
   ${fc-demo_src}
   )
 
+add_executable(fc-perlin
+  ${fc-perlin_src}
+  )
 
 target_link_libraries(fc-simulator 
   fullcircle 
@@ -29,6 +33,13 @@ target_link_libraries(fc-demo
   ${Boost_LIBRARIES}
   ${QT_LIBRARIES}
   )
+
+target_link_libraries(fc-perlin
+  fullcircle 
+  ${Boost_LIBRARIES}
+  ${QT_LIBRARIES}
+  )
+
 
 # sensor programs to the install target
 INSTALL(PROGRAMS 
