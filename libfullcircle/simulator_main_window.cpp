@@ -1,27 +1,20 @@
 #include "simulator_main_window.hpp"
 #include <iostream>
+#include <fstream>
 
 using namespace fullcircle;
 
 SimulatorMainWindow::SimulatorMainWindow(
-    Sequence::Ptr seq
+    bfs::path sequence_file
   ) : _ui(new Ui::SimpleUI)
     , _scene(new QGraphicsScene())
-    , _seq(seq)
+    , _sequence_file(sequence_file)
     , _timer(new QTimer(this))
     , _current_frame(0)
 {
   _ui->setupUi(this);
-  _scene->addText("Uschi");
   _ui->graphics_view->setScene(_scene);
-  _ui->frame_slider->setMinimum(0);
-  _ui->frame_slider->setMaximum(_seq->size()-1);
-  _ui->frame_slider->setSingleStep(1);
-  _ui->frame_slider->setValue(0);
-  _ui->frame_spinbox->setMinimum(0);
-  _ui->frame_spinbox->setMaximum(_seq->size()-1);
-  _ui->frame_spinbox->setSingleStep(1);
-  _ui->frame_spinbox->setValue(0);
+  load_sequence();
   draw_frame(_current_frame);
   // connect the slider and the spinbox: reflects the frame number
   connect(_ui->frame_slider, SIGNAL(valueChanged(int)),
@@ -80,8 +73,31 @@ void SimulatorMainWindow::on_stop_PB_clicked() {
 }
 
 void SimulatorMainWindow::on_play_PB_clicked() {
+  if ((unsigned int)_current_frame == _seq->size()) {
+    _current_frame = 0;
+  }
   int timer_interval =(1000/_seq->fps());
   _timer->start(timer_interval);
+}
+
+void SimulatorMainWindow::load_sequence() {
+  std::cout << "Loading sequence from file " << _sequence_file << std::endl;
+  std::fstream input(_sequence_file.c_str(), std::ios::in | std::ios::binary);
+  _seq=fullcircle::Sequence::Ptr(new fullcircle::Sequence(input));
+  input.close();
+  _ui->frame_slider->setMinimum(0);
+  _ui->frame_slider->setMaximum(_seq->size()-1);
+  _ui->frame_slider->setSingleStep(1);
+  _ui->frame_slider->setValue(0);
+  _ui->frame_spinbox->setMinimum(0);
+  _ui->frame_spinbox->setMaximum(_seq->size()-1);
+  _ui->frame_spinbox->setSingleStep(1);
+  _ui->frame_spinbox->setValue(0);
+}
+
+void SimulatorMainWindow::on_reload_PB_clicked() {
+  load_sequence();
+  _current_frame=0;
 }
 
 void SimulatorMainWindow::closeEvent(QCloseEvent *event) {

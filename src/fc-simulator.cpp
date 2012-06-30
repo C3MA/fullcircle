@@ -2,7 +2,6 @@
 #include <libfullcircle/common.hpp>
 #include <libfullcircle/simulator_main_window.hpp>
 #include <iostream>
-#include <fstream>
 #include <boost/filesystem.hpp>
 #include <libfullcircle/sequence.hpp>
 #include <boost/program_options.hpp>
@@ -56,12 +55,8 @@ int main (int argc, char* argv[]) {
     Q_INIT_RESOURCE(sprites);
 
     try {
-      std::cout << "Loading sequence from file " << sequence << std::endl;
-      std::fstream input(sequence.c_str(), std::ios::in | std::ios::binary);
-      fullcircle::Sequence::Ptr loaded_seq(new fullcircle::Sequence(input));
-      input.close();
-      //app.setStyle("plastique");
-      fullcircle::SimulatorMainWindow mainWindow(loaded_seq);
+     //app.setStyle("plastique");
+      fullcircle::SimulatorMainWindow mainWindow(sequence);
       mainWindow.show();
       return app.exec();
     } catch (fullcircle::GenericException& ex) {

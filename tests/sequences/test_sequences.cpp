@@ -513,7 +513,7 @@ BOOST_AUTO_TEST_CASE ( check_sequence_add_offset2 ) {
 BOOST_AUTO_TEST_CASE ( check_sequence_add_offset3 ) {
 	init_color();
 	std::cout << "################## Testing the addition of two sequences (with an offset, variation3)." << std::endl;
-	fullcircle::RGB_t color1, pixel;
+	fullcircle::RGB_t color1;
 	color1.red = color1.green = color1.blue = 160;
 	
 	fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(10,4,4));

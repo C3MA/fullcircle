@@ -9,7 +9,6 @@ FontRenderer::FontRenderer ( uint16_t width, uint16_t height)
   : _width(width)
   , _height(height)
 {
-	Q_INIT_RESOURCE(sprites);
 	// Set the default font size of five times five
 	_font_width = 5;
 	_font_height = 5;

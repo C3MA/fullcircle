@@ -7,6 +7,9 @@
 #include <libfullcircle/frame.hpp>
 #include <libfullcircle/sprite_io.hpp>
 #include <libfullcircle/fontrenderer.hpp>
+#include <libfullcircle/perlin_noise.hpp>
+#include <libfullcircle/color_scheme_smash.hpp>
+#include <libfullcircle/sfx/frame_fader.hpp>
 #include <boost/program_options.hpp>
 #include <boost/program_options/positional_options.hpp>
 namespace po = boost::program_options;
@@ -133,7 +136,6 @@ fullcircle::Sequence::Ptr mk_demo_fade() {
 	return seq;
 }
 
-
 fullcircle::Sequence::Ptr mk_demo_spaceinvader() {
   Q_INIT_RESOURCE(sprites);
   std::cout << "### Testing lovely space invader sprites." << std::endl;
@@ -172,7 +174,53 @@ fullcircle::Sequence::Ptr mk_demo_text() {
 	return seq;
 }
 
+fullcircle::Sequence::Ptr mk_perlin_noise() {
+  std::cout << "Generating Perlin noise demo sequence." << std::endl;
+
+  fullcircle::ColorScheme::Ptr smash(new fullcircle::ColorSchemeSmash());
+  fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(25,8,8));
+  fullcircle::FrameFader::Ptr fader(new fullcircle::FrameFader(5,25));
+
+  fullcircle::PerlinNoise::Ptr noize(new fullcircle::PerlinNoise(
+      3,    // octaves
+      .42, // freq
+      2.4,   // amplitude
+      42    // seed
+    ));
+
+  for( uint32_t frameID = 0; frameID < 100; ++frameID) {
+    fullcircle::Frame::Ptr frame(new fullcircle::Frame(8,8));
+    frame->fill_whole(smash->get_background());
+    for( uint16_t x = 0; x < 8; ++x) {
+      for( uint16_t y = 0; y < 8; ++y) {
+        float n=noize->get_3d(x/8.0f, y/8.0f, frameID/10.0f);
+        // determine color
+        if (0<=n && n<0.3) {
+          frame->set_pixel(x,y,smash->get_primary());
+        } else if (0.3<=n && n<0.7) {
+          frame->set_pixel(x,y,smash->get_secondary());
+        } else if (0.7<=n && n<=1.0) {
+          frame->set_pixel(x,y,smash->get_background());
+        } else {
+          std::cout << "Error: Unknown noise value: " << n << std::endl;
+        }
+      }
+    }
+    if (seq->size() == 0)
+      seq->add_frame(frame);
+    else
+      seq = (*seq) << fader->fade(seq->get_last_frame(), frame);
+  }
+  return seq;
+}
+
 int main (int argc, char* argv[]) {
+
+  /*** 
+   * Careful! This must be in the top level namespace of any binary, and must
+   * be called only once. Just leave it here.
+   */
+	Q_INIT_RESOURCE(sprites);
 
   try {
     std::ostringstream oss;
@@ -186,6 +234,7 @@ int main (int argc, char* argv[]) {
       ("gradient,g", "enable gradient animation")
       ("text,t", "enable text animation")
       ("sprite,i", "enable sprite demo")
+      ("perlin,p", "enable Perlin noise demo")
       ;
     po::positional_options_description p;
     p.add("sequence", 1);
@@ -220,16 +269,18 @@ int main (int argc, char* argv[]) {
 
     try {
       fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(25,8,8));
-      if (vm.count("sequence") > 0) 
-        seq = (*seq) << mk_demo_sequence();
+      //if (vm.count("sequence") > 0) 
+      //  seq = (*seq) << mk_demo_sequence();
       if (vm.count("fullscreen") > 0) 
-          seq = (*seq) << mk_demo_fullscreen();
+        seq = (*seq) << mk_demo_fullscreen();
       if (vm.count("gradient") > 0) 
-          seq = (*seq) << mk_demo_fade();
-      if (vm.count("sequence") > 0) 
-          seq = (*seq) << mk_demo_text();
+        seq = (*seq) << mk_demo_fade();
+      if (vm.count("text") > 0) 
+        seq = (*seq) << mk_demo_text();
       if (vm.count("sprite") > 0) 
-          seq = (*seq) << mk_demo_spaceinvader();
+        seq = (*seq) << mk_demo_spaceinvader();
+      if (vm.count("perlin") > 0) 
+        seq = (*seq) << mk_perlin_noise();
 
       std::cout << "Saving sequence to file " << sequence << std::endl;
       std::fstream output(sequence.c_str(), 

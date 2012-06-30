@@ -9,12 +9,6 @@
 
 namespace fullcircle {
 
-  typedef struct {
-    uint16_t red;
-    uint16_t green;
-    uint16_t blue;
-  } RGB_t;
-
   class Frame {
     public:
       typedef std::tr1::shared_ptr<Frame> Ptr;
@@ -51,14 +45,14 @@ namespace fullcircle {
         const uint16_t& y
         );
 	  
-	const uint16_t width() { return _width; };
+    const uint16_t width() { return _width; };
     const uint16_t height() { return _height; };
     void dump_frame(std::ostream& os);
     void fill_whole(const RGB_t& color);
     void fill_gradient_horizontal(const RGB_t& from, const RGB_t& to);
     void fill_gradient_vertical(const RGB_t& from, const RGB_t& to);
     void swap_color(const RGB_t& from, const RGB_t& to);
-	bool is_black();
+    bool is_black();
 
     Frame& operator= (const Frame& rhs);
     bool operator==(Frame &rhs);

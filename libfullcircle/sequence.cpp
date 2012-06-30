@@ -1,6 +1,8 @@
 #include "sequence.hpp"
 #include <libfullcircle/sequence.pb.h>
+#include <boost/multi_array.hpp>
 #include <iostream>
+#include <sstream>
 
 using namespace fullcircle;
 
@@ -97,8 +99,15 @@ Sequence::Sequence(std::istream& is)
 Frame::Ptr Sequence::get_frame(uint32_t frameid) {
   if (frameid < size())
     return _frames[frameid];
-  else 
-    throw fullcircle::IndexOutOfBoundException("Invalid index during get_frame");
+  else {
+    std::ostringstream oss;
+    oss << "get_frame: Invalid index " << frameid << " (size: " << size() << ")";
+    throw fullcircle::IndexOutOfBoundException(oss.str());
+  }
+}
+
+Frame::Ptr Sequence::get_last_frame() {
+  return get_frame(size()-1);
 }
 
 bool Sequence::operator== (Sequence &rhs) {
@@ -193,5 +202,5 @@ Sequence::Ptr Sequence::add(uint32_t frame_offset, Sequence::Ptr rhs)
 }
 
 Sequence::Ptr Sequence::operator+(Sequence::Ptr rhs) {
-	return add(0, rhs);
+  return add(0, rhs);
 }
