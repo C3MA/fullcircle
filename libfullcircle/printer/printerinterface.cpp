@@ -14,7 +14,7 @@
 
 using namespace fullcircle;
 
-PrinterInterface::PrinterInterface  (const std::string& serial_device)
+PrinterInterface::PrinterInterface  (bfs::path serial_device)
   : _serial_device(serial_device) 
 {
   open_device(_serial_device);
@@ -25,7 +25,7 @@ PrinterInterface::~PrinterInterface() {
   close(_tty_fd);
 }
 
-void PrinterInterface::open_device(const std::string& serial_device) {
+void PrinterInterface::open_device(bfs::path serial_device) {
   struct termios tio;
 
   memset(&tio,0,sizeof(tio));
@@ -66,5 +66,5 @@ void PrinterInterface::cut_paper() {
     oss << "Device " << _serial_device << " not ready";
     throw CommunicationException(oss.str());
   }
-	write(_tty_fd,"\x1D\x56\x01",3);
+	write(_tty_fd,"\n\n\n\n\x1D\x56\x01",7);
 }
