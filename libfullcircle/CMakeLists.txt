@@ -10,7 +10,11 @@ install(FILES ${CMAKE_BINARY_DIR}/libfullcircle/config.h
 include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_CURRENT_BINARY_DIR}
                     ${Boost_INCLUDE_DIRS})
-file(GLOB fullcircle_src *.cpp *.hpp sfx/*.cpp sfx/*.hpp)
+file(GLOB fullcircle_src 
+  *.cpp *.hpp 
+  sfx/*.cpp sfx/*.hpp
+  printer/*.cpp printer/*.hpp
+)
 set(fullcircle_hdr simulator_main_window.hpp)
 set(fullcircle_forms simulator.ui)
 set(fullcircle_resources sprites.qrc)
