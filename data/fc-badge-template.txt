@@ -1,0 +1,19 @@
+   __       _ _        _          _      
+  / _|_   _| | |   ___(_)_ __ ___| | ___ 
+ | |_| | | | | |  / __| | '__/ __| |/ _ \
+ |  _| |_| | | | | (__| | | | (__| |  __/
+ |_|  \__,_|_|_|  \___|_|_|  \___|_|\___|
+
+
+ Ihre Eingabe wird unter dem Kennzeichen
+
+
+             @@COLOR@@ @@NUMBER@@
+
+
+ verarbeitet und dargestellt.
+
+
+ Weitere Informationen finden Sie unter
+   http://fullcircle.ccc-mannheim.de
+
