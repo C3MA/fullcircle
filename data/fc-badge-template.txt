@@ -8,10 +8,10 @@
  Ihre Eingabe wird unter dem Kennzeichen
 
 
-             @@COLOR@@ @@NUMBER@@
+             @@COlor@@ @@NUMBER@@
 
 
- verarbeitet und dargestellt.
+ interpretiert. 
 
 
  Weitere Informationen finden Sie unter

@@ -9,16 +9,24 @@ namespace fullcircle {
   class BadgeRenderer {
     public:
       typedef std::tr1::shared_ptr<BadgeRenderer> Ptr;
-      BadgeRenderer(bfs::path templatefile) 
-        : _templatefile(templatefile) {};
+      BadgeRenderer(
+          bfs::path templatefile
+        ) : _templatefile(templatefile) {};
       virtual ~BadgeRenderer() {};
-      std::string render();
+      std::string render(
+          const std::string& color,
+          const std::string& number
+        );
 
     private:
       BadgeRenderer (const BadgeRenderer& original);
       BadgeRenderer& operator= (const BadgeRenderer& rhs);
+      std::string replace_color(
+          const std::string& input, const std::string& color);
+      std::string replace_number(
+          const std::string& input, const std::string& number);
+      std::string replace_umlaute(const std::string& input);
       bfs::path _templatefile;
-      
   };
   
 };

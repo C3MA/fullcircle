@@ -21,10 +21,14 @@ int main(int argc, char *argv[1]) {
       ("simulate,s", "do not print the badge - just dump it on the console.")
       ("device,d", po::value<std::string>(), "the serial device of the printer")
       ("template,t", po::value<std::string>(), "the template file to use")
+      ("color,c", po::value<std::string>(), "the color string")
+      ("number,n", po::value<std::string>(), "the interaction number to print")
      ;
     po::positional_options_description p;
     p.add("device", 1);
     p.add("template", 1);
+    p.add("color", 1);
+    p.add("number", 1);
 
     po::variables_map vm;
     po::store(po::command_line_parser(argc, argv).
@@ -34,6 +38,8 @@ int main(int argc, char *argv[1]) {
     // Begin processing of commandline parameters.
     std::string device;
     std::string tmpl;
+    std::string color;
+    std::string number;
 
     if (vm.count("help")) {
       std::cout << desc << std::endl;
@@ -60,11 +66,25 @@ int main(int argc, char *argv[1]) {
       tmpl=vm["template"].as<std::string>();
     }
 
+    if (vm.count("color") != 1 ) {
+      std::cerr << "You must specify the color (-c <color>)." << std::endl;
+      return 1;
+    } else {
+      color=vm["color"].as<std::string>();
+    }
+
+    if (vm.count("number") != 1 ) {
+      std::cerr << "You must specify the number (-n <number>)." << std::endl;
+      return 1;
+    } else {
+      number=vm["number"].as<std::string>();
+    }
+
     bfs::path devicefile(device);
     bfs::path tmplfile(tmpl);
 
     fullcircle::BadgeRenderer::Ptr badge(new fullcircle::BadgeRenderer(tmplfile));
-    std::string document=badge->render();
+    std::string document=badge->render(color, number);
 
     if (vm.count("simulate") == 0) {
       fullcircle::PrinterInterface::Ptr printer(
@@ -72,7 +92,10 @@ int main(int argc, char *argv[1]) {
       printer->print(document);
       printer->cut_paper();
     } else {
-      std::cout << document << std::endl;
+      std::cout << "Simulating badge print (may contain command sequences)" << std::endl
+        << "-------------------------------------------" << std::endl; 
+      std::cout << std::endl << std::endl << document << std::endl;
+      std::cout << "-------------------------------------------" << std::endl; 
     }
 
   } catch (fullcircle::GenericException& ex) {
