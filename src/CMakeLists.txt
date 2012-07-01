@@ -1,9 +1,9 @@
 # -*- mode: cmake; -*-
 set(fc-simulator_src fc-simulator.cpp)
 set(fc-demo_src fc-demo.cpp)
-set(fc-server_src server.cpp)
 set(fc-perlin_src fc-perlin.cpp)
 set(fc-text_src fc-text.cpp)
+set(fc-badge_src fc-badge.cpp)
 
 include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_CURRENT_SOURCE_DIR} 
@@ -20,14 +20,15 @@ add_executable(fc-demo
   ${fc-demo_src}
   )
 
-add_executable(fc-server
-  ${fc-server_src}
-  )
 add_executable(fc-perlin
   ${fc-perlin_src}
   )
 add_executable(fc-text
   ${fc-text_src}
+  )
+
+add_executable(fc-badge
+  ${fc-badge_src}
   )
 
 target_link_libraries(fc-simulator 
@@ -48,14 +49,14 @@ target_link_libraries(fc-perlin
   ${QT_LIBRARIES}
   )
 
-target_link_libraries(fc-server
-  fullcircle
-  ${Boost_LIBRARIES}
-  )
-
 target_link_libraries(fc-text
   fullcircle
   ${Boost_LIBRARIES}
+  )
+target_link_libraries(fc-badge
+  fullcircle 
+  ${Boost_LIBRARIES}
+  ${QT_LIBRARIES}
   )
 
 # sensor programs to the install target
