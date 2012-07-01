@@ -3,6 +3,7 @@ set(fc-simulator_src fc-simulator.cpp)
 set(fc-demo_src fc-demo.cpp)
 set(fc-server_src server.cpp)
 set(fc-perlin_src fc-perlin.cpp)
+set(fc-text_src fc-text.cpp)
 
 include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_CURRENT_SOURCE_DIR} 
@@ -25,6 +26,9 @@ add_executable(fc-server
 add_executable(fc-perlin
   ${fc-perlin_src}
   )
+add_executable(fc-text
+  ${fc-text_src}
+  )
 
 target_link_libraries(fc-simulator 
   fullcircle 
@@ -45,6 +49,11 @@ target_link_libraries(fc-perlin
   )
 
 target_link_libraries(fc-server
+  fullcircle
+  ${Boost_LIBRARIES}
+  )
+
+target_link_libraries(fc-text
   fullcircle
   ${Boost_LIBRARIES}
   )
