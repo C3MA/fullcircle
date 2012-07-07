@@ -4,6 +4,7 @@ set(fc-demo_src fc-demo.cpp)
 set(fc-perlin_src fc-perlin.cpp)
 set(fc-text_src fc-text.cpp)
 set(fc-badge_src fc-badge.cpp)
+set(fc-2gif_src fc-2gif.cpp)
 
 include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_CURRENT_SOURCE_DIR} 
@@ -29,6 +30,9 @@ add_executable(fc-text
 
 add_executable(fc-badge
   ${fc-badge_src}
+  )
+add_executable(fc-2gif
+  ${fc-2gif_src}
   )
 
 target_link_libraries(fc-simulator 
@@ -59,9 +63,16 @@ target_link_libraries(fc-badge
   ${QT_LIBRARIES}
   )
 
+target_link_libraries(fc-2gif
+  fullcircle
+  ${Boost_LIBRARIES}
+  ${QT_LIBRARIES}
+  )
+
 # sensor programs to the install target
 INSTALL(PROGRAMS 
   ${CMAKE_CURRENT_BINARY_DIR}/fc-simulator
   ${CMAKE_CURRENT_BINARY_DIR}/fc-demo
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-2gif
   DESTINATION bin)
 
