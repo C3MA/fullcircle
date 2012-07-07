@@ -16,7 +16,7 @@ int main(int argc, char *argv[1]) {
     oss << "Usage: " << argv[0] << " ACTION [additional options]";
     po::options_description desc(oss.str());
     desc.add_options()
-      ("help", "produce help message")
+      ("help,h", "produce help message")
       ("version,v", "print version and exit")
       ("simulate,s", "do not print the badge - just dump it on the console.")
       ("device,d", po::value<std::string>(), "the serial device of the printer")
