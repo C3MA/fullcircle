@@ -4,6 +4,7 @@
 #include <QApplication>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/lexical_cast.hpp>
 #include <libfullcircle/sequence.hpp>
 #include <libfullcircle/frame.hpp>
 #include <libfullcircle/sprite_io.hpp>
@@ -25,7 +26,7 @@ int main (int argc, char* argv[]) {
   Q_INIT_RESOURCE(sprites);
 	
   /* Set the default forgroundcolor to white */
-  RGB_t foreground;
+  fullcircle::RGB_t foreground;
   foreground.red = foreground.green = foreground.blue = 255;
 	
   try {
@@ -115,7 +116,7 @@ int main (int argc, char* argv[]) {
 	  fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(25,8,8));
 
 	  fullcircle::FontRenderer::Ptr fr(new fullcircle::FontRenderer(8, 8));
-	  fr->scroll_text(seq, 1, 2, text, scrolltime /* time in milliseconds */);
+	  fr->scroll_text(seq, 1, 2, text, scrolltime /* time in milliseconds */, foreground);
 
       std::cout << "Saving sequence to file " << sequence << std::endl;
       std::fstream output(sequence.c_str(), 
