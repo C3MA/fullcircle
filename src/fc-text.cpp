@@ -3,6 +3,7 @@
 #include <fstream>
 #include <QApplication>
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 #include <libfullcircle/sequence.hpp>
 #include <libfullcircle/frame.hpp>
 #include <libfullcircle/sprite_io.hpp>
@@ -22,7 +23,11 @@ int main (int argc, char* argv[]) {
    * be called only once. Just leave it here.
    */
   Q_INIT_RESOURCE(sprites);
-
+	
+  /* Set the default forgroundcolor to white */
+  RGB_t foreground;
+  foreground.red = foreground.green = foreground.blue = 255;
+	
   try {
     std::ostringstream oss;
     oss << "Usage: " << argv[0] << " ACTION [additional options]";
@@ -32,11 +37,11 @@ int main (int argc, char* argv[]) {
       ("version,v", "print version and exit")
       ("sequence,s", po::value<std::string>(), "the sequence file to use")
       ("text,t", po::value<std::string>(), "the text to display")
-      ("moving,m", po::value<std::string>(), "time one character should be displayed before moving to the next")	  
+      ("moving,m", po::value<std::string>(), "time one character should be displayed before moving to the next")
+	  ("color,c", po::value<std::string>(), "text color in the format: '#RRGGBB' RR is red, GG green, BB blue (range of each value is 0x00-0xFF)")
      ;
     po::positional_options_description p;
     p.add("sequence", 1);
-    p.add("hash", 1);
 
     po::variables_map vm;
     po::store(po::command_line_parser(argc, argv).
@@ -80,12 +85,34 @@ int main (int argc, char* argv[]) {
 		std::string tmp = vm["moving"].as<std::string>();
 		scrolltime= atoi(tmp.c_str());
 	}
+	  
+	if (vm.count("color") == 1) {
+		std::string tmp = vm["color"].as<std::string>();
+		try {    
+			if (boost::starts_with(tmp, "#"))
+			{
+				// foo_value = boost::lexical_cast<int>(argv[1]+6);	
+
+				//FIXME: parse the hexstring:
+				/*
+				 try {
+					unsigned int x = lexical_cast<int>("0x0badc0de");
+				 } catch(bad_lexical_cast &) {
+					// whatever you want to do...
+				 }
+				 */
+				
+			}
+		} catch (boost::bad_cast) {
+			std::cerr << "The parameter -c needs an argument like : '#02AA40'" << std::endl;
+			return 1;
+		}
+	}
 
     bfs::path sequence(sequencefile);
 	  
     try {
 	  fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(25,8,8));
-//FIXME      fullcircle::ColorScheme::Ptr colors(new fullcircle::ColorSchemeSmash());
 
 	  fullcircle::FontRenderer::Ptr fr(new fullcircle::FontRenderer(8, 8));
 	  fr->scroll_text(seq, 1, 2, text, scrolltime /* time in milliseconds */);
