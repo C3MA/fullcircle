@@ -92,7 +92,7 @@ int main (int argc, char* argv[]) {
 		std::string tmp = vm["color"].as<std::string>();
 		int red, green, blue = 0;
 		try {    
-			if (boost::starts_with(tmp, "#"))
+			if (boost::starts_with(tmp, "#") || tmp.size() != 7)
 			{				
 				std::stringstream ss_red, ss_green, ss_blue;
 				ss_red << std::hex << tmp.substr(1,2);
@@ -104,7 +104,11 @@ int main (int argc, char* argv[]) {
 				foreground.red = red;
 				foreground.green = green;
 				foreground.blue = blue;
+			} else {
+				std::cerr << "The parameter -c needs an argument like : '#02AA40'" << std::endl;
+				return 1;
 			}
+
 		} catch (.../*boost::bad_cast*/) {
 			std::cerr << "The parameter -c needs an argument like : '#02AA40'" << std::endl;
 			return 1;
