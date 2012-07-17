@@ -1,5 +1,6 @@
 #include <libfullcircle/common.hpp>
 #include <iostream>
+#include <sstream>
 #include <fstream>
 #include <QApplication>
 #include <boost/filesystem.hpp>
@@ -34,7 +35,7 @@ int main (int argc, char* argv[]) {
     oss << "Usage: " << argv[0] << " ACTION [additional options]";
     po::options_description desc(oss.str());
     desc.add_options()
-      ("help", "produce help message")
+      ("help,h", "produce help message")
       ("version,v", "print version and exit")
       ("sequence,s", po::value<std::string>(), "the sequence file to use")
       ("text,t", po::value<std::string>(), "the text to display")
@@ -89,22 +90,22 @@ int main (int argc, char* argv[]) {
 	  
 	if (vm.count("color") == 1) {
 		std::string tmp = vm["color"].as<std::string>();
+		int red, green, blue = 0;
 		try {    
 			if (boost::starts_with(tmp, "#"))
-			{
-				// foo_value = boost::lexical_cast<int>(argv[1]+6);	
-
-				//FIXME: parse the hexstring:
-				/*
-				 try {
-					unsigned int x = lexical_cast<int>("0x0badc0de");
-				 } catch(bad_lexical_cast &) {
-					// whatever you want to do...
-				 }
-				 */
-				
+			{				
+				std::stringstream ss_red, ss_green, ss_blue;
+				ss_red << std::hex << tmp.substr(1,2);
+				ss_green << std::hex << tmp.substr(3,2);
+				ss_blue << std::hex << tmp.substr(5,2);
+				ss_red >> red;
+				ss_green >> green;
+				ss_blue >> blue;
+				foreground.red = red;
+				foreground.green = green;
+				foreground.blue = blue;
 			}
-		} catch (boost::bad_cast) {
+		} catch (.../*boost::bad_cast*/) {
 			std::cerr << "The parameter -c needs an argument like : '#02AA40'" << std::endl;
 			return 1;
 		}
