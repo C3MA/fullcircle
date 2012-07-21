@@ -5,6 +5,7 @@ set(fc-perlin_src fc-perlin.cpp)
 set(fc-gol_src fc-gol.cpp)
 set(fc-text_src fc-text.cpp)
 set(fc-badge_src fc-badge.cpp)
+set(fc-add_src fc-add.cpp)
 
 include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_CURRENT_SOURCE_DIR} 
@@ -31,6 +32,9 @@ add_executable(fc-gol
 
 add_executable(fc-text
   ${fc-text_src}
+  )
+add_executable(fc-add
+  ${fc-add_src}
   )
 
 add_executable(fc-badge
@@ -62,6 +66,11 @@ target_link_libraries(fc-gol
   )
 
 target_link_libraries(fc-text
+  fullcircle
+  ${Boost_LIBRARIES}
+  )
+
+target_link_libraries(fc-add
   fullcircle
   ${Boost_LIBRARIES}
   )
