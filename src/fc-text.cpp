@@ -118,9 +118,9 @@ int main (int argc, char* argv[]) {
     bfs::path sequence(sequencefile);
 	  
     try {
-	  fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(25,8,8));
+	  fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(12,16,9));
 
-	  fullcircle::FontRenderer::Ptr fr(new fullcircle::FontRenderer(8, 8));
+	  fullcircle::FontRenderer::Ptr fr(new fullcircle::FontRenderer(16, 9));
 	  fr->scroll_text(seq, 1, 2, text, scrolltime /* time in milliseconds */, foreground);
 
       std::cout << "Saving sequence to file " << sequence << std::endl;
