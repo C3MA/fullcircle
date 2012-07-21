@@ -67,15 +67,32 @@ int main (int argc, char* argv[]) {
       sequencefile=vm["sequence"].as<std::string>();
     }
 
-	std::cout << "Found some input files : " << input.size() << std::endl;  
+	std::cout << "Found " << input.size() << " sequences." << std::endl;  
     bfs::path sequence(sequencefile);
 	  
     try {
-		fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(25,8,8));
+		fullcircle::Sequence::Ptr sum;
+		
+		// iterate over all input files and add them.
+		for(unsigned int i=0; i < input.size(); i++)
+		{
+			bfs::path sequence(input[i]);
+		
+			std::cout << "Loading sequence" << (i + 1) << " from file " << sequence << std::endl;
+			std::fstream inputStream(sequence.c_str(), std::ios::in | std::ios::binary);
+			fullcircle::Sequence::Ptr inputSeq(new fullcircle::Sequence(inputStream));
+			inputStream.close();
+			
+			// add one sequence to the next.
+			if (sum == NULL)
+				sum = inputSeq;
+			else 
+				sum = (*sum) + inputSeq;
+		}
 		
 		std::fstream output(sequence.c_str(), 
 							std::ios::out | std::ios::trunc | std::ios::binary);
-		seq->save(output, "fc-add", version->getVersion());// why the hell is this also stored?
+		sum->save(output, "fc-add", version->getVersion());// why the hell is this also stored?
 		output.close();
 		
     } catch (fullcircle::GenericException& ex) {
