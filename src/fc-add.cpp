@@ -30,29 +30,25 @@ int main (int argc, char* argv[]) {
 	
   try {
     std::ostringstream oss;
-    oss << "Usage: " << argv[0] << " ACTION [additional options]";
+    oss << "Usage: " << argv[0] << " ACTION [additional options] <sequence1> <sequence2> ...";
     po::options_description desc(oss.str());
     desc.add_options()
       ("help,h", "produce help message")
       ("version,v", "print version and exit")
-      ("sequence,s", po::value<std::string>(), "the sequence file to use")
-      ("text,t", po::value<std::string>(), "the text to display")
-      ("moving,m", po::value<std::string>(), "time one character should be displayed before moving to the next")
-	  ("color,c", po::value<std::string>(), "text color in the format: '#RRGGBB' RR is red, GG green, BB blue (range of each value is 0x00-0xFF)")
-     ;
-    po::positional_options_description p;
-    p.add("sequence", 1);
-
+      ("sequence,s", po::value<std::string>(), "sequence file that should be generated")
+	;
     po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-        options(desc).positional(p).run(), vm);
+    po::parsed_options parsed = po::command_line_parser(argc, argv).options(desc).allow_unregistered().run();
+    po::store(parsed, vm);
     po::notify(vm);
 
+	
     // Begin processing of commandline parameters.
     std::string sequencefile;
-    std::string text;
-    uint32_t scrolltime;
-
+	// store the unkown attributes (aka input files)
+	std::vector<std::string> input = collect_unrecognized(parsed.options, po::include_positional);
+	  
+	  
     if (vm.count("help")) {
       std::cout << desc << std::endl;
       return 1;
@@ -65,18 +61,23 @@ int main (int argc, char* argv[]) {
     }
 
     if (vm.count("sequence") != 1 ) {
-      std::cerr << "You must specify a sequence file (-s <filename>)." << std::endl;
+      std::cerr << "You must specify one sequence file (-s <filename>)." << std::endl;
       return 1;
     } else {
       sequencefile=vm["sequence"].as<std::string>();
     }
 
-
+	std::cout << "Found some input files : " << input.size() << std::endl;  
     bfs::path sequence(sequencefile);
 	  
     try {
-	  fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(25,8,8));
-
+		fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(25,8,8));
+		
+		std::fstream output(sequence.c_str(), 
+							std::ios::out | std::ios::trunc | std::ios::binary);
+		seq->save(output, "fc-add", version->getVersion());// why the hell is this also stored?
+		output.close();
+		
     } catch (fullcircle::GenericException& ex) {
       std::cout << "Caught exception: " << ex.what() << std::endl;
       exit(1);
