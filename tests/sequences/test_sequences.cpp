@@ -542,9 +542,8 @@ BOOST_AUTO_TEST_CASE ( check_sequence_add_offset3 ) {
 BOOST_AUTO_TEST_CASE ( check_sequence_add_round ) {
 	init_color();
 	std::cout << "################## Testing the addition of two sequences (first sequence is used as a ringbuffer)." << std::endl;
-	fullcircle::RGB_t color1;
+	fullcircle::RGB_t color1, color2, pixel;
 	color1.red = color1.green = color1.blue = 160;
-	fullcircle::RGB_t color2;
 	color2.red = color2.green = 0; color2.blue = 255;
 	
 	/* Create a first sequence of 2 frames */
@@ -558,7 +557,7 @@ BOOST_AUTO_TEST_CASE ( check_sequence_add_round ) {
 	seq->add_frame(f11);
 	//	seq->dump(std::cout);
 
-		/* Create a second sequence of 3 frames */
+		/* Create a second sequence of 4 frames */
 	fullcircle::Sequence::Ptr seq2(new fullcircle::Sequence(10,4,4));
     fullcircle::Frame::Ptr f20(new fullcircle::Frame(4,4));
     fullcircle::Frame::Ptr f21(new fullcircle::Frame(4,4));
@@ -567,10 +566,30 @@ BOOST_AUTO_TEST_CASE ( check_sequence_add_round ) {
 	f21->fill_whole(color1);
 	seq2->add_frame(f20);
 	seq2->add_frame(f_empty2);
+	seq2->add_frame(f_empty2);
 	seq2->add_frame(f21);
 	
 	//	seq2->dump(std::cout);
 	fullcircle::Sequence::Ptr sum = seq->add(0, seq2);
+	BOOST_CHECK_EQUAL (4, sum->size());
+	pixel = sum->get_frame(0)->get_pixel(0, 0); // fetch the first pixel from the first frame
+	BOOST_CHECK_EQUAL (pixel.red, 255);
+	BOOST_CHECK_EQUAL (pixel.green, 255);
+	BOOST_CHECK_EQUAL (pixel.blue, 255);
+	pixel = sum->get_frame(1)->get_pixel(0, 0); // fetch the first pixel from the second frame
+	BOOST_CHECK_EQUAL (pixel.red, 0);
+	BOOST_CHECK_EQUAL (pixel.green, 0);
+	BOOST_CHECK_EQUAL (pixel.blue, 255);
+	pixel = sum->get_frame(2)->get_pixel(0, 0); // fetch the first pixel from the third frame
+	BOOST_CHECK_EQUAL (pixel.red, 160);
+	BOOST_CHECK_EQUAL (pixel.green, 160);
+	BOOST_CHECK_EQUAL (pixel.blue, 160);	
+	pixel = sum->get_frame(3)->get_pixel(0, 0); // fetch the first pixel from the fourth frame
+	BOOST_CHECK_EQUAL (pixel.red, 160);
+	BOOST_CHECK_EQUAL (pixel.green, 160);
+	BOOST_CHECK_EQUAL (pixel.blue, 255);	
+	std::cout << "####### The sum is the following:" << std::endl;
+	sum->dump(std::cout);	
 }
 
 //BOOST_AUTO_TEST_SUITE_END()
