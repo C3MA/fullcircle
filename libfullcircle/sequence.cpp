@@ -166,7 +166,7 @@ Sequence::Ptr Sequence::operator<< (Sequence::Ptr rhs) {
   return retval;
 }
 
-Sequence::Ptr Sequence::add(uint32_t frame_offset, Sequence::Ptr rhs)
+Sequence::Ptr Sequence::add(uint32_t frame_offset, Sequence::Ptr rhs, bool ringBuffer)
 {
 	if (rhs->fps() != fps())
 		throw DataFormatException("Sequence FPS mismatch - cannot add frame.");
@@ -188,14 +188,29 @@ Sequence::Ptr Sequence::add(uint32_t frame_offset, Sequence::Ptr rhs)
 			fullcircle::Frame::Ptr local = get_frame(frameID);
 			fullcircle::Frame::Ptr sum = (*local) + other;
 			retval->add_frame(sum);
+		} else if (ringBuffer) {
+			/* the first sequence is too short, start with the first frame of this sequence */
+			fullcircle::Frame::Ptr local = get_frame( frameID % size() );
+			fullcircle::Frame::Ptr sum = (*local) + other;
+			retval->add_frame(sum);
 		} else {
+			/* the first sequence is too short, so simply append the second sequence */
 			retval->add_frame(other);
 		}
 	}
+	
 	// add the possible rest of local frames
 	for (uint32_t frameID=rhs->size(); frameID < size(); ++frameID) {
-		fullcircle::Frame::Ptr local = get_frame(frameID);
-		retval->add_frame(local);
+		if (ringBuffer) {
+			/* the second sequence is too short, start with the first frame of this sequence */
+			fullcircle::Frame::Ptr other = rhs->get_frame( frameID % rhs->size() );
+			fullcircle::Frame::Ptr local = get_frame( frameID );
+			fullcircle::Frame::Ptr sum = (*local) + other;
+			retval->add_frame(sum);
+		} else {
+			fullcircle::Frame::Ptr local = get_frame(frameID);
+			retval->add_frame(local);
+		}
 	}
 	
 	return retval;
