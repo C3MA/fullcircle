@@ -36,6 +36,7 @@ int main (int argc, char* argv[]) {
       ("help,h", "produce help message")
       ("version,v", "print version and exit")
       ("sequence,s", po::value<std::string>(), "sequence file that should be generated")
+	  ("ringbuffer,r", "start with the first frame, when a sequence is shorter than the rest.")
 	;
     po::variables_map vm;
     po::parsed_options parsed = po::command_line_parser(argc, argv).options(desc).allow_unregistered().run();
@@ -47,7 +48,7 @@ int main (int argc, char* argv[]) {
     std::string sequencefile;
 	// store the unkown attributes (aka input files)
 	std::vector<std::string> input = collect_unrecognized(parsed.options, po::include_positional);
-	  
+    bool ringBufferFunctionality = false; /* start with the first frame from the beginning */
 	  
     if (vm.count("help")) {
       std::cout << desc << std::endl;
@@ -66,6 +67,11 @@ int main (int argc, char* argv[]) {
     } else {
       sequencefile=vm["sequence"].as<std::string>();
     }
+	  
+	if (vm.count("ringbuffer") == 1 ) {
+		ringBufferFunctionality = true;
+	}
+	  
 
 	std::cout << "Found " << input.size() << " sequences." << std::endl;  
     bfs::path sequence(sequencefile);
@@ -87,7 +93,7 @@ int main (int argc, char* argv[]) {
 			if (sum == NULL)
 				sum = inputSeq;
 			else 
-				sum = (*sum) + inputSeq;
+				sum = sum->add(0, inputSeq, ringBufferFunctionality);
 		}
 		
 		std::fstream output(sequence.c_str(), 
