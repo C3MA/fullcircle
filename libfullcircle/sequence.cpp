@@ -192,6 +192,7 @@ Sequence::Ptr Sequence::add(uint32_t frame_offset, Sequence::Ptr rhs)
 			retval->add_frame(other);
 		}
 	}
+	
 	// add the possible rest of local frames
 	for (uint32_t frameID=rhs->size(); frameID < size(); ++frameID) {
 		fullcircle::Frame::Ptr local = get_frame(frameID);
