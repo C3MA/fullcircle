@@ -570,7 +570,7 @@ BOOST_AUTO_TEST_CASE ( check_sequence_add_round ) {
 	seq2->add_frame(f21);
 	
 	//	seq2->dump(std::cout);
-	fullcircle::Sequence::Ptr sum = seq->add(0, seq2);
+	fullcircle::Sequence::Ptr sum = seq->add(0, seq2, true);
 	BOOST_CHECK_EQUAL (4, sum->size());
 	pixel = sum->get_frame(0)->get_pixel(0, 0); // fetch the first pixel from the first frame
 	BOOST_CHECK_EQUAL (pixel.red, 255);
