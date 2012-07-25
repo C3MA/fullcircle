@@ -24,6 +24,13 @@ void Sequence::add_frame(Frame::Ptr frame) {
   _frames.push_back(frame);
 }
 
+void Sequence::add_sequence(Sequence::Ptr rhs)
+{
+	for (uint32_t frameID=0; frameID < rhs->size(); ++frameID) {
+		add_frame(rhs->get_frame(frameID));
+	}
+}
+
 void Sequence::dump(std::ostream& os) {
   uint32_t seq_number = 0;
   std::vector<Frame::Ptr>::iterator it;
