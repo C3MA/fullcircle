@@ -19,6 +19,7 @@ namespace fullcircle {
       virtual ~Sequence() {}; 
 
       void add_frame(Frame::Ptr frame);
+	  void add_sequence(Sequence::Ptr rhs);
       Frame::Ptr get_frame(uint32_t frameid);
       Frame::Ptr get_last_frame();
       uint16_t width() const { return _width; };
