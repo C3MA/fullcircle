@@ -645,4 +645,16 @@ BOOST_AUTO_TEST_CASE ( check_sequence_add_round2 ) {
 	//sum->dump(std::cout);	
 }
 
+BOOST_AUTO_TEST_CASE ( check_sequence_initparser ) {
+	std::cout << "################## Testing Parsing configuration file" << std::endl;
+	//FIXME: first backup the old configuration
+	
+	// FIXME: generate a configuration file with some values
+	fullcircle::Sequence::Ptr seq_parsed(new fullcircle::Sequence());
+	
+	seq_parsed->dump(std::cout);
+	
+	//FIXME: check the parsed values
+}
+
 //BOOST_AUTO_TEST_SUITE_END()

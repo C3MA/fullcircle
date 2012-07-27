@@ -16,6 +16,7 @@ namespace fullcircle {
           const uint16_t& width, 
           const uint16_t& height);
       Sequence (std::istream& is);
+	  Sequence();
       virtual ~Sequence() {}; 
 
       void add_frame(Frame::Ptr frame);
@@ -56,6 +57,11 @@ namespace fullcircle {
       std::string _generator_version;
       std::vector<Frame::Ptr> _frames;
 
+	  // default values
+	  const static uint16_t DEFAULT_FPS = 25;
+	  const static uint16_t DEFAULT_WIDTH = 16;
+	  const static uint16_t DEFAULT_HEIGHT = 9;
+	  #define CONFIGURATION_PATH "~/.libfullcircle_rc"
   };
 };
 
