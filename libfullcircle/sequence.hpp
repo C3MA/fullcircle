@@ -61,7 +61,7 @@ namespace fullcircle {
 	  const static uint16_t DEFAULT_FPS = 25;
 	  const static uint16_t DEFAULT_WIDTH = 16;
 	  const static uint16_t DEFAULT_HEIGHT = 9;
-	  #define CONFIGURATION_PATH "~/.libfullcircle_rc"
+	  #define CONFIGURATION_PATH "/.libfullcircle_rc"
   };
 };
 

@@ -35,13 +35,22 @@ Sequence::Sequence ( const uint16_t& frames_per_second,
  ****************/
 Sequence::Sequence()
 {
-	std::ifstream config(CONFIGURATION_PATH);
+	char * pHome;
+	pHome = getenv ("HOME");		
+	
+	char* cfgPath = strcat(pHome, CONFIGURATION_PATH);
+	std::cerr << "Loading " << cfgPath << std::endl;
+	std::ifstream config(cfgPath);
+	
+	
+	
     if(!config)
     {
 		// set the default values
         _fps = DEFAULT_FPS;
 		_height = DEFAULT_HEIGHT;
 		_width = DEFAULT_WIDTH;
+		std::cerr << "FAILED, we use the standard configuration" << std::endl;
     }
 	else
 	{
@@ -51,15 +60,13 @@ Sequence::Sequence()
 		options.insert("*");
 		
 		try
-		{      
-			for (pod::config_file_iterator i(config, options), e ; i != e; ++i)
-			{
-				std::cout << i->string_key <<" "<<i->value[0] << std::endl;
-				parameters[i->string_key] = i->value[0];
-			}
-			std::cout << parameters["width"] << std::endl;
-			std::cout << parameters["heigth"] << std::endl;
-			std::cout << parameters["fps"] << std::endl;
+		{   
+			_fps = 0;
+			_height = 0;
+			_width = 0;
+			_width = atoi( parameters["width"].c_str() );
+			_height = atoi( parameters["height"].c_str() );
+			_fps = atoi( parameters["fps"].c_str() );
 		}
 		catch(std::exception& e)    
 		{
