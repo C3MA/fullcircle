@@ -651,6 +651,8 @@ BOOST_AUTO_TEST_CASE ( check_sequence_initparser ) {
 	
 	// FIXME: generate a configuration file with some values
 	fullcircle::Sequence::Ptr seq_parsed(new fullcircle::Sequence());
+	BOOST_CHECK_EQUAL ( seq_parsed->width(), 3);
+	BOOST_CHECK_EQUAL ( seq_parsed->height(), 4);
 	
 	fullcircle::Sequence::Ptr seqKown(new fullcircle::Sequence(25,3,4));
 	seq_parsed->add(0,seqKown);

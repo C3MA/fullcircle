@@ -34,15 +34,18 @@ Sequence::Sequence ( const uint16_t& frames_per_second,
  * When no configuration is found, a default configuration is used.
  ****************/
 Sequence::Sequence()
+: _fps()
+, _width()
+, _height()
+, _generator_name()
+, _generator_version()
+, _frames()
 {
 	char * pHome;
 	pHome = getenv ("HOME");		
 	
 	char* cfgPath = strcat(pHome, CONFIGURATION_PATH);
-	std::cerr << "Loading " << cfgPath << std::endl;
 	std::ifstream config(cfgPath);
-	
-	
 	
     if(!config)
     {
@@ -60,7 +63,14 @@ Sequence::Sequence()
 		options.insert("*");
 		
 		try
-		{   
+		{  
+			// fill all the values from the configuration file into the structure
+			for (pod::config_file_iterator i(config, options), e ; i != e; ++i)
+			{
+				//std::cout << i->string_key <<" "<<i->value[0] << std::endl; //Debug line
+				parameters[i->string_key] = i->value[0];
+			}
+			
 			_fps = 0;
 			_height = 0;
 			_width = 0;
