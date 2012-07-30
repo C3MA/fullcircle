@@ -1,8 +1,20 @@
 #include "sequence.hpp"
 #include <libfullcircle/sequence.pb.h>
 #include <boost/multi_array.hpp>
-#include <iostream>
 #include <sstream>
+
+#include <iostream>
+#include <string>
+#include <set>
+#include <sstream>
+#include <exception>
+#include <fstream>
+
+#include <boost/config.hpp>
+#include <boost/program_options/detail/config_file.hpp>
+#include <boost/program_options/parsers.hpp>
+
+namespace pod = boost::program_options::detail;
 
 using namespace fullcircle;
 
@@ -15,6 +27,63 @@ Sequence::Sequence ( const uint16_t& frames_per_second,
   , _generator_version()
   , _frames()
 {
+}
+
+/**
+ * An automatic sequence constructor.
+ * When no configuration is found, a default configuration is used.
+ ****************/
+Sequence::Sequence()
+: _fps()
+, _width()
+, _height()
+, _generator_name()
+, _generator_version()
+, _frames()
+{
+	char * pHome;
+	pHome = getenv ("HOME");		
+	
+	char* cfgPath = strcat(pHome, CONFIGURATION_PATH);
+	std::ifstream config(cfgPath);
+	
+    if(!config)
+    {
+		// set the default values
+        _fps = DEFAULT_FPS;
+		_height = DEFAULT_HEIGHT;
+		_width = DEFAULT_WIDTH;
+		std::cerr << "FAILED, we use the standard configuration" << std::endl;
+    }
+	else
+	{
+		//parameters
+		std::set<std::string> options;
+		std::map<std::string, std::string> parameters;
+		options.insert("*");
+		
+		try
+		{  
+			// fill all the values from the configuration file into the structure
+			for (pod::config_file_iterator i(config, options), e ; i != e; ++i)
+			{
+				//std::cout << i->string_key <<" "<<i->value[0] << std::endl; //Debug line
+				parameters[i->string_key] = i->value[0];
+			}
+			// first reset all attributes
+			_fps = 0;
+			_height = 0;
+			_width = 0;
+			// now try to fill the attributes with the configuration.
+			_width = atoi( parameters["width"].c_str() );
+			_height = atoi( parameters["height"].c_str() );
+			_fps = atoi( parameters["fps"].c_str() );
+		}
+		catch(std::exception& e)    
+		{
+			std::cerr<<"Exception: "<<e.what()<<std::endl;
+		}
+	}
 }
 
 void Sequence::add_frame(Frame::Ptr frame) {
