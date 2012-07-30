@@ -70,10 +70,11 @@ Sequence::Sequence()
 				//std::cout << i->string_key <<" "<<i->value[0] << std::endl; //Debug line
 				parameters[i->string_key] = i->value[0];
 			}
-			
+			// first reset all attributes
 			_fps = 0;
 			_height = 0;
 			_width = 0;
+			// now try to fill the attributes with the configuration.
 			_width = atoi( parameters["width"].c_str() );
 			_height = atoi( parameters["height"].c_str() );
 			_fps = atoi( parameters["fps"].c_str() );
