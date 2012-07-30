@@ -118,9 +118,7 @@ int main (int argc, char* argv[]) {
 
     bfs::path sequence(sequencefile);
 
-    uint8_t fps=12;
-    uint8_t width=16;
-    uint8_t height=9;
+
     // Construct seed
     uint64_t seed=0;
     for( uint16_t i = 0; i < hash.length(); ++i) {
@@ -129,8 +127,11 @@ int main (int argc, char* argv[]) {
     std::cout << "Constructed seed " << (uint16_t) seed << " from hash." << std::endl;
 
     try {
-      fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(12,16,9));
-      fullcircle::ColorScheme::Ptr colors(new fullcircle::ColorSchemeSmash());
+		fullcircle::Sequence::Ptr seq(new fullcircle::Sequence());
+		uint8_t fps=seq->fps();
+		uint8_t width=seq->width();
+		uint8_t height=seq->height();
+		fullcircle::ColorScheme::Ptr colors(new fullcircle::ColorSchemeSmash());
 
       seq = (*seq) << mk_perlin_noise(
           colors,
