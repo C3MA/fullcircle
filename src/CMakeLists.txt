@@ -7,6 +7,7 @@ set(fc-text_src fc-text.cpp)
 set(fc-badge_src fc-badge.cpp)
 set(fc-add_src fc-add.cpp)
 set(fc-cat_src fc-cat.cpp)
+set(fc-read-image_src fc-read-image.cpp)
 
 include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_CURRENT_SOURCE_DIR} 
@@ -39,6 +40,9 @@ add_executable(fc-add
   )
 add_executable(fc-cat
   ${fc-cat_src}
+  )
+add_executable(fc-read-image
+  ${fc-read-image_src}
   )
 
 add_executable(fc-badge
@@ -75,6 +79,10 @@ target_link_libraries(fc-text
   )
 
 target_link_libraries(fc-add
+  fullcircle
+  ${Boost_LIBRARIES}
+  )
+target_link_libraries(fc-read-image
   fullcircle
   ${Boost_LIBRARIES}
   )
