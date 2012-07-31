@@ -36,7 +36,6 @@ int main (int argc, char* argv[]) {
       ("help,h", "produce help message")
       ("version,v", "print version and exit")
       ("sequence,s", po::value<std::string>(), "sequence file that should be generated")
-	  ("ringbuffer,r", "start with the first frame, when a sequence is shorter than the rest.")
 	;
     po::variables_map vm;
     po::parsed_options parsed = po::command_line_parser(argc, argv).options(desc).allow_unregistered().run();
@@ -72,8 +71,8 @@ int main (int argc, char* argv[]) {
 		ringBufferFunctionality = true;
 	}
 	  
-
-	std::cout << "Found " << input.size() << " sequences." << std::endl;  
+	//FIXME load a image from stdin
+	std::cout << "Found " << input.size() << " images." << std::endl;  
     bfs::path sequence(sequencefile);
 	  
     try {
@@ -82,10 +81,13 @@ int main (int argc, char* argv[]) {
 		// iterate over all input files and add them.
 		for(unsigned int i=0; i < input.size(); i++)
 		{
-			bfs::path sequence(input[i]);
+			bfs::path imagePath(input[i]);
 		
-			std::cout << "Loading sequence" << (i + 1) << " from file " << sequence << std::endl;
+			std::cout << "Load image " << (i + 1) << " from file " << imagePath << std::endl;
 			std::fstream inputStream(sequence.c_str(), std::ios::in | std::ios::binary);
+			
+			//FIXME load a image from a file
+			
 			fullcircle::Sequence::Ptr inputSeq(new fullcircle::Sequence(inputStream));
 			inputStream.close();
 			
