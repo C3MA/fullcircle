@@ -19,7 +19,10 @@ void FlowMap::init(std::string hash, uint16_t width, uint16_t height)
 
 void FlowMap::init(Frame::Ptr hills)
 {
-	_hills = hills;
+	// make a deep copy
+	fullcircle::Frame::Ptr frame(new fullcircle::Frame(hills->width(), hills->height()));
+	_hills = frame;
+	_hills->set_pixel(0,0, hills);
 }
 
 Frame::Ptr FlowMap::get_next()
