@@ -30,10 +30,12 @@
 #include <libfullcircle/flowmap.hpp>
 
 fullcircle::RGB_t white;
+fullcircle::RGB_t black;
 fullcircle::RGB_t red;
 
 void init_color() {
   white.red = white.green = white.blue = 255;
+  black.red = black.green = black.blue = 0;
   red.red = 255; red.green = red.blue = 0;
 }
 
@@ -65,12 +67,19 @@ BOOST_AUTO_TEST_CASE ( check_flowmap_creating ) {
 	color1.blue = 160;
 	
 	fullcircle::Frame::Ptr hills(new fullcircle::Frame(3,3));
-	hills->fill_whole(color1);
-	
+	hills->fill_whole(color1);	
     std::cout << "Test hill:" << std::endl;
-	hills->dump_frame(std::cout);
-	
-	
+	hills->dump_frame(std::cout);	
 	fullcircle::FlowMap::Ptr fm(new fullcircle::FlowMap());
 	fm->init(hills);
+	
+	BOOST_CHECK_EQUAL (3, hills->width()  );
+	BOOST_CHECK_EQUAL (3, hills->height() );
+	
+	// reuse the variable hill to specify the start points.
+	hills->fill_whole(black);
+	hills->set_pixel(1, 1, 0, 180, 0);
+	std::cout << "start color:" << std::endl;
+	hills->dump_frame(std::cout);
+	fm->start_points(hills);
 }

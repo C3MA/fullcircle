@@ -13,6 +13,7 @@ namespace fullcircle {
 	  
 	  void init(std::string hash, uint16_t width, uint16_t height); // generate hill profile from a hash
 	  void init(Frame::Ptr hills);
+	  void start_points(Frame::Ptr start);
 	  Frame::Ptr get_next();
 	  bool has_changed();
 	  
