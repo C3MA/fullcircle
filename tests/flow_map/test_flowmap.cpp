@@ -62,12 +62,12 @@ BOOST_AUTO_TEST_CASE ( check_flowmap_creating ) {
 	init_color();
 	
 	fullcircle::RGB_t color1;
-	color1.red = 128;
+	color1.blue = color1.red = 0;
 	color1.green = 255;
-	color1.blue = 160;
-	
+	fullcircle::Frame::Ptr actual_frame;
 	fullcircle::Frame::Ptr hills(new fullcircle::Frame(3,3));
-	hills->fill_whole(color1);	
+	hills->fill_whole(black);	
+	hills->set_pixel(1, 1, color1);
     std::cout << "Test hill:" << std::endl;
 	hills->dump_frame(std::cout);	
 	fullcircle::FlowMap::Ptr fm(new fullcircle::FlowMap());
@@ -82,4 +82,8 @@ BOOST_AUTO_TEST_CASE ( check_flowmap_creating ) {
 	std::cout << "start color:" << std::endl;
 	hills->dump_frame(std::cout);
 	fm->start_points(hills);
+	
+	actual_frame = fm->get_next();
+	std::cout << "first frame:" << std::endl;
+	actual_frame->dump_frame(std::cout);
 }

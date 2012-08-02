@@ -5,7 +5,9 @@
 #include <libfullcircle/frame.hpp>
 
 namespace fullcircle {
-
+	
+  static const int32_t MAXIMUM = 1024;
+	
   class FlowMap {
     public:
       typedef std::tr1::shared_ptr<FlowMap> Ptr;
@@ -27,7 +29,8 @@ namespace fullcircle {
 	  Frame::Ptr _hills;
 	  Frame::Ptr _actualColoredFrame;
 	  Frame::Ptr _oldColoredFrame;
-
+	  
+	  uint32_t calc_height(Frame::Ptr frame, int32_t x, int32_t y);
   };
 };
 
