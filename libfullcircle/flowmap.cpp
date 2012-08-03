@@ -9,7 +9,7 @@ using namespace fullcircle;
 
 FlowMap::FlowMap()
 {
-	
+	_flowspeed = 1;
 }
 
 void FlowMap::init(std::string hash, uint16_t width, uint16_t height)
@@ -98,11 +98,11 @@ Frame::Ptr FlowMap::get_next()
 			{
 				RGB_t actualColor = _actualColoredFrame->get_pixel(x,y);
 				if (actualColor.red > 0)
-					actualColor.red--;
+					actualColor.red -= _flowspeed;
 				if (actualColor.green > 0)
-					actualColor.green--;
+					actualColor.green -= _flowspeed;
 				if (actualColor.blue > 0)
-					actualColor.blue--;
+					actualColor.blue -= _flowspeed;
 				_actualColoredFrame->set_pixel(x, y, actualColor);
 			}
 		}
@@ -115,6 +115,11 @@ Frame::Ptr FlowMap::get_next()
 	return _actualColoredFrame;
 }
 
+
+void FlowMap::set_speed(uint16_t flowspeed)
+{
+	_flowspeed = flowspeed;
+}
 
 bool FlowMap::has_changed()
 {

@@ -19,6 +19,8 @@ namespace fullcircle {
 	  Frame::Ptr get_next();
 	  bool has_changed();
 	  
+	  void set_speed(uint16_t flowspeed);
+	  
       virtual ~FlowMap() {};
 
     private:
@@ -29,6 +31,7 @@ namespace fullcircle {
 	  Frame::Ptr _hills;
 	  Frame::Ptr _actualColoredFrame;
 	  Frame::Ptr _oldColoredFrame;
+	  uint16_t _flowspeed;
 	  
 	  uint32_t calc_height(Frame::Ptr frame, int32_t x, int32_t y);
   };

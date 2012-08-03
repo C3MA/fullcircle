@@ -68,6 +68,10 @@ BOOST_AUTO_TEST_CASE ( check_flowmap_creating ) {
 	fullcircle::Frame::Ptr hills(new fullcircle::Frame(3,3));
 	hills->fill_whole(black);	
 	hills->set_pixel(1, 1, color1);
+	color1.green = 240;
+	hills->set_pixel(1, 0, color1);
+	color1.green = 120;
+	hills->set_pixel(1, 2, color1);
     std::cout << "Test hill:" << std::endl;
 	hills->dump_frame(std::cout);	
 	fullcircle::FlowMap::Ptr fm(new fullcircle::FlowMap());
