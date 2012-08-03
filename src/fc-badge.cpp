@@ -6,34 +6,68 @@
 #include <boost/program_options/positional_options.hpp>
 #include <iostream>
 #include <sstream>
+#include <cstdlib>
+
 namespace po = boost::program_options;
 namespace bfs=boost::filesystem;
 
 
 int main(int argc, char *argv[1]) {
+  // default config file path
+  boost::filesystem::path config_file;
+  char* homedir = getenv("HOME");
+  if (homedir != NULL) {
+    config_file = config_file / homedir / ".fullcirclerc";
+  } else {
+    config_file = config_file / "etc" / "fullcirclerc";
+  }
+
   try {
-    std::ostringstream oss;
-    oss << "Usage: " << argv[0] << " ACTION [additional options]";
-    po::options_description desc(oss.str());
-    desc.add_options()
-      ("help,h", "produce help message")
-      ("version,v", "print version and exit")
-      ("simulate,s", "do not print the badge - just dump it on the console.")
+		po::options_description generic("Generic options (config file and command line)");
+		generic.add_options()
       ("device,d", po::value<std::string>(), "the serial device of the printer")
       ("template,t", po::value<std::string>(), "the template file to use")
       ("color,c", po::value<std::string>(), "the color string")
-      ("number,n", po::value<std::string>(), "the interaction number to print")
-     ;
-    po::positional_options_description p;
-    p.add("device", 1);
-    p.add("template", 1);
-    p.add("color", 1);
-    p.add("number", 1);
+			;
 
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-        options(desc).positional(p).run(), vm);
-    po::notify(vm);
+    std::ostringstream coss;
+    coss << "configuration file (" << config_file << " by default).";
+		po::options_description cmd("Command line options");
+		cmd.add_options()
+			("config", po::value<std::string>(), coss.str().c_str())
+			("help,h", "produce help message")
+			("version,v", "print version and exit")
+      ("simulate,s", "do not print the badge - just dump it on the console.")
+      ("number,n", po::value<std::string>(), "the interaction number to print")
+			;
+
+		std::ostringstream oss;
+		oss << "Usage: " << argv[0] << " ACTION [additional options]";
+		po::options_description cmdline_options(oss.str());
+		cmdline_options.add(generic).add(cmd);
+
+		po::variables_map vm;
+		po::store(po::parse_command_line(argc, argv, cmdline_options), vm);
+		po::notify(vm);
+
+    // Load additional config file settings.
+    if (vm.count("config")) {
+			boost::filesystem::path temp(vm["config"].as<std::string>());
+			if ( boost::filesystem::exists(temp) )
+				config_file = vm["config"].as<std::string>();
+			else {
+				std::cerr << "Configuration file " << vm["config"].as<std::string>() << " not found!" << std::endl;
+				return 1;
+			}
+		}
+
+		po::options_description config_file_options;
+		config_file_options.add(generic);
+		boost::filesystem::path config(config_file);
+		if ( boost::filesystem::exists(config) ) {
+			po::store(po::parse_config_file<char>(config_file.c_str(), config_file_options), vm);
+    }
+		po::notify(vm);
 
     // Begin processing of commandline parameters.
     std::string device;
@@ -42,7 +76,7 @@ int main(int argc, char *argv[1]) {
     std::string number;
 
     if (vm.count("help")) {
-      std::cout << desc << std::endl;
+      std::cout << cmdline_options << std::endl;
       return 1;
     }
 

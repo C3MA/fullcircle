@@ -1,0 +1,3 @@
+device = /dev/null
+template = data/fc-badge-template.txt
+color = blau
