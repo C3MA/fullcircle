@@ -1,3 +1,6 @@
 device = /dev/null
 template = data/fc-badge-template.txt
 color = blau
+width = 16
+height = 9
+fps = 15

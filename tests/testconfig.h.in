@@ -24,5 +24,6 @@
 #cmakedefine ENABLE_LOGGING 1
 #define TEST_SEQUENCE_FILE "${CMAKE_CURRENT_BINARY_DIR}/testsequence.fcs"
 #define TEST_SPRITE_FILE "${CMAKE_CURRENT_BINARY_DIR}/testsprite.fcs"
+#define TEST_CONFIG_FILE "${CMAKE_CURRENT_BINARY_DIR}/testfullcirclerc"
 
 #endif /* TESTS_TESTCONFIG_H_IN */

@@ -16,7 +16,7 @@ namespace fullcircle {
           const uint16_t& width, 
           const uint16_t& height);
       Sequence (std::istream& is);
-	  Sequence();
+//	  Sequence();
       virtual ~Sequence() {}; 
 
       void add_frame(Frame::Ptr frame);
