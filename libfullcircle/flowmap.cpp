@@ -68,6 +68,10 @@ uint32_t FlowMap::calc_height(Frame::Ptr frame, int32_t x, int32_t y)
 
 void FlowMap::modify_pixel(uint16_t x, uint16_t y, int32_t diff, int32_t sum, RGB_t actualColor)
 {
+	// Only do something if the pixel we look at is deeper that our source
+	if (diff <= 0)
+		return;
+	
 	RGB_t above = _oldColoredFrame->get_pixel(x, y);
 	above.red += actualColor.red * _flowspeed * diff / sum;
 	above.green += actualColor.green * _flowspeed * diff / sum;
@@ -124,7 +128,7 @@ Frame::Ptr FlowMap::get_next()
 						modify_pixel(x - 1, y - 1, diff[0], sum, actualColor);
 					}
 					
-					if (x < _actualColoredFrame->width()) // modify the pixel in the upper right
+					if (x < _actualColoredFrame->width() - 1) // modify the pixel in the upper right
 					{
 						modify_pixel(x + 1, y - 1, diff[2], sum, actualColor);
 					}					
@@ -135,12 +139,12 @@ Frame::Ptr FlowMap::get_next()
 					modify_pixel(x - 1, y, diff[3], sum, actualColor);
 				}
 				
-				if (x < _actualColoredFrame->width()) // modify the pixel up-right
+				if (x < _actualColoredFrame->width() - 1) // modify the pixel up-right
 				{
 					modify_pixel(x + 1, y, diff[4], sum, actualColor);
 				}
 				
-				if (y < _actualColoredFrame->height()) // there is a row below
+				if (y < _actualColoredFrame->height() - 1) // there is a row below
 				{
 					// modify the pixel direct above
 					modify_pixel(x, y + 1, diff[6], sum, actualColor);
@@ -150,7 +154,7 @@ Frame::Ptr FlowMap::get_next()
 						modify_pixel(x - 1, y + 1, diff[5], sum, actualColor);
 					}
 					
-					if (x < _actualColoredFrame->width()) // modify the pixel in the upper right
+					if (x < _actualColoredFrame->width() - 1) // modify the pixel in the upper right
 					{
 						modify_pixel(x + 1, y + 1, diff[7], sum, actualColor);
 					}	
