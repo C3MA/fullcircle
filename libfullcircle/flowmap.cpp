@@ -66,17 +66,20 @@ uint32_t FlowMap::calc_height(Frame::Ptr frame, int32_t x, int32_t y)
 }
 
 
-void FlowMap::modify_pixel(uint16_t x, uint16_t y, int32_t diff, int32_t sum, RGB_t actualColor)
+void FlowMap::modify_pixel(uint16_t x, uint16_t y, int32_t diff, int32_t maxDiff, RGB_t actualColor)
 {
 	// Only do something if the pixel we look at is deeper that our source
 	if (diff <= 0)
 		return;
 	
 	RGB_t above = _oldColoredFrame->get_pixel(x, y);
-	above.red += actualColor.red * _flowspeed * diff / sum;
-	above.green += actualColor.green * _flowspeed * diff / sum;
-	above.blue += actualColor.blue * _flowspeed * diff / sum;
+	std::cerr << "---- Diff " << diff << " max=" << maxDiff << std::endl;
+	std::cerr << "Old RGB " << above.red << "," << above.green << ", " << above.blue << std::endl;
+	above.red += actualColor.red * _flowspeed * diff / maxDiff;
+	above.green += actualColor.green * _flowspeed * diff / maxDiff;
+	above.blue += actualColor.blue * _flowspeed * diff / maxDiff;
 	_actualColoredFrame->set_pixel(x, y, above);
+	std::cerr << "New RGB " << above.red << "," << above.green << ", " << above.blue << std::endl;
 }
 
 
@@ -86,7 +89,7 @@ Frame::Ptr FlowMap::get_next()
 	_oldColoredFrame->set_pixel(0,0, _actualColoredFrame);	
 	
 	int32_t diff[8];
-	int32_t sum;
+	int32_t maxDiff;
 	bool removeColor = false;
 
 	for (uint16_t x=0; x < _actualColoredFrame->width(); x++)
@@ -105,9 +108,11 @@ Frame::Ptr FlowMap::get_next()
 			diff[5] = calc_height(_hills, x - 1, y + 1) - actHeight;
 			diff[6] = calc_height(_hills, x, y + 1) - actHeight;
 			diff[7] = calc_height(_hills, x + 1, y + 1) - actHeight;
-			sum = 0;
+			maxDiff = 0;
 			for (int i=0; i < 8; i++) {
-				sum += diff[i];
+				if (maxDiff < diff[i])
+					maxDiff = diff[i];
+				
 				if (diff[i] < 0)
 					removeColor = true;
 			}
@@ -121,42 +126,42 @@ Frame::Ptr FlowMap::get_next()
 				if (y > 0) // there is a row above
 				{
 					// modify the pixel direct above
-					modify_pixel(x, y - 1, diff[1], sum, actualColor);
+					modify_pixel(x, y - 1, diff[1], maxDiff, actualColor);
 					
 					if (x > 0) // modify the pixel in the upper left
 					{
-						modify_pixel(x - 1, y - 1, diff[0], sum, actualColor);
+						modify_pixel(x - 1, y - 1, diff[0], maxDiff, actualColor);
 					}
 					
 					if (x < _actualColoredFrame->width() - 1) // modify the pixel in the upper right
 					{
-						modify_pixel(x + 1, y - 1, diff[2], sum, actualColor);
+						modify_pixel(x + 1, y - 1, diff[2], maxDiff, actualColor);
 					}					
 				}
 				
 				if (x > 0) // modify the left pixel (same line)
 				{
-					modify_pixel(x - 1, y, diff[3], sum, actualColor);
+					modify_pixel(x - 1, y, diff[3], maxDiff, actualColor);
 				}
 				
 				if (x < _actualColoredFrame->width() - 1) // modify the pixel up-right
 				{
-					modify_pixel(x + 1, y, diff[4], sum, actualColor);
+					modify_pixel(x + 1, y, diff[4], maxDiff, actualColor);
 				}
 				
 				if (y < _actualColoredFrame->height() - 1) // there is a row below
 				{
 					// modify the pixel direct above
-					modify_pixel(x, y + 1, diff[6], sum, actualColor);
+					modify_pixel(x, y + 1, diff[6], maxDiff, actualColor);
 					
 					if (x > 0) // modify the pixel in the upper left
 					{
-						modify_pixel(x - 1, y + 1, diff[5], sum, actualColor);
+						modify_pixel(x - 1, y + 1, diff[5], maxDiff, actualColor);
 					}
 					
 					if (x < _actualColoredFrame->width() - 1) // modify the pixel in the upper right
 					{
-						modify_pixel(x + 1, y + 1, diff[7], sum, actualColor);
+						modify_pixel(x + 1, y + 1, diff[7], maxDiff, actualColor);
 					}	
 				}
 				
