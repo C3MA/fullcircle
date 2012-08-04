@@ -3,6 +3,7 @@
 
 #include <libfullcircle/common.hpp>
 #include <libfullcircle/frame.hpp>
+#include <libfullcircle/color_scheme.hpp>
 
 namespace fullcircle {
 	
@@ -33,8 +34,9 @@ namespace fullcircle {
 	  Frame::Ptr _oldColoredFrame;
 	  uint16_t _flowspeed;
 	  
-	  uint32_t calc_height(Frame::Ptr frame, int32_t x, int32_t y);
-  };
+	  uint32_t	calc_height(Frame::Ptr frame, int32_t x, int32_t y);
+	  void		modify_pixel(uint16_t x, uint16_t y, int32_t diff, int32_t sum, RGB_t actualColor);
+	  
 };
 
 

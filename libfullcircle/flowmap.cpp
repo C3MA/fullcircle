@@ -65,6 +65,15 @@ uint32_t FlowMap::calc_height(Frame::Ptr frame, int32_t x, int32_t y)
 	return heightColor.red + heightColor.green + heightColor.blue;
 }
 
+void FlowMap::modify_pixel(uint16_t x, uint16_t y, int32_t diff, int32_t sum, RGB_t actualColor)
+{
+	RGB_t above = _oldColoredFrame->get_pixel(x, y);
+	above.red += actualColor.red * _flowspeed * diff / sum;
+	above.green += actualColor.green * _flowspeed * diff / sum;
+	above.blue += actualColor.blue * _flowspeed * diff / sum;
+	_actualColoredFrame->set_pixel(x, y, above);
+}
+
 Frame::Ptr FlowMap::get_next()
 {
 	// make a deep copy of the 
@@ -104,17 +113,43 @@ Frame::Ptr FlowMap::get_next()
 				if (y > 0) // there is a row above
 				{
 					// modify the pixel direct above
-					RGB_t above = _oldColoredFrame->get_pixel(x,y - 1);
-					above.red += actualColor.red * _flowspeed * diff[1] / sum;
-					above.green += actualColor.green * _flowspeed * diff[1] / sum;
-					above.blue += actualColor.blue * _flowspeed * diff[1] / sum;
-					_actualColoredFrame->set_pixel(x, y - 1, above);
+					modify_pixel(x, y - 1, diff[1], sum, actualColor);
 					
+					if (x > 0) // modify the pixel in the upper left
+					{
+						modify_pixel(x - 1, y - 1, diff[0], sum, actualColor);
+					}
+					
+					if (x < _actualColoredFrame->width()) // modify the pixel in the upper right
+					{
+						modify_pixel(x + 1, y - 1, diff[2], sum, actualColor);
+					}					
+				}
+				
+				if (x > 0) // modify the left pixel (same line)
+				{
+					modify_pixel(x - 1, y, diff[3], sum, actualColor);
+				}
+				
+				if (x < _actualColoredFrame->width()) // modify the pixel up-right
+				{
+					modify_pixel(x + 1, y, diff[4], sum, actualColor);
 				}
 				
 				if (y < _actualColoredFrame->height()) // there is a row below
 				{
+					// modify the pixel direct above
+					modify_pixel(x, y + 1, diff[6], sum, actualColor);
 					
+					if (x > 0) // modify the pixel in the upper left
+					{
+						modify_pixel(x - 1, y + 1, diff[5], sum, actualColor);
+					}
+					
+					if (x < _actualColoredFrame->width()) // modify the pixel in the upper right
+					{
+						modify_pixel(x + 1, y + 1, diff[7], sum, actualColor);
+					}	
 				}
 				
 				// decrement the color at the current pixel.
@@ -128,10 +163,6 @@ Frame::Ptr FlowMap::get_next()
 			}
 		}
 	}
-	
-	
-	
-	
 	return _actualColoredFrame;
 }
 
@@ -141,7 +172,7 @@ void FlowMap::set_speed(uint16_t flowspeed)
 	_flowspeed = flowspeed;
 }
 
-bool FlowMap::has_changed()
+bool FlowMap::has_changed(void)
 {
 	return (_oldColoredFrame != _actualColoredFrame);
 }
