@@ -9,7 +9,7 @@ using namespace fullcircle;
 
 FlowMap::FlowMap()
 {
-	_flowspeed = 1;
+	_flowspeed = 2;
 }
 
 void FlowMap::init(std::string hash, uint16_t width, uint16_t height)
@@ -53,14 +53,14 @@ void FlowMap::start_points(Frame::Ptr start)
  * @param[in] frame
  *		The frame, the height should be calculated from.
  * @param[in] x
- *		The offset in horizontal direction (could be out of bounds, than the height will always be at the maximum)
+ *		The offset in horizontal direction (could be out of bounds, than the height will always be at the minimum)
  * @param[in] y
- *		The offset from top to down (could be out of bounds, than the height will always be at the maximum)
+ *		The offset from top to down (could be out of bounds, than the height will always be at the minimum)
  */
 uint32_t FlowMap::calc_height(Frame::Ptr frame, int32_t x, int32_t y)
 {
 	if (x < 0 || x >= frame->width() || y < 0 || y >= frame->height())
-		return MAXIMUM;
+		return 0;
 	RGB_t heightColor = frame->get_pixel(x,y);
 	return heightColor.red + heightColor.green + heightColor.blue;
 }
@@ -75,9 +75,9 @@ void FlowMap::modify_pixel(uint16_t x, uint16_t y, int32_t diff, int32_t maxDiff
 	RGB_t above = _oldColoredFrame->get_pixel(x, y);
 	std::cerr << "---- Diff " << diff << " max=" << maxDiff << std::endl;
 	std::cerr << "Old RGB " << above.red << "," << above.green << ", " << above.blue << std::endl;
-	above.red += actualColor.red * _flowspeed * diff / maxDiff;
-	above.green += actualColor.green * _flowspeed * diff / maxDiff;
-	above.blue += actualColor.blue * _flowspeed * diff / maxDiff;
+	above.red += (actualColor.red * _flowspeed * diff * NEIGHBOUR_FACTOR) / maxDiff;
+	above.green += (actualColor.green * _flowspeed * diff * NEIGHBOUR_FACTOR) / maxDiff;
+	above.blue += (actualColor.blue * _flowspeed * diff * NEIGHBOUR_FACTOR) / maxDiff;
 	_actualColoredFrame->set_pixel(x, y, above);
 	std::cerr << "New RGB " << above.red << "," << above.green << ", " << above.blue << std::endl;
 }
@@ -113,11 +113,15 @@ Frame::Ptr FlowMap::get_next()
 				if (maxDiff < diff[i])
 					maxDiff = diff[i];
 				
-				if (diff[i] < 0)
+				if (diff[i] > 0)
 					removeColor = true;
+				//FIXME here is a problem! There are more than one pixel found, where a flow should be done
 			}
 			
 			RGB_t actualColor = _oldColoredFrame->get_pixel(x,y);
+			
+			std::cerr << "===== RGB(" << x << "x" << y << ") " 
+				<< actualColor.red << "," << actualColor.green << ", " << actualColor.blue << std::endl;
 			
 			// There was a sink found, so the color at the current pixel has to be removed.
 			if (removeColor)

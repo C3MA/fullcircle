@@ -7,7 +7,7 @@
 
 namespace fullcircle {
 	
-  static const int32_t MAXIMUM = 1024;
+  static const int32_t NEIGHBOUR_FACTOR = 4;
 	
   class FlowMap {
     public:
