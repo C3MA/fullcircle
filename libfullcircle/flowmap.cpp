@@ -71,6 +71,7 @@ Frame::Ptr FlowMap::get_next()
 	_oldColoredFrame->set_pixel(0,0, _actualColoredFrame);	
 	
 	int32_t diff[8];
+	int32_t sum;
 	bool removeColor = false;
 	
 	for (uint16_t x=0; x < _actualColoredFrame->width(); x++) {
@@ -87,16 +88,36 @@ Frame::Ptr FlowMap::get_next()
 			diff[5] = calc_height(_hills, x - 1, y + 1) - actHeight;
 			diff[6] = calc_height(_hills, x, y + 1) - actHeight;
 			diff[7] = calc_height(_hills, x + 1, y + 1) - actHeight;
-			
+			sum = 0;
 			for (int i=0; i < 8; i++) {
+				sum += diff[i];
 				if (diff[i] < 0)
 					removeColor = true;
 			}
 			
+			RGB_t actualColor = _oldColoredFrame->get_pixel(x,y);
+			
 			// There was a sink found, so the color at the current pixel has to be removed.
 			if (removeColor)
 			{
-				RGB_t actualColor = _actualColoredFrame->get_pixel(x,y);
+				// first let the water flow to the neighbour pixel (according to the height difference)
+				if (y > 0) // there is a row above
+				{
+					// modify the pixel direct above
+					RGB_t above = _oldColoredFrame->get_pixel(x,y - 1);
+					above.red += actualColor.red * _flowspeed * diff[1] / sum;
+					above.green += actualColor.green * _flowspeed * diff[1] / sum;
+					above.blue += actualColor.blue * _flowspeed * diff[1] / sum;
+					_actualColoredFrame->set_pixel(x, y - 1, above);
+					
+				}
+				
+				if (y < _actualColoredFrame->height()) // there is a row below
+				{
+					
+				}
+				
+				// decrement the color at the current pixel.
 				if (actualColor.red > 0)
 					actualColor.red -= _flowspeed;
 				if (actualColor.green > 0)
@@ -108,7 +129,6 @@ Frame::Ptr FlowMap::get_next()
 		}
 	}
 	
-	// let the water flow!
 	
 	
 	
