@@ -65,6 +65,7 @@ uint32_t FlowMap::calc_height(Frame::Ptr frame, int32_t x, int32_t y)
 	return heightColor.red + heightColor.green + heightColor.blue;
 }
 
+
 void FlowMap::modify_pixel(uint16_t x, uint16_t y, int32_t diff, int32_t sum, RGB_t actualColor)
 {
 	RGB_t above = _oldColoredFrame->get_pixel(x, y);
@@ -74,6 +75,7 @@ void FlowMap::modify_pixel(uint16_t x, uint16_t y, int32_t diff, int32_t sum, RG
 	_actualColoredFrame->set_pixel(x, y, above);
 }
 
+
 Frame::Ptr FlowMap::get_next()
 {
 	// make a deep copy of the 
@@ -82,9 +84,11 @@ Frame::Ptr FlowMap::get_next()
 	int32_t diff[8];
 	int32_t sum;
 	bool removeColor = false;
-	
-	for (uint16_t x=0; x < _actualColoredFrame->width(); x++) {
-		for (uint16_t y=0; y < _actualColoredFrame->height(); y++) {
+
+	for (uint16_t x=0; x < _actualColoredFrame->width(); x++)
+	{
+		for (uint16_t y=0; y < _actualColoredFrame->height(); y++) 
+		{
 			uint32_t actHeight = calc_height(_hills, x, y);
 			// previous line
 			diff[0] = calc_height(_hills, x - 1, y - 1) - actHeight;
@@ -172,7 +176,7 @@ void FlowMap::set_speed(uint16_t flowspeed)
 	_flowspeed = flowspeed;
 }
 
-bool FlowMap::has_changed(void)
+bool FlowMap::has_changed()
 {
 	return (_oldColoredFrame != _actualColoredFrame);
 }
