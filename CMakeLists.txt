@@ -17,7 +17,7 @@ ENABLE_TESTING()
 
 set(V_MAJOR 0)
 set(V_MINOR 2)
-set(V_PATCH 0)
+set(V_PATCH 1)
 
 # add a path where some libraries might be stored
 set(CMAKE_ADDITIONAL_PATH "$ENV{CMAKE_ADDITIONAL_PATH}" CACHE PATH "Path where many locally installed libraries can be found")
@@ -113,6 +113,9 @@ SET(CPACK_STRIP_FILES "bin/fc-demo")
 SET(CPACK_SOURCE_STRIP_FILES TRUE)
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY "CMake ${CMake_VERSION_MAJOR}.${CMake_VERSION_MINOR}")
 SET(CPACK_PACKAGE_EXECUTABLES "fc-demo" "Demo of the library")
+SET(CPACK_PACKAGE_EXECUTABLES "fc-perlin" "Demo of the library")
+SET(CPACK_PACKAGE_EXECUTABLES "fc-getid" "Demo of the library")
+SET(CPACK_PACKAGE_EXECUTABLES "fc-badge" "Demo of the library")
 INCLUDE(CPack)
 
 

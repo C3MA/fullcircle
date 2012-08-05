@@ -7,7 +7,7 @@ set(fc-text_src fc-text.cpp)
 set(fc-badge_src fc-badge.cpp)
 set(fc-getid_src fc-getid.cpp)
 set(fc-add_src fc-add.cpp)
-set(fc-cat_src fc-cat.cpp)
+set(fc-concat_src fc-concat.cpp)
 set(fc-read-image_src fc-read-image.cpp)
 
 include_directories(${CMAKE_SOURCE_DIR}
@@ -39,8 +39,8 @@ add_executable(fc-text
 add_executable(fc-add
   ${fc-add_src}
   )
-add_executable(fc-cat
-  ${fc-cat_src}
+add_executable(fc-concat
+  ${fc-concat_src}
   )
 add_executable(fc-read-image
   ${fc-read-image_src}
@@ -93,7 +93,7 @@ target_link_libraries(fc-read-image
   ${Boost_LIBRARIES}
   )
 
-target_link_libraries(fc-cat
+target_link_libraries(fc-concat
   fullcircle
   ${Boost_LIBRARIES}
   )
@@ -116,5 +116,13 @@ target_link_libraries(fc-getid
 INSTALL(PROGRAMS 
   ${CMAKE_CURRENT_BINARY_DIR}/fc-simulator
   ${CMAKE_CURRENT_BINARY_DIR}/fc-demo
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-badge
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-add
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-text
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-concat
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-getid
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-gol
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-perlin
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-read-image
   DESTINATION bin)
 
