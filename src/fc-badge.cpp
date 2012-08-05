@@ -25,8 +25,8 @@ int main(int argc, char *argv[1]) {
   try {
 		po::options_description generic("Generic options (config file and command line)");
 		generic.add_options()
-      ("device,d", po::value<std::string>(), "the serial device of the printer")
-      ("template,t", po::value<std::string>(), "the template file to use")
+      ("printerdevice,d", po::value<std::string>(), "the serial device of the printer")
+      ("printertemplate,t", po::value<std::string>(), "the template file to use")
       ("color,c", po::value<std::string>(), "the color string")
 			;
 
@@ -65,7 +65,10 @@ int main(int argc, char *argv[1]) {
 		config_file_options.add(generic);
 		boost::filesystem::path config(config_file);
 		if ( boost::filesystem::exists(config) ) {
-			po::store(po::parse_config_file<char>(config_file.c_str(), config_file_options), vm);
+			po::store(po::parse_config_file<char>(config_file.c_str(), 
+            config_file_options, 
+            true // ignore unknown options
+          ), vm);
     }
 		po::notify(vm);
 
@@ -86,18 +89,18 @@ int main(int argc, char *argv[1]) {
       return 0;
     }
 
-    if (vm.count("device") != 1 ) {
+    if (vm.count("printerdevice") != 1 ) {
       std::cerr << "You must specify the printer's device (-d <path>)." << std::endl;
       return 1;
     } else {
-      device=vm["device"].as<std::string>();
+      device=vm["printerdevice"].as<std::string>();
     }
 
-    if (vm.count("template") != 1 ) {
+    if (vm.count("printertemplate") != 1 ) {
       std::cerr << "You must specify the file containing the badge template (-t <path>)." << std::endl;
       return 1;
     } else {
-      tmpl=vm["template"].as<std::string>();
+      tmpl=vm["printertemplate"].as<std::string>();
     }
 
     if (vm.count("color") != 1 ) {

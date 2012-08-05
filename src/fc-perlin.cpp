@@ -118,7 +118,7 @@ int main (int argc, char* argv[]) {
 		config_file_options.add(generic);
 		boost::filesystem::path config(config_file);
 		if ( boost::filesystem::exists(config) ) {
-			po::store(po::parse_config_file<char>(config_file.c_str(), config_file_options), vm);
+			po::store(po::parse_config_file<char>(config_file.c_str(), config_file_options, true), vm);
     }
 		po::notify(vm);
 
