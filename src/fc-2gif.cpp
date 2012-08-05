@@ -43,10 +43,12 @@ int main (int argc, char* argv[]) {
     oss << "Usage: " << argv[0] << " ACTION [additional options]";
     po::options_description desc(oss.str());
     desc.add_options()
-      ("help,h", "produce help message")
+      ("help", "produce help message")
       ("version,v", "print version and exit")
       ("sequence,s", po::value<std::string>(), "the sequence file to use")
-      ("output,o", po::value<std::string>(), "the gif file to write to")
+      ("tempfolder,t", po::value<std::string>(), "folder to write frames to")
+      ("width,w", po::value<int>(), "width of animation")
+      ("height,h", po::value<int>(), "height of animation")
       ;
     po::positional_options_description p;
     p.add("sequence", 1);
@@ -58,7 +60,10 @@ int main (int argc, char* argv[]) {
 
     // Begin processing of commandline parameters.
     std::string sequencefile;
-    std::string giffolder;
+    std::string tempfolder;
+    int width;
+    int height;
+
 
     if (vm.count("help")) {
       std::cout << desc << std::endl;
@@ -78,15 +83,29 @@ int main (int argc, char* argv[]) {
       sequencefile=vm["sequence"].as<std::string>();
     }
 
-    if (! vm.count("output")) {
-      std::cerr << "You must specify a folder to store temp gif files." << std::endl;
+    if (! vm.count("tempfolder")) {
+      std::cerr << "You must specify a folder to store frame files." << std::endl;
       return 1;
     } else {
-      giffolder=vm["output"].as<std::string>();
+      tempfolder=vm["tempfolder"].as<std::string>();
+    }
+
+    if (! vm.count("width")) {
+      std::cerr << "You must specify a frame width." << std::endl;
+      return 1;
+    } else {
+      width=vm["width"].as<int>();
+    }
+
+    if (! vm.count("height")) {
+      std::cerr << "You must specify a frame height." << std::endl;
+      return 1;
+    } else {
+      height=vm["height"].as<int>();
     }
 
     bfs::path sequence(sequencefile);
-    bfs::path gif(giffolder);
+    bfs::path temp(tempfolder);
 
     try {
       std::cout << "Loading sequence from file " << sequence << std::endl;
@@ -96,15 +115,15 @@ int main (int argc, char* argv[]) {
 //      seq->save(output, "Testcase: check_sequence_storage", "current");
       input.close();
 
-      std::fstream output(gif.c_str(),
-          std::ios::out | std::ios::trunc | std::ios::binary);
+//      std::fstream output(gif.c_str(),
+//          std::ios::out | std::ios::trunc | std::ios::binary);
 
 
       for(uint32_t framePos = 0; framePos < seq->size();framePos++) {
           fullcircle::Frame::Ptr currentFrame = seq->get_frame(framePos);
-          QImage gifFrame(800,600,QImage::Format_RGB32);
-          qreal pixelwidth=800/seq->width();
-          qreal pixelheight=600/seq->height();
+          QImage gifFrame(width,height,QImage::Format_RGB32);
+          qreal pixelwidth=width/seq->width();
+          qreal pixelheight=height/seq->height();
           //std::cout << "Pixel: " << pixelwidth << "x" << pixelheight << std::endl;
 //          fullcircle::Frame::Ptr frame=_seq->get_frame(frameID);
           for (uint8_t x=0; x < seq->width(); ++x) {
@@ -113,15 +132,15 @@ int main (int argc, char* argv[]) {
 
                   for(uint8_t xp = 0; xp < pixelwidth; xp++) {
                       for(uint8_t yp = 0; yp < pixelheight; yp++) {
-                          gifFrame.setPixel(x*pixelwidth+xp,y*pixelwidth+yp,qRgb(pixelcolor.red,
+                          gifFrame.setPixel(x*pixelwidth+xp,y*pixelheight+yp,qRgb(pixelcolor.red,
                                                                                  pixelcolor.green,
                                                                                  pixelcolor.blue));
                       }
                   }
               }
           }
-          QString filename = QString("./%1/%2.png").arg(gif.c_str()).arg((uint)framePos,4,10,QChar('0'));
-          std::cout << filename.toStdString() << std::endl;
+          QString filename = QString("%1/%2.png").arg(temp.c_str()).arg((uint)framePos,5,10,QChar('0'));
+          std::cout << "writing frame No" << framePos << " to " << filename.toStdString() << std::endl;
           gifFrame.save(filename);
 
 
@@ -130,7 +149,7 @@ int main (int argc, char* argv[]) {
 
 
 
-      output.close();
+//      output.close();
 
     } catch (fullcircle::GenericException& ex) {
       std::cout << "Caught exception: " << ex.what() << std::endl;
