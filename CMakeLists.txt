@@ -66,6 +66,7 @@ FIND_PACKAGE(Boost 1.46.1 COMPONENTS
   filesystem 
   regex
   system)
+INCLUDE(FindHiredis)
 # find googles protocol buffers
 INCLUDE(FindProtobuf)
 IF (PB_FOUND)
@@ -123,6 +124,7 @@ message("  boost include: ${Boost_INCLUDE_DIRS}")
 message("  boost program options lib: ${Boost_PROGRAM_OPTIONS_LIBRARY}")
 message("  boost system lib: ${Boost_SYSTEM_LIBRARY}")
 message("  boost filesystem lib: ${Boost_FILESYSTEM_LIBRARY}")
+message("  hiredis include: ${HIREDIS_INCLUDE_DIR}, lib: ${HIREDIS_LIBRARIES}")
 message("  PB include: ${PROTOBUF_INCLUDE_DIRS}, lib: ${PROTOBUF_LIBRARIES}")
 message("  QT4 include: ${QT_INCLUDE_DIR}, lib: ${QT_LIBRARIES}")
 message("  extended logging: ${ENABLE_LOGGING}")

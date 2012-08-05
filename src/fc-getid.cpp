@@ -1,6 +1,5 @@
 #include <libfullcircle/common.hpp>
-#include <libfullcircle/printer/printerinterface.hpp>
-#include <libfullcircle/printer/badge_renderer.hpp>
+#include <libfullcircle/redis.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
 #include <boost/program_options/positional_options.hpp>
@@ -25,9 +24,8 @@ int main(int argc, char *argv[1]) {
   try {
 		po::options_description generic("Generic options (config file and command line)");
 		generic.add_options()
-      ("device,d", po::value<std::string>(), "the serial device of the printer")
-      ("template,t", po::value<std::string>(), "the template file to use")
-      ("color,c", po::value<std::string>(), "the color string")
+      ("redisserver,s", po::value<std::string>(), "address of the redis server")
+      ("redisport,p", po::value<std::string>(), "port of the redis server")
 			;
 
     std::ostringstream coss;
@@ -37,8 +35,6 @@ int main(int argc, char *argv[1]) {
 			("config", po::value<std::string>(), coss.str().c_str())
 			("help,h", "produce help message")
 			("version,v", "print version and exit")
-      ("simulate,s", "do not print the badge - just dump it on the console.")
-      ("number,n", po::value<std::string>(), "the interaction number to print")
 			;
 
 		std::ostringstream oss;
@@ -70,10 +66,8 @@ int main(int argc, char *argv[1]) {
 		po::notify(vm);
 
     // Begin processing of commandline parameters.
-    std::string device;
-    std::string tmpl;
-    std::string color;
-    std::string number;
+    std::string server;
+    uint16_t port;
 
     if (vm.count("help")) {
       std::cout << cmdline_options << std::endl;
@@ -86,51 +80,26 @@ int main(int argc, char *argv[1]) {
       return 0;
     }
 
-    if (vm.count("device") != 1 ) {
-      std::cerr << "You must specify the printer's device (-d <path>)." << std::endl;
+    if (vm.count("redisserver") != 1 ) {
+      std::cerr << "You must specify the redisserver (-s <server>)." << std::endl;
       return 1;
     } else {
-      device=vm["device"].as<std::string>();
+      server=vm["redisserver"].as<std::string>();
     }
 
-    if (vm.count("template") != 1 ) {
-      std::cerr << "You must specify the file containing the badge template (-t <path>)." << std::endl;
+    if (vm.count("redisport") != 1 ) {
+      std::cerr << "You must specify the port (-p <number>). Default is 6379." << std::endl;
       return 1;
     } else {
-      tmpl=vm["template"].as<std::string>();
+      std::istringstream converter(vm["redisport"].as<std::string>());
+      if ( !( converter >> port)) {
+        std::cerr << "Cannot convert port to an integer. " << std::endl;
+        return 1;
+      }
     }
 
-    if (vm.count("color") != 1 ) {
-      std::cerr << "You must specify the color (-c <color>)." << std::endl;
-      return 1;
-    } else {
-      color=vm["color"].as<std::string>();
-    }
-
-    if (vm.count("number") != 1 ) {
-      std::cerr << "You must specify the number (-n <number>)." << std::endl;
-      return 1;
-    } else {
-      number=vm["number"].as<std::string>();
-    }
-
-    bfs::path devicefile(device);
-    bfs::path tmplfile(tmpl);
-
-    fullcircle::BadgeRenderer::Ptr badge(new fullcircle::BadgeRenderer(tmplfile));
-    std::string document=badge->render(color, number);
-
-    if (vm.count("simulate") == 0) {
-      fullcircle::PrinterInterface::Ptr printer(
-          new fullcircle::PrinterInterface(devicefile));
-      printer->print(document);
-      printer->cut_paper();
-    } else {
-      std::cout << "Simulating badge print (may contain command sequences)" << std::endl
-        << "-------------------------------------------" << std::endl; 
-      std::cout << std::endl << std::endl << document << std::endl;
-      std::cout << "-------------------------------------------" << std::endl; 
-    }
+    fullcircle::Redis::Ptr r(new fullcircle::Redis(server, port));
+    std::cout << r->get_unique_number() << std::endl;
 
   } catch (fullcircle::GenericException& ex) {
     std::cout << "Caught exception: " << ex.what() << std::endl;
