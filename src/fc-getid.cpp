@@ -24,8 +24,8 @@ int main(int argc, char *argv[1]) {
   try {
 		po::options_description generic("Generic options (config file and command line)");
 		generic.add_options()
-      ("server,s", po::value<std::string>(), "address of the redis server")
-      ("port,p", po::value<std::string>(), "port of the redis server")
+      ("redisserver,s", po::value<std::string>(), "address of the redis server")
+      ("redisport,p", po::value<std::string>(), "port of the redis server")
 			;
 
     std::ostringstream coss;
@@ -80,18 +80,18 @@ int main(int argc, char *argv[1]) {
       return 0;
     }
 
-    if (vm.count("server") != 1 ) {
-      std::cerr << "You must specify the server (-s <server>)." << std::endl;
+    if (vm.count("redisserver") != 1 ) {
+      std::cerr << "You must specify the redisserver (-s <server>)." << std::endl;
       return 1;
     } else {
-      server=vm["server"].as<std::string>();
+      server=vm["redisserver"].as<std::string>();
     }
 
-    if (vm.count("port") != 1 ) {
+    if (vm.count("redisport") != 1 ) {
       std::cerr << "You must specify the port (-p <number>). Default is 6379." << std::endl;
       return 1;
     } else {
-      std::istringstream converter(vm["port"].as<std::string>());
+      std::istringstream converter(vm["redisport"].as<std::string>());
       if ( !( converter >> port)) {
         std::cerr << "Cannot convert port to an integer. " << std::endl;
         return 1;
