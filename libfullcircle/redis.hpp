@@ -5,6 +5,7 @@
 #include <hiredis/hiredis.h>
 
 namespace fullcircle {
+  static const std::string REDIS_COUNTER_VARIABLE("counter");
   class Redis {
     public:
       typedef std::tr1::shared_ptr<Redis> Ptr;

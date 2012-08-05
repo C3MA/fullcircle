@@ -1,6 +1,6 @@
 #include "redis.hpp"
 #include <iostream>
-
+#include <sstream>
 
 using namespace fullcircle;
 
@@ -11,7 +11,9 @@ Redis::Redis(
   struct timeval timeout = { 1, 500000 }; // 1.5 seconds
   _c = redisConnectWithTimeout(server.c_str(), port, timeout);
   if (_c->err) {
-    std::cout << "Connection error: " << _c->errstr << std::endl;
+    std::ostringstream oss;
+    oss << "Connection error: " << _c->errstr;
+    throw CommunicationException(oss.str()); 
   }
 }
 
@@ -23,7 +25,9 @@ uint32_t Redis::get_unique_number() {
   redisReply* reply;
   uint16_t retval=0;
   // INCR is an atomic counter. See http://redis.io/commands/incr
-  reply = (redisReply*) redisCommand(_c, "INCR counter");
+  std::ostringstream oss;
+  oss << "INCR " << REDIS_COUNTER_VARIABLE;
+  reply = (redisReply*) redisCommand(_c, oss.str().c_str());
   retval = reply->integer;
   //std::cout << "Current counter is " << reply->integer << std::endl;
   freeReplyObject(reply);
