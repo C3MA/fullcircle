@@ -5,6 +5,7 @@ set(fc-perlin_src fc-perlin.cpp)
 set(fc-gol_src fc-gol.cpp)
 set(fc-text_src fc-text.cpp)
 set(fc-badge_src fc-badge.cpp)
+set(fc-getid_src fc-getid.cpp)
 set(fc-add_src fc-add.cpp)
 set(fc-cat_src fc-cat.cpp)
 
@@ -44,6 +45,11 @@ add_executable(fc-cat
 add_executable(fc-badge
   ${fc-badge_src}
   )
+
+add_executable(fc-getid
+  ${fc-getid_src}
+  )
+
 
 target_link_libraries(fc-simulator 
   fullcircle 
@@ -89,6 +95,14 @@ target_link_libraries(fc-badge
   ${Boost_LIBRARIES}
   ${QT_LIBRARIES}
   )
+
+target_link_libraries(fc-getid
+  fullcircle 
+  ${Boost_LIBRARIES}
+  ${HIREDIS_LIBRARIES}
+  )
+
+
 
 # sensor programs to the install target
 INSTALL(PROGRAMS 
