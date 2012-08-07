@@ -90,7 +90,6 @@ Frame::Ptr FlowMap::get_next()
 	
 	int32_t diff[8];
 	int32_t maxDiff;
-	bool removeColor = false;
 
 	for (uint16_t x=0; x < _actualColoredFrame->width(); x++)
 	{
@@ -112,19 +111,16 @@ Frame::Ptr FlowMap::get_next()
 			for (int i=0; i < 8; i++) {
 				if (maxDiff < diff[i])
 					maxDiff = diff[i];
-				
-				if (diff[i] > 0)
-					removeColor = true;
-				//FIXME here is a problem! There are more than one pixel found, where a flow should be done
 			}
 			
 			RGB_t actualColor = _oldColoredFrame->get_pixel(x,y);
 			
 			std::cerr << "===== RGB(" << x << "x" << y << ") " 
-				<< actualColor.red << "," << actualColor.green << ", " << actualColor.blue << std::endl;
+				<< actualColor.red << "," << actualColor.green << ", " << actualColor.blue 
+				<< "\tmaxDiff= " << maxDiff << std::endl;
 			
 			// There was a sink found, so the color at the current pixel has to be removed.
-			if (removeColor)
+			if (maxDiff == 0)
 			{
 				// first let the water flow to the neighbour pixel (according to the height difference)
 				if (y > 0) // there is a row above
