@@ -14,7 +14,23 @@ FlowMap::FlowMap()
 
 void FlowMap::init(std::string hash, uint16_t width, uint16_t height)
 {
-		//FIXME this has to be done later...
+	// create a new frame, where the hills are written to
+	fullcircle::Frame::Ptr frame(new fullcircle::Frame(width, height));
+	
+	_hills = frame;
+	
+	// Fill the frame with values.
+	uint64_t arraySize = width * height;
+	/* array has the size of 9, text a length of 4 -> stepwidth of 2 (not all characters are used.) */
+	uint32_t step = arraySize / hash.length();
+	if (step < 0)
+	{
+		step = 1; //FIXME funzt das so?
+	}
+	
+    for( uint16_t i = 0; i < hash.length(); i+=step) {
+		_hills->set_pixel(i / width, i % width, hash[i], 0, 0);
+    }
 }
 
 /**
@@ -193,4 +209,9 @@ void FlowMap::set_speed(uint16_t flowspeed)
 bool FlowMap::has_changed()
 {
 	return (_oldColoredFrame != _actualColoredFrame);
+}
+
+void FlowMap::dump_hills(std::ostream& os)
+{
+	_hills->dump_frame(os);
 }

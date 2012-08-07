@@ -60,6 +60,7 @@ BOOST_AUTO_TEST_CASE ( check_sanity ) {
 
 BOOST_AUTO_TEST_CASE ( check_flowmap_creating ) {
 	init_color();
+	std::cout << "Create floating map." << std::endl;
 	
 	fullcircle::RGB_t color1;
 	color1.blue = color1.red = 0;
@@ -95,6 +96,17 @@ BOOST_AUTO_TEST_CASE ( check_flowmap_creating ) {
 	
 	actual_frame = fm->get_next();
 	std::cout << "second frame:" << std::endl;
-	actual_frame->dump_frame(std::cout);
+	actual_frame->dump_frame(std::cout);	
+}
+
+
+BOOST_AUTO_TEST_CASE ( check_flowmap_hash_created ) {
+	init_color();
+	std::cout << "Create hashbased floating map." << std::endl;
 	
+	fullcircle::FlowMap::Ptr fm(new fullcircle::FlowMap());
+	fm->init("hello World", 3, 3);
+		
+	std::cout << "Test hill:" << std::endl;
+	fm->dump_hills(std::cout);
 }

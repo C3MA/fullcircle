@@ -19,6 +19,7 @@ namespace fullcircle {
 	  void start_points(Frame::Ptr start);
 	  Frame::Ptr get_next();
 	  bool has_changed();
+	  void dump_hills(std::ostream& os);
 	  
 	  void set_speed(uint16_t flowspeed);
 	  
