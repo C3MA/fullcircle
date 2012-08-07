@@ -9,7 +9,7 @@ using namespace fullcircle;
 
 FlowMap::FlowMap()
 {
-	_flowspeed = 2;
+	_flowspeed = 1;
 }
 
 void FlowMap::init(std::string hash, uint16_t width, uint16_t height)
@@ -67,17 +67,21 @@ uint32_t FlowMap::calc_height(Frame::Ptr frame, int32_t x, int32_t y)
 
 
 void FlowMap::modify_pixel(uint16_t x, uint16_t y, int32_t diff, int32_t maxDiff, RGB_t actualColor)
-{
+{	
 	// Only do something if the pixel we look at is deeper that our source
-	if (diff <= 0)
+	if (diff >= 0)
 		return;
+	
+	/*** swap the direction ***/
+	diff = abs(diff);
+	maxDiff = abs(maxDiff);
 	
 	RGB_t above = _oldColoredFrame->get_pixel(x, y);
 	std::cerr << "---- Diff " << diff << " max=" << maxDiff << std::endl;
 	std::cerr << "Old RGB " << above.red << "," << above.green << ", " << above.blue << std::endl;
-	above.red += (actualColor.red * _flowspeed * diff * NEIGHBOUR_FACTOR) / maxDiff;
-	above.green += (actualColor.green * _flowspeed * diff * NEIGHBOUR_FACTOR) / maxDiff;
-	above.blue += (actualColor.blue * _flowspeed * diff * NEIGHBOUR_FACTOR) / maxDiff;
+	above.red += (actualColor.red * _flowspeed * diff) / maxDiff;
+	above.green += (actualColor.green * _flowspeed * diff) / maxDiff;
+	above.blue += (actualColor.blue * _flowspeed * diff) / maxDiff;
 	_actualColoredFrame->set_pixel(x, y, above);
 	std::cerr << "New RGB " << above.red << "," << above.green << ", " << above.blue << std::endl;
 }
