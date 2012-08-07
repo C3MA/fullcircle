@@ -92,4 +92,9 @@ BOOST_AUTO_TEST_CASE ( check_flowmap_creating ) {
 	actual_frame = fm->get_next();
 	std::cout << "first frame:" << std::endl;
 	actual_frame->dump_frame(std::cout);
+	
+	actual_frame = fm->get_next();
+	std::cout << "second frame:" << std::endl;
+	actual_frame->dump_frame(std::cout);
+	
 }
