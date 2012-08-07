@@ -77,13 +77,13 @@ void FlowMap::modify_pixel(uint16_t x, uint16_t y, int32_t diff, int32_t maxDiff
 	maxDiff = abs(maxDiff);
 	
 	RGB_t above = _oldColoredFrame->get_pixel(x, y);
-	std::cerr << "---- Diff " << diff << " max=" << maxDiff << std::endl;
-	std::cerr << "Old RGB " << above.red << "," << above.green << ", " << above.blue << std::endl;
-	above.red += (actualColor.red * _flowspeed * diff) / maxDiff;
-	above.green += (actualColor.green * _flowspeed * diff) / maxDiff;
-	above.blue += (actualColor.blue * _flowspeed * diff) / maxDiff;
+	//std::cerr << "---- Diff (" << x << "x" << y << ") diff=" << diff << " max=" << maxDiff << std::endl;
+	//std::cerr << "Old RGB " << above.red << "," << above.green << ", " << above.blue << std::endl;
+	above.red += (actualColor.red * _flowspeed * diff) / maxDiff / NEIGHBOUR_FACTOR;
+	above.green += (actualColor.green * _flowspeed * diff) / maxDiff / NEIGHBOUR_FACTOR;
+	above.blue += (actualColor.blue * _flowspeed * diff) / maxDiff / NEIGHBOUR_FACTOR;
 	_actualColoredFrame->set_pixel(x, y, above);
-	std::cerr << "New RGB " << above.red << "," << above.green << ", " << above.blue << std::endl;
+	//std::cerr << "New RGB " << above.red << "," << above.green << ", " << above.blue << std::endl;
 }
 
 
@@ -120,9 +120,9 @@ Frame::Ptr FlowMap::get_next()
 			
 			RGB_t actualColor = _oldColoredFrame->get_pixel(x,y);
 			
-			std::cerr << "===== RGB(" << x << "x" << y << ") " 
+			/*std::cerr << "===== RGB(" << x << "x" << y << ") " 
 				<< actualColor.red << "," << actualColor.green << ", " << actualColor.blue 
-				<< "\tmaxDiff= " << maxDiff << std::endl;
+				<< "\tmaxDiff= " << maxDiff << std::endl;*/
 			
 			// There was a sink found, so the color at the current pixel has to be removed.
 			if (maxDiff < 0)

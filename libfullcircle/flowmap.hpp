@@ -6,7 +6,9 @@
 #include <libfullcircle/color_scheme.hpp>
 
 namespace fullcircle {
-		
+	
+  static const int32_t NEIGHBOUR_FACTOR = 100;
+	
   class FlowMap {
     public:
       typedef std::tr1::shared_ptr<FlowMap> Ptr;
