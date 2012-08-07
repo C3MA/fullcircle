@@ -23,12 +23,12 @@ void FlowMap::init(std::string hash, uint16_t width, uint16_t height)
 	uint64_t arraySize = width * height;
 	/* array has the size of 9, text a length of 4 -> stepwidth of 2 (not all characters are used.) */
 	uint32_t step = arraySize / hash.length();
-	if (step < 0)
+	if (step == 0)
 	{
 		step = 1; //FIXME funzt das so?
 	}
-	
-    for( uint16_t i = 0; i < hash.length(); i+=step) {
+    for( uint16_t i = 0; i < hash.length() && (i / width) < height; i += step) {
+		std::cerr << "DEBUG : " << i << " (" << step << ")" << std::endl;
 		_hills->set_pixel(i / width, i % width, hash[i], 0, 0);
     }
 }
