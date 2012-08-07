@@ -76,7 +76,7 @@ void FlowMap::modify_pixel(uint16_t x, uint16_t y, int32_t diff, int32_t maxDiff
 	diff = abs(diff);
 	maxDiff = abs(maxDiff);
 	
-	RGB_t above = _oldColoredFrame->get_pixel(x, y);
+	RGB_t above = _actualColoredFrame->get_pixel(x, y);
 	//std::cerr << "---- Diff (" << x << "x" << y << ") diff=" << diff << " max=" << maxDiff << std::endl;
 	//std::cerr << "Old RGB " << above.red << "," << above.green << ", " << above.blue << std::endl;
 	above.red += (actualColor.red * _flowspeed * diff) / maxDiff / NEIGHBOUR_FACTOR;
