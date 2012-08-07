@@ -109,7 +109,8 @@ Frame::Ptr FlowMap::get_next()
 			diff[7] = calc_height(_hills, x + 1, y + 1) - actHeight;
 			maxDiff = 0;
 			for (int i=0; i < 8; i++) {
-				if (maxDiff < diff[i])
+				// search the biggest negative diff
+				if (maxDiff > diff[i])
 					maxDiff = diff[i];
 			}
 			
@@ -120,7 +121,7 @@ Frame::Ptr FlowMap::get_next()
 				<< "\tmaxDiff= " << maxDiff << std::endl;
 			
 			// There was a sink found, so the color at the current pixel has to be removed.
-			if (maxDiff == 0)
+			if (maxDiff < 0)
 			{
 				// first let the water flow to the neighbour pixel (according to the height difference)
 				if (y > 0) // there is a row above

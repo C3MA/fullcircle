@@ -82,7 +82,9 @@ BOOST_AUTO_TEST_CASE ( check_flowmap_creating ) {
 	
 	// reuse the variable hill to specify the start points.
 	hills->fill_whole(black);
+	hills->set_pixel(1, 0, 255, 0, 0);
 	hills->set_pixel(1, 1, 0, 180, 0);
+	hills->set_pixel(1, 2, 0, 0, 160);
 	std::cout << "start color:" << std::endl;
 	hills->dump_frame(std::cout);
 	fm->start_points(hills);
