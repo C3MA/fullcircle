@@ -110,3 +110,14 @@ BOOST_AUTO_TEST_CASE ( check_flowmap_hash_created ) {
 	std::cout << "Test hill:" << std::endl;
 	fm->dump_hills(std::cout);
 }
+
+BOOST_AUTO_TEST_CASE ( check_flowmap_hash_created2 ) {
+	init_color();
+	std::cout << "Create a long hashbased floating map." << std::endl;
+	
+	fullcircle::FlowMap::Ptr fm(new fullcircle::FlowMap());
+	fm->init("hello World for ever and ever and ever and ever", 3, 3);
+	
+	std::cout << "Test hill:" << std::endl;
+	fm->dump_hills(std::cout);
+}

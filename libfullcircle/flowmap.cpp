@@ -32,7 +32,6 @@ void FlowMap::init(std::string hash, uint16_t width, uint16_t height)
 	} while (step == 0);
 	
     for( uint16_t i = 0; i < hash.length() && (i / width) < height; i += step) {
-		std::cerr << "DEBUG : " << i << " (" << step << "," << combinedChar << ")" << std::endl;
 		tmp = hash[i];
 		for (uint16_t j = 1 /* one is added before the loop*/; j < combinedChar; j++) {
 			tmp += hash[i+j];
