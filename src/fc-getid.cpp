@@ -88,8 +88,8 @@ int main(int argc, char *argv[1]) {
     }
 
     if (vm.count("redisport") != 1 ) {
-      std::cerr << "You must specify the port (-p <number>). Default is 6379." << std::endl;
-      return 1;
+      std::cerr << "Warning: no port specified. Assuming REDIS default port 6379." << std::endl;
+      port = 6379;
     } else {
       std::istringstream converter(vm["redisport"].as<std::string>());
       if ( !( converter >> port)) {
