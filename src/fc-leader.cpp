@@ -19,23 +19,40 @@ namespace po = boost::program_options;
 namespace bfs=boost::filesystem;
 
 fullcircle::Sequence::Ptr mk_leader(
-    fullcircle::RGB_t color, 
-    uint16_t seed,
+    const std::string& color_string,
+    uint16_t number,
     uint16_t fps,
     uint16_t width,
     uint16_t height
     ) 
 {
   fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(fps, width, height));
-  fullcircle::FrameFader::Ptr fader(new fullcircle::FrameFader(25,fps));
+  fullcircle::FrameFader::Ptr fader(new fullcircle::FrameFader(2,fps));
   fullcircle::Frame::Ptr start(new fullcircle::Frame(width,height));
   start->fill_whole(fullcircle::BLACK);
   seq->add_frame(start);
 
+  fullcircle::RGB_t color = fullcircle::RED;
   fullcircle::Frame::Ptr color_show(new fullcircle::Frame(width,height));
   color_show->fill_whole(color);
-
   seq = (*seq) << fader->fade(seq->get_last_frame(), color_show);
+
+  //fullcircle::SpriteIO::Ptr sprite_io(new fullcircle::SpriteIO());
+  //fullcircle::Frame::Ptr quadrat(
+  //    sprite_io->load(std::string(":/sprites/quadrat_red_6x6.png")));
+
+  //seq = (*seq) << fader->fade(seq->get_last_frame(), quadrat);
+
+  std::ostringstream oss;
+  oss << number;
+	fullcircle::FontRenderer::Ptr fr(new fullcircle::FontRenderer(width, height));
+  // TODO: The font has a fixed size of 5x5 pixels. Calculate baseline etc.
+  // BUG: Text wird nicht gerendert
+  fr->scroll_text(seq, 2, 0, oss.str(), 500);	
+  // BUG: Ab hier funktioniert das Rendering - aber Text is mittig.
+  fr->scroll_text(seq, 3, 0, oss.str(), 500);	
+	//fr->write_text(seq, (width/4), (height/4), oss.str());
+
 
   return seq;
 }
@@ -196,7 +213,7 @@ int main(int argc, char *argv[1]) {
     fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(fps, width, height));
 
     seq = (*seq) << mk_leader(
-        fullcircle::YELLOW,
+        color,
         number,
         fps,
         width,
