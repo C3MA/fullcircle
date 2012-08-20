@@ -202,7 +202,7 @@ int main (int argc, char* argv[]) {
     try {
       fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(fps, width, height));
       fullcircle::ColorScheme::Ptr colors(new fullcircle::ColorSchemeSmash());
-	
+		int frameCount = 0;
 	  /* specify the first frame, where the color should flow down */
 	  fullcircle::Frame::Ptr startFrame(new fullcircle::Frame(width, height));
 	  startFrame->fill_whole(colors->get_background());
@@ -217,14 +217,16 @@ int main (int argc, char* argv[]) {
 		std::cerr << "The hills:" << std::endl;  //Hills		
 		fm->dump_hills(std::cerr);
 		std::cerr << "The first frame was initialized" << std::endl;  //Debug
-		fm->get_next()->dump_frame(std::cerr);
+
 		
 		while (fm->has_changed()) {
-			std::cerr << ";"; // Debug to detect endless loops
-			seq->add_frame( fm->get_next() );
-			std::cerr << "."; // Debug to detect endless loops
+			fullcircle::Frame::Ptr actFrame = fm->get_next();
+			actFrame->dump_frame(std::cerr); // Debug
+			std::cerr << "---------------------" << std::endl;  //Debug 2		
+			seq->add_frame( actFrame );
+			frameCount++;
 		}
-		std::cerr << std::endl; // Debug to detect endless loops
+      std::cout << "Generated " << frameCount << " frames." << std::endl;
 		
       std::cout << "Saving sequence to file " << sequence << std::endl;
       std::fstream output(sequence.c_str(), 
