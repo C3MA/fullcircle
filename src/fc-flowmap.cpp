@@ -207,10 +207,17 @@ int main (int argc, char* argv[]) {
 	  fullcircle::Frame::Ptr startFrame(new fullcircle::Frame(width, height));
 	  startFrame->fill_whole(colors->get_background());
 		
+		// build a better algorithom to spread color on the first frame
+		startFrame->fill_whole(colors->get_primary());
+		
 		fullcircle::FlowMap::Ptr fm(new fullcircle::FlowMap());
 		fm->init(hash, width, height);
 		fm->start_points(startFrame);
+		
+		std::cerr << "The hills:" << std::endl;  //Hills		
+		fm->dump_hills(std::cerr);
 		std::cerr << "The first frame was initialized" << std::endl;  //Debug
+		fm->get_next()->dump_frame(std::cerr);
 		
 		while (fm->has_changed()) {
 			std::cerr << ";"; // Debug to detect endless loops
