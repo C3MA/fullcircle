@@ -5,11 +5,14 @@ set(fc-perlin_src fc-perlin.cpp)
 set(fc-gol_src fc-gol.cpp)
 set(fc-text_src fc-text.cpp)
 set(fc-badge_src fc-badge.cpp)
+set(fc-getid_src fc-getid.cpp)
 set(fc-add_src fc-add.cpp)
 set(fc-cat_src fc-cat.cpp)
 set(fc-concat_src fc-concat.cpp)
 set(fc-read-image_src fc-read-image.cpp)
 set(fc-flowmap_src fc-flowmap.cpp)
+set(fc-concat_src fc-concat.cpp)
+set(fc-read-image_src fc-read-image.cpp)
 
 include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_CURRENT_SOURCE_DIR} 
@@ -40,8 +43,11 @@ add_executable(fc-text
 add_executable(fc-add
   ${fc-add_src}
   )
-add_executable(fc-cat
-  ${fc-cat_src}
+add_executable(fc-concat
+  ${fc-concat_src}
+  )
+add_executable(fc-read-image
+  ${fc-read-image_src}
   )
 
 add_executable(fc-badge
@@ -51,6 +57,11 @@ add_executable(fc-badge
 add_executable(fc-flowmap
   ${fc-flowmap_src}
   )
+
+add_executable(fc-getid
+  ${fc-getid_src}
+  )
+
 
 target_link_libraries(fc-simulator 
   fullcircle 
@@ -85,8 +96,12 @@ target_link_libraries(fc-add
   fullcircle
   ${Boost_LIBRARIES}
   )
+target_link_libraries(fc-read-image
+  fullcircle
+  ${Boost_LIBRARIES}
+  )
 
-target_link_libraries(fc-cat
+target_link_libraries(fc-concat
   fullcircle
   ${Boost_LIBRARIES}
   )
@@ -102,6 +117,14 @@ target_link_libraries(fc-flowmap
   ${Boost_LIBRARIES}
   ${QT_LIBRARIES}
   )
+
+
+target_link_libraries(fc-getid
+  fullcircle 
+  ${Boost_LIBRARIES}
+  ${HIREDIS_LIBRARIES}
+  )
+
 
 
 # sensor programs to the install target

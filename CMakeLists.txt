@@ -17,7 +17,7 @@ ENABLE_TESTING()
 
 set(V_MAJOR 0)
 set(V_MINOR 2)
-set(V_PATCH 0)
+set(V_PATCH 1)
 
 # add a path where some libraries might be stored
 set(CMAKE_ADDITIONAL_PATH "$ENV{CMAKE_ADDITIONAL_PATH}" CACHE PATH "Path where many locally installed libraries can be found")
@@ -66,6 +66,7 @@ FIND_PACKAGE(Boost 1.46.1 COMPONENTS
   filesystem 
   regex
   system)
+INCLUDE(FindHiredis)
 # find googles protocol buffers
 INCLUDE(FindProtobuf)
 IF (PB_FOUND)
@@ -112,6 +113,9 @@ SET(CPACK_STRIP_FILES "bin/fc-demo")
 SET(CPACK_SOURCE_STRIP_FILES TRUE)
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY "CMake ${CMake_VERSION_MAJOR}.${CMake_VERSION_MINOR}")
 SET(CPACK_PACKAGE_EXECUTABLES "fc-demo" "Demo of the library")
+SET(CPACK_PACKAGE_EXECUTABLES "fc-perlin" "Demo of the library")
+SET(CPACK_PACKAGE_EXECUTABLES "fc-getid" "Demo of the library")
+SET(CPACK_PACKAGE_EXECUTABLES "fc-badge" "Demo of the library")
 INCLUDE(CPack)
 
 
@@ -123,6 +127,7 @@ message("  boost include: ${Boost_INCLUDE_DIRS}")
 message("  boost program options lib: ${Boost_PROGRAM_OPTIONS_LIBRARY}")
 message("  boost system lib: ${Boost_SYSTEM_LIBRARY}")
 message("  boost filesystem lib: ${Boost_FILESYSTEM_LIBRARY}")
+message("  hiredis include: ${HIREDIS_INCLUDE_DIR}, lib: ${HIREDIS_LIBRARIES}")
 message("  PB include: ${PROTOBUF_INCLUDE_DIRS}, lib: ${PROTOBUF_LIBRARIES}")
 message("  QT4 include: ${QT_INCLUDE_DIR}, lib: ${QT_LIBRARIES}")
 message("  extended logging: ${ENABLE_LOGGING}")

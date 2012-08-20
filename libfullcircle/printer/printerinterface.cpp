@@ -56,7 +56,8 @@ void PrinterInterface::print(const std::string& badge) {
     oss << "Device " << _serial_device << " not ready";
     throw CommunicationException(oss.str());
   }
-  write(_tty_fd, badge.c_str(), badge.length());
+  ssize_t success = write(_tty_fd, badge.c_str(), badge.length());
+  if (success) {};
 }
 
 
@@ -66,5 +67,6 @@ void PrinterInterface::cut_paper() {
     oss << "Device " << _serial_device << " not ready";
     throw CommunicationException(oss.str());
   }
-	write(_tty_fd,"\n\n\n\n\x1D\x56\x01",7);
+	ssize_t success = write(_tty_fd,"\n\n\n\n\x1D\x56\x01",7);
+  if (success) {};
 }
