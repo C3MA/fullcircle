@@ -95,7 +95,7 @@ int main (int argc, char* argv[]) {
       ("hash,x", po::value<std::string>(), "the seed hash for the visualization")
 			;
 		std::ostringstream oss;
-		oss << "Usage: " << argv[0] << " -s <FILE> -h <HASH> ...";
+		oss << "Usage: " << argv[0] << " -s <FILE> -x <HASH> ...";
 		po::options_description cmdline_options(oss.str());
 		cmdline_options.add(generic).add(cmd);
 
@@ -148,7 +148,7 @@ int main (int argc, char* argv[]) {
     }
 
     if (vm.count("hash") != 1 ) {
-      std::cerr << "You must specify an hash (-h <hash>)." << std::endl;
+      std::cerr << "You must specify an hash (-x <hash>)." << std::endl;
       return 1;
     } else {
       hash=vm["hash"].as<std::string>();
@@ -209,7 +209,7 @@ int main (int argc, char* argv[]) {
       std::cout << "Saving sequence to file " << sequence << std::endl;
       std::fstream output(sequence.c_str(), 
           std::ios::out | std::ios::trunc | std::ios::binary);
-      seq->save(output, "fc-perlin", version->getVersion());
+      seq->save(output, "fc-flowmap", version->getVersion());
       output.close();
     } catch (fullcircle::GenericException& ex) {
       std::cout << "Caught exception: " << ex.what() << std::endl;
