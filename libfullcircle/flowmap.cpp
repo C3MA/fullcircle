@@ -36,7 +36,7 @@ void FlowMap::init(std::string hash, uint16_t width, uint16_t height)
 		combinedChar++;
 		step = arraySize / (hash.length() / combinedChar);
 	} while (step == 0);	
-	maxsteps = hash.length() * step* step; // max the amounts of steps very high (so there are several rounds done)
+	maxsteps = hash.length() * step * step; // max the amounts of steps very high (so there are several rounds done)
 	std::cerr << " hash parameter: length=" << hash.length() << " value=" << hash << " step=" << step << " combined=" << combinedChar  << " maxsteps=" << maxsteps << std::endl;
 
 	
@@ -47,7 +47,7 @@ void FlowMap::init(std::string hash, uint16_t width, uint16_t height)
 		}
 		x = (i % width);
 		y = std::min(i / width, (int) (height-1));
-		std::cerr << "create " << x << "x" << y << " " << tmp << std::endl;
+//		std::cerr << "create " << x << "x" << y << " " << tmp << std::endl; // Debug
 		pixelHeight = _hills->get_pixel(x, y);
 		
 		pixelHeight.red   += tmp & 0xFF0000;
@@ -57,7 +57,7 @@ void FlowMap::init(std::string hash, uint16_t width, uint16_t height)
 		_hills->set_pixel(x, y, pixelHeight);
 		if (i != 0 && (i % hash.length() == 0))
 		{
-			i++; // when we reached one round move the offset...
+			i+=2; // when we reached one round move the offset...
 		}
     }
 	

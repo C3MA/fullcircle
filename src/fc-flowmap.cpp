@@ -219,7 +219,7 @@ int main (int argc, char* argv[]) {
 		
 		std::cerr << "The hills:" << std::endl;  //Hills		
 		fm->dump_hills(std::cerr);
-		std::cerr << "The first frame was initialized" << std::endl;  //Debug
+//		std::cerr << "The first frame was initialized" << std::endl;  //Debug
 
 		
 		while (fm->has_changed()) {
@@ -227,8 +227,8 @@ int main (int argc, char* argv[]) {
 			fullcircle::Frame::Ptr actFrame(new fullcircle::Frame(width, height));
 			actFrame->set_pixel(0,0, fm->get_next());
 			seq->add_frame( actFrame );
-			actFrame->dump_frame(std::cerr); // Debug
-			std::cerr << "---------------------" << std::endl;  //Debug 2		
+//			actFrame->dump_frame(std::cerr); // Debug
+//			std::cerr << "---------------------" << std::endl;  //Debug 2		
 			frameCount++;
 		}
       std::cout << "Generated " << frameCount << " frames." << std::endl;
