@@ -7,6 +7,9 @@ set(fc-text_src fc-text.cpp)
 set(fc-badge_src fc-badge.cpp)
 set(fc-add_src fc-add.cpp)
 set(fc-cat_src fc-cat.cpp)
+set(fc-concat_src fc-concat.cpp)
+set(fc-read-image_src fc-read-image.cpp)
+set(fc-flowmap_src fc-flowmap.cpp)
 
 include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_CURRENT_SOURCE_DIR} 
@@ -43,6 +46,10 @@ add_executable(fc-cat
 
 add_executable(fc-badge
   ${fc-badge_src}
+  )
+
+add_executable(fc-flowmap
+  ${fc-flowmap_src}
   )
 
 target_link_libraries(fc-simulator 
@@ -90,9 +97,25 @@ target_link_libraries(fc-badge
   ${QT_LIBRARIES}
   )
 
+target_link_libraries(fc-flowmap
+  fullcircle 
+  ${Boost_LIBRARIES}
+  ${QT_LIBRARIES}
+  )
+
+
 # sensor programs to the install target
 INSTALL(PROGRAMS 
   ${CMAKE_CURRENT_BINARY_DIR}/fc-simulator
   ${CMAKE_CURRENT_BINARY_DIR}/fc-demo
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-badge
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-add
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-text
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-concat
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-getid
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-gol
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-perlin
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-read-image
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-flowmap
   DESTINATION bin)
 
