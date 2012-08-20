@@ -20,6 +20,7 @@ void FlowMap::init(std::string hash, uint16_t width, uint16_t height)
 	
 	// Fill the frame with values.
 	uint64_t arraySize = width * height;
+	std::cerr << "Dimensions are " << width << "x" << height << " -> array is " << arraySize << std::endl;
 	
 	/* combine more and more characters together */
 	uint32_t step;
@@ -29,12 +30,15 @@ void FlowMap::init(std::string hash, uint16_t width, uint16_t height)
 		combinedChar++;
 		step = arraySize / (hash.length() / combinedChar);
 	} while (step == 0);
+	std::cerr << " hash parameter: length=" << hash.length() << " value=" << hash << " step=" << step << " combined=" << combinedChar  << std::endl;
 	
-    for( uint16_t i = 0; i < hash.length() && (i / width) < height; i += step) {
+	
+    for( uint16_t i = 0; i < (hash.length() * step) && (i / width) < height; i += step) {
 		tmp = hash[i];
 		for (uint16_t j = 1 /* one is added before the loop*/; j < combinedChar; j++) {
 			tmp += hash[i+j];
 		}
+		std::cerr << "create " << std::min(i / width, (int) height) << "x" << (i % width) << " " << tmp << std::endl;
 		_hills->set_pixel(i % width, std::min(i / width, (int) height), tmp & 0xFF0000, tmp & 0xFF00, tmp & 0xFF);
     }
 	
