@@ -222,6 +222,13 @@ void FlowMap::set_speed(uint16_t flowspeed)
 
 bool FlowMap::has_changed()
 {
+	// only check, if both frames are set.
+	if (_actualColoredFrame == NULL || _oldColoredFrame == NULL 
+		|| _actualColoredFrame->width() != _oldColoredFrame->width()
+		|| _actualColoredFrame->height() != _oldColoredFrame->height()) {
+		return true; // if they are not both set, we are at the beginning, so start all the magic
+	}
+	
 	int x, y;
 	RGB_t oldColor, actColor;
 	for (x = 0; x < _oldColoredFrame->width(); x++) {

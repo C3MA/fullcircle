@@ -213,6 +213,7 @@ int main (int argc, char* argv[]) {
 		std::cerr << "The first frame was initialized" << std::endl;  //Debug
 		
 		while (fm->has_changed()) {
+			std::cerr << ";"; // Debug to detect endless loops
 			seq->add_frame( fm->get_next() );
 			std::cerr << "."; // Debug to detect endless loops
 		}
