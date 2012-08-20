@@ -38,6 +38,10 @@ void FlowMap::init(std::string hash, uint16_t width, uint16_t height)
 		}
 		_hills->set_pixel(i / width, i % width, tmp & 0xFF0000, tmp & 0xFF00, tmp & 0xFF);
     }
+	
+	// initialize the frame for the last colored step
+	fullcircle::Frame::Ptr oldframe(new fullcircle::Frame(width, height));
+	_oldColoredFrame = oldframe;
 }
 
 /**
@@ -226,7 +230,7 @@ bool FlowMap::has_changed()
 	if (_actualColoredFrame == NULL || _oldColoredFrame == NULL 
 		|| _actualColoredFrame->width() != _oldColoredFrame->width()
 		|| _actualColoredFrame->height() != _oldColoredFrame->height()) {
-		return true; // if they are not both set, we are at the beginning, so start all the magic
+		return false; // there is an error; STOP
 	}
 	
 	int x, y;
