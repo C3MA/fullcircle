@@ -222,7 +222,22 @@ void FlowMap::set_speed(uint16_t flowspeed)
 
 bool FlowMap::has_changed()
 {
-	return (_oldColoredFrame != _actualColoredFrame);
+	int x, y;
+	RGB_t oldColor, actColor;
+	for (x = 0; x < _oldColoredFrame->width(); x++) {
+		for (y = 0; y < _oldColoredFrame->height(); y++) {
+			oldColor = _oldColoredFrame->get_pixel(x,y);
+			actColor = _actualColoredFrame->get_pixel(x,y);
+			if (oldColor.red != actColor.red 
+				|| oldColor.green != actColor.green
+				|| oldColor.blue != actColor.blue)
+			{
+				return true;
+			}
+		}
+	}
+	
+	return false;
 }
 
 void FlowMap::dump_hills(std::ostream& os)
