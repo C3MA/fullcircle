@@ -208,7 +208,10 @@ int main (int argc, char* argv[]) {
 	  startFrame->fill_whole(colors->get_background());
 		
 		// build a better algorithom to spread color on the first frame
-		startFrame->fill_whole(colors->get_primary());
+		fullcircle::RGB_t white;
+		white.red = white.green = white.blue = 255;
+		
+		startFrame->fill_whole(white); //colors->get_secondary(),  get_primary()
 		
 		fullcircle::FlowMap::Ptr fm(new fullcircle::FlowMap());
 		fm->init(hash, width, height);
@@ -220,10 +223,12 @@ int main (int argc, char* argv[]) {
 
 		
 		while (fm->has_changed()) {
-			fullcircle::Frame::Ptr actFrame = fm->get_next();
+			// make a deep copy of the frame
+			fullcircle::Frame::Ptr actFrame(new fullcircle::Frame(width, height));
+			actFrame->set_pixel(0,0, fm->get_next());
+			seq->add_frame( actFrame );
 			actFrame->dump_frame(std::cerr); // Debug
 			std::cerr << "---------------------" << std::endl;  //Debug 2		
-			seq->add_frame( actFrame );
 			frameCount++;
 		}
       std::cout << "Generated " << frameCount << " frames." << std::endl;
