@@ -14,32 +14,51 @@ FlowMap::FlowMap()
 
 void FlowMap::init(std::string hash, uint16_t width, uint16_t height)
 {
+	RGB_t pixelHeight;
+	
 	// create a new frame, where the hills are written to
 	fullcircle::Frame::Ptr frame(new fullcircle::Frame(width, height));
 	_hills = frame;
 	
+	// reset every height values to zero
+	pixelHeight.red = pixelHeight.green = pixelHeight.blue = 0;
+	_hills->fill_whole(pixelHeight);
+	
 	// Fill the frame with values.
 	uint64_t arraySize = width * height;
-	std::cerr << "Dimensions are " << width << "x" << height << " -> array is " << arraySize << std::endl;
+	std::cerr << "Dimensions are " << _hills->width() << "x" << _hills->height() << " -> array is " << arraySize << std::endl;
 	
 	/* combine more and more characters together */
-	uint32_t step;
-	uint16_t combinedChar = 0;
+	uint32_t step, maxsteps;
+	uint16_t combinedChar = 0, x, y;
 	uint64_t tmp;
 	do {
 		combinedChar++;
 		step = arraySize / (hash.length() / combinedChar);
-	} while (step == 0);
-	std::cerr << " hash parameter: length=" << hash.length() << " value=" << hash << " step=" << step << " combined=" << combinedChar  << std::endl;
+	} while (step == 0);	
+	maxsteps = hash.length() * step* step; // max the amounts of steps very high (so there are several rounds done)
+	std::cerr << " hash parameter: length=" << hash.length() << " value=" << hash << " step=" << step << " combined=" << combinedChar  << " maxsteps=" << maxsteps << std::endl;
+
 	
-	
-    for( uint16_t i = 0; i < (hash.length() * step) && (i / width) < height; i += step) {
+    for( uint16_t i = 0; i < maxsteps; i += step) {
 		tmp = hash[i];
 		for (uint16_t j = 1 /* one is added before the loop*/; j < combinedChar; j++) {
 			tmp += hash[i+j];
 		}
-		std::cerr << "create " << std::min(i / width, (int) height) << "x" << (i % width) << " " << tmp << std::endl;
-		_hills->set_pixel(i % width, std::min(i / width, (int) height), tmp & 0xFF0000, tmp & 0xFF00, tmp & 0xFF);
+		x = (i % width);
+		y = std::min(i / width, (int) (height-1));
+		std::cerr << "create " << x << "x" << y << " " << tmp << std::endl;
+		pixelHeight = _hills->get_pixel(x, y);
+		
+		pixelHeight.red   += tmp & 0xFF0000;
+		pixelHeight.green += tmp & 0xFF00;
+		pixelHeight.blue  += tmp & 0xFF;
+		
+		_hills->set_pixel(x, y, pixelHeight);
+		if (i != 0 && (i % hash.length() == 0))
+		{
+			i++; // when we reached one round move the offset...
+		}
     }
 	
 	// initialize the frame for the last colored step
