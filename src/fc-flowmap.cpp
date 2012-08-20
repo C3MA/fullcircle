@@ -13,6 +13,8 @@
 #include <libfullcircle/sfx/frame_fader.hpp>
 #include <boost/program_options.hpp>
 #include <boost/program_options/positional_options.hpp>
+#include <libfullcircle/flowmap.hpp>
+
 namespace po = boost::program_options;
 namespace bfs=boost::filesystem;
 
@@ -200,11 +202,21 @@ int main (int argc, char* argv[]) {
     try {
       fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(fps, width, height));
       fullcircle::ColorScheme::Ptr colors(new fullcircle::ColorSchemeSmash());
+	
+	  /* specify the first frame, where the color should flow down */
+	  fullcircle::Frame::Ptr startFrame(new fullcircle::Frame(width, height));
+	  startFrame->fill_whole(colors->get_background());
 		
-		std::cerr << "The flowmap sequence should now be created" << std::endl;
+		fullcircle::FlowMap::Ptr fm(new fullcircle::FlowMap());
+		fm->init(hash, width, height);
+		fm->start_points(startFrame);
+		std::cerr << "The first frame was initialized" << std::endl;  //Debug
 		
-      
-		
+		while (fm->has_changed()) {
+			seq->add_frame( fm->get_next() );
+			std::cerr << "."; // Debug to detect endless loops
+		}
+		std::cerr << std::endl; // Debug to detect endless loops
 		
       std::cout << "Saving sequence to file " << sequence << std::endl;
       std::fstream output(sequence.c_str(), 

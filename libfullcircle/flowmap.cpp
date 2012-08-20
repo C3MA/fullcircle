@@ -58,6 +58,11 @@ void FlowMap::init(Frame::Ptr hills)
 	_oldColoredFrame = oldframe;
 }
 
+/**
+ * @param[in] start
+ *		The start frame must defined. This is also the first frame of the generated sequence.
+ *
+ */
 void FlowMap::start_points(Frame::Ptr start)
 {
 	if (start->width() != _hills->width())
@@ -109,7 +114,9 @@ void FlowMap::modify_pixel(uint16_t x, uint16_t y, int32_t diff, int32_t maxDiff
 	//std::cerr << "New RGB " << above.red << "," << above.green << ", " << above.blue << std::endl;
 }
 
-
+/**
+ * Calculates from the actual (or start frame at the first time) a flow of the colors down the hills.
+ */
 Frame::Ptr FlowMap::get_next()
 {
 	// make a deep copy of the 
