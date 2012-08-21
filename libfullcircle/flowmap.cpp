@@ -29,36 +29,29 @@ void FlowMap::init(std::string hash, uint16_t width, uint16_t height)
 	std::cerr << "Dimensions are " << _hills->width() << "x" << _hills->height() << " -> array is " << arraySize << std::endl;
 	
 	/* combine more and more characters together */
-	uint32_t step, maxsteps;
-	uint16_t combinedChar = 0, x, y;
+	uint16_t i, x, y, relative;
 	uint64_t tmp;
-	do {
-		combinedChar++;
-		step = arraySize / (hash.length() / combinedChar);
-	} while (step == 0);	
-	maxsteps = hash.length() * step * step; // max the amounts of steps very high (so there are several rounds done)
-	std::cerr << " hash parameter: length=" << hash.length() << " value=" << hash << " step=" << step << " combined=" << combinedChar  << " maxsteps=" << maxsteps << std::endl;
 
-	
-    for( uint16_t i = 0; i < maxsteps; i += step) {
-		tmp = hash[i];
-		for (uint16_t j = 1 /* one is added before the loop*/; j < combinedChar; j++) {
-			tmp += hash[i+j];
+	i = 0;
+	tmp = hash[0];
+    for( x = 0; x < width; x++ )
+    {
+	for( y = 0; y < height; y++ )
+	{	
+		// at the start of the word define a relative value
+		if (i % hash.length() == 0)
+		{
+			relative=hash[0]; //FIXME always use the first character as relative
 		}
-		x = (i % width);
-		y = std::min(i / width, (int) (height-1));
-//		std::cerr << "create " << x << "x" << y << " " << tmp << std::endl; // Debug
+
+		tmp += hash[i] - relative;
 		pixelHeight = _hills->get_pixel(x, y);
-		
 		pixelHeight.red   += tmp & 0xFF0000;
 		pixelHeight.green += tmp & 0xFF00;
 		pixelHeight.blue  += tmp & 0xFF;
-		
 		_hills->set_pixel(x, y, pixelHeight);
-		if (i != 0 && (i % hash.length() == 0))
-		{
-			i+=2; // when we reached one round move the offset...
-		}
+		i++;
+	}
     }
 	
 	// initialize the frame for the last colored step
