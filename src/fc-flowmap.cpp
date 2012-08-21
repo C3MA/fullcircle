@@ -50,7 +50,7 @@ int main (int argc, char* argv[]) {
 			("version,v", "print version and exit")
       ("sequence,s", po::value<std::string>(), "the sequence file to use")
       ("hash,x", po::value<std::string>(), "the seed hash for the visualization")
-      ("increase,i", po::value<bool>(), "increase the speed of the colored 'water'")
+      ("increase,i", "increase the speed of the colored 'water'")
       ("maximum,m", po::value<int>(), "the maximum frames to render")
 			;
 		std::ostringstream oss;
@@ -190,7 +190,7 @@ int main (int argc, char* argv[]) {
 
 		
 		
-		while (fm->has_changed() && (maximumFrames == 0 || frameCount <= maximumFrames) ) {
+		while (fm->has_changed() && (maximumFrames == 0 || frameCount < maximumFrames) ) {
 			// make a deep copy of the frame
 			fullcircle::Frame::Ptr actFrame(new fullcircle::Frame(width, height));
 			actFrame->set_pixel(0,0, fm->get_next());
