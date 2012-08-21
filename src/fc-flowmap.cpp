@@ -87,7 +87,7 @@ int main (int argc, char* argv[]) {
     uint16_t fps;
     uint16_t width;
     uint16_t height;
-    bool speedFlow = false;
+    uint16_t speedFlow = 0; // this values will be ignored if 0
     int maximumFrames = 0;
 
     if (vm.count("help")) {
@@ -149,7 +149,7 @@ int main (int argc, char* argv[]) {
     }
 
     if (vm.count("increase") == 1 ) {
-	speedFlow = true;
+	speedFlow = 1; // the flowspeed is now activated
     }
 
     if (vm.count("maximum") == 1 ) {
@@ -184,20 +184,25 @@ int main (int argc, char* argv[]) {
 		fm->init(hash, width, height);
 		fm->start_points(startFrame);
 		
-		std::cerr << "The hills:" << std::endl;  //Hills		
-		fm->dump_hills(std::cerr);
-//		std::cerr << "The first frame was initialized" << std::endl;  //Debug
+//		std::cerr << "The hills:" << std::endl;  //Hills		
+//		fm->dump_hills(std::cerr);
 
 		
 		
 		while (fm->has_changed() && (maximumFrames == 0 || frameCount < maximumFrames) ) {
-			// make a deep copy of the frame
+			// make a deep copy of the frame (otherwise only the last frame will be seen all the time)
 			fullcircle::Frame::Ptr actFrame(new fullcircle::Frame(width, height));
 			actFrame->set_pixel(0,0, fm->get_next());
 			seq->add_frame( actFrame );
 //			actFrame->dump_frame(std::cerr); // Debug
 //			std::cerr << "---------------------" << std::endl;  //Debug 2		
+
 			frameCount++;
+			if (speedFlow > 0 && frameCount % 10 == 0)
+			{
+				speedFlow++;
+				fm->set_speed(speedFlow);	
+			}
 		}
 
 	if (maximumFrames > 0)
@@ -208,6 +213,12 @@ int main (int argc, char* argv[]) {
 	{
 		std::cout << "Generated " << frameCount << " frames." << std::endl;
 	}		
+
+	if (speedFlow > 0)
+	{
+		std::cout << "In the end the color moved with " << speedFlow << std::endl; 
+	}
+
       std::cout << "Saving sequence to file " << sequence << std::endl;
       std::fstream output(sequence.c_str(), 
           std::ios::out | std::ios::trunc | std::ios::binary);
