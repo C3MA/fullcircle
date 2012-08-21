@@ -18,51 +18,6 @@
 namespace po = boost::program_options;
 namespace bfs=boost::filesystem;
 
-fullcircle::Sequence::Ptr mk_perlin_noise(
-    fullcircle::ColorScheme::Ptr colors, 
-    uint16_t seed,
-    uint8_t fps,
-    uint8_t width,
-    uint8_t height
-    ) {
-  std::cout << "Generating Perlin noise demo sequence." << std::endl;
-
-  fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(fps, width, height));
-  fullcircle::FrameFader::Ptr fader(new fullcircle::FrameFader(5,fps));
-
-  fullcircle::PerlinNoise::Ptr noize(new fullcircle::PerlinNoise(
-        3,    // octaves
-        .42, // freq
-        2.4,   // amplitude
-        seed    // seed
-        ));
-
-  for( uint32_t frameID = 0; frameID < 100; ++frameID) {
-    fullcircle::Frame::Ptr frame(new fullcircle::Frame(width,height));
-    frame->fill_whole(colors->get_background());
-    for( uint16_t x = 0; x < width; ++x) {
-      for( uint16_t y = 0; y < height; ++y) {
-        float n=noize->get_3d(x/8.0f, y/8.0f, frameID/10.0f);
-        // determine color
-        if (0<=n && n<0.3) {
-          frame->set_pixel(x,y,colors->get_primary());
-        } else if (0.3<=n && n<0.7) {
-          frame->set_pixel(x,y,colors->get_secondary());
-        } else if (0.7<=n && n<=1.0) {
-          frame->set_pixel(x,y,colors->get_background());
-        } else {
-          std::cout << "Error: Unknown noise value: " << n << std::endl;
-        }
-      }
-    }
-    if (seq->size() == 0)
-      seq->add_frame(frame);
-    else
-      seq = (*seq) << fader->fade(seq->get_last_frame(), frame);
-  }
-  return seq;
-}
-
 int main (int argc, char* argv[]) {
   // default config file path
   boost::filesystem::path config_file;
