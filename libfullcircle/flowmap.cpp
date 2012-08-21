@@ -41,7 +41,13 @@ void FlowMap::init(std::string hash, uint16_t width, uint16_t height)
 		// at the start of the word define a relative value
 		if (i % hash.length() == 0)
 		{
-			relative=hash[0]; //FIXME always use the first character as relative
+			uint16_t round = 0;
+			if ( i > 0) // the round could only be calculated like this, if the first time has passed
+				round = i / hash.length();
+			relative=hash[ round ]; // on each round, use another character as relative one.
+			
+			if ( round % 2 == 1) // uneven -> negative value
+				relative = -relative;
 		}
 
 		tmp += hash[i] - relative;
