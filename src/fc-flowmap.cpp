@@ -50,6 +50,8 @@ int main (int argc, char* argv[]) {
 			("version,v", "print version and exit")
       ("sequence,s", po::value<std::string>(), "the sequence file to use")
       ("hash,x", po::value<std::string>(), "the seed hash for the visualization")
+      ("increase,i", po::value<bool>(), "increase the speed of the colored 'water'")
+      ("maximum,m", po::value<int>(), "the maximum frames to render")
 			;
 		std::ostringstream oss;
 		oss << "Usage: " << argv[0] << " -s <FILE> -x <HASH> ...";
@@ -85,6 +87,8 @@ int main (int argc, char* argv[]) {
     uint16_t fps;
     uint16_t width;
     uint16_t height;
+    bool speedFlow = false;
+    int maximumFrames = 0;
 
     if (vm.count("help")) {
       std::cout << cmdline_options << std::endl;
@@ -144,6 +148,14 @@ int main (int argc, char* argv[]) {
       }
     }
 
+    if (vm.count("increase") == 1 ) {
+	speedFlow = true;
+    }
+
+    if (vm.count("maximum") == 1 ) {
+	maximumFrames = vm["maximum"].as<int>();
+    }
+
     bfs::path sequence(sequencefile);
 
 	  
@@ -177,7 +189,8 @@ int main (int argc, char* argv[]) {
 //		std::cerr << "The first frame was initialized" << std::endl;  //Debug
 
 		
-		while (fm->has_changed()) {
+		
+		while (fm->has_changed() && (maximumFrames == 0 || frameCount <= maximumFrames) ) {
 			// make a deep copy of the frame
 			fullcircle::Frame::Ptr actFrame(new fullcircle::Frame(width, height));
 			actFrame->set_pixel(0,0, fm->get_next());
@@ -186,8 +199,15 @@ int main (int argc, char* argv[]) {
 //			std::cerr << "---------------------" << std::endl;  //Debug 2		
 			frameCount++;
 		}
-      std::cout << "Generated " << frameCount << " frames." << std::endl;
-		
+
+	if (maximumFrames > 0)
+	{
+		std::cout << "Generated " << frameCount << " frames, the limit was " << maximumFrames << std::endl;
+	}
+	else
+	{
+		std::cout << "Generated " << frameCount << " frames." << std::endl;
+	}		
       std::cout << "Saving sequence to file " << sequence << std::endl;
       std::fstream output(sequence.c_str(), 
           std::ios::out | std::ios::trunc | std::ios::binary);
