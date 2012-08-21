@@ -7,6 +7,10 @@ set(fc-text_src fc-text.cpp)
 set(fc-badge_src fc-badge.cpp)
 set(fc-getid_src fc-getid.cpp)
 set(fc-add_src fc-add.cpp)
+set(fc-cat_src fc-cat.cpp)
+set(fc-concat_src fc-concat.cpp)
+set(fc-read-image_src fc-read-image.cpp)
+set(fc-flowmap_src fc-flowmap.cpp)
 set(fc-concat_src fc-concat.cpp)
 set(fc-read-image_src fc-read-image.cpp)
 
@@ -48,6 +52,10 @@ add_executable(fc-read-image
 
 add_executable(fc-badge
   ${fc-badge_src}
+  )
+
+add_executable(fc-flowmap
+  ${fc-flowmap_src}
   )
 
 add_executable(fc-getid
@@ -104,6 +112,13 @@ target_link_libraries(fc-badge
   ${QT_LIBRARIES}
   )
 
+target_link_libraries(fc-flowmap
+  fullcircle 
+  ${Boost_LIBRARIES}
+  ${QT_LIBRARIES}
+  )
+
+
 target_link_libraries(fc-getid
   fullcircle 
   ${Boost_LIBRARIES}
@@ -124,5 +139,6 @@ INSTALL(PROGRAMS
   ${CMAKE_CURRENT_BINARY_DIR}/fc-gol
   ${CMAKE_CURRENT_BINARY_DIR}/fc-perlin
   ${CMAKE_CURRENT_BINARY_DIR}/fc-read-image
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-flowmap
   DESTINATION bin)
 
