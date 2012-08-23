@@ -75,7 +75,7 @@ void FontRenderer::scroll_text(Sequence::Ptr sequence, uint16_t x_offset, uint16
 	{
 		uint32_t timePerFrame = (sequence->fps() * scrollspeed_ms / 1000);
 		Frame::Ptr actual_screen_part(new Frame(_width, _height));
-		for (uint16_t i=0; i < text_screen_width - _width; i++) {
+		for (uint16_t i=0; i < text_screen_width; i++) {
 			actual_screen_part->set_pixel_window(i, 0, screen);
 			Frame::Ptr copy(new Frame(actual_screen_part->width(), actual_screen_part->height()));
 			copy->set_pixel(0,0,actual_screen_part); // make a deep copy for the sequence
