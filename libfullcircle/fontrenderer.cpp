@@ -53,7 +53,7 @@ void FontRenderer::scroll_text(Sequence::Ptr sequence, uint16_t x_offset, uint16
 		text_screen_width = text.size() * (item->width() + 1) /*we need some space after the last character*/ + x_offset;
 	}
 	
-	Frame::Ptr screen(new Frame(text_screen_width, _height));
+	Frame::Ptr screen(new Frame(text_screen_width + _width, _height));
 	screen->fill_whole(COLOR_TRANSPARENT);	
 	std::cout << "We want to print: " << text << std::endl;
 	
@@ -69,7 +69,9 @@ void FontRenderer::scroll_text(Sequence::Ptr sequence, uint16_t x_offset, uint16
 	}
 	if (scrollspeed_ms == 0)
 	{   // add the simple text (when there is no scrolling)
-		sequence->add_frame(screen);
+		Frame::Ptr frame(new Frame(_width, _height));
+		frame->set_pixel_window(0, 0, screen);
+		sequence->add_frame(frame);
 	}
 	else
 	{
