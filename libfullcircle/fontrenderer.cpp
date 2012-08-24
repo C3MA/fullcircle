@@ -86,6 +86,9 @@ void FontRenderer::scroll_text(Sequence::Ptr sequence, uint16_t x_offset, uint16
 			}
 		}
 		sequence->trim_end();
+		for ( uint32_t time=0; time < timePerFrame; time++) {
+			sequence->add_frame(Frame::Ptr(new Frame(_width, _height)));
+		}
 	}
 }
 
