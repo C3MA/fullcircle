@@ -11,6 +11,12 @@ namespace fullcircle {
     uint16_t blue;
   } RGB_t;
 
+  static const RGB_t BLACK = {0,0,0};
+  static const RGB_t wHITE = {255,255,255};
+  static const RGB_t RED = {255,0,0};
+  static const RGB_t YELLOW = {255,255,0};
+  static const RGB_t GREEN = {0,255,0};
+  static const RGB_t BLUE = {0,0,255};
 
   // Pure virtual class
   class ColorScheme {

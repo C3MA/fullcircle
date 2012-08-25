@@ -13,6 +13,7 @@ set(fc-read-image_src fc-read-image.cpp)
 set(fc-flowmap_src fc-flowmap.cpp)
 set(fc-concat_src fc-concat.cpp)
 set(fc-read-image_src fc-read-image.cpp)
+set(fc-leader_src fc-leader.cpp)
 
 include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_CURRENT_SOURCE_DIR} 
@@ -62,6 +63,9 @@ add_executable(fc-getid
   ${fc-getid_src}
   )
 
+add_executable(fc-leader
+  ${fc-leader_src}
+  )
 
 target_link_libraries(fc-simulator 
   fullcircle 
@@ -125,6 +129,12 @@ target_link_libraries(fc-getid
   ${HIREDIS_LIBRARIES}
   )
 
+target_link_libraries(fc-leader
+  fullcircle 
+  ${Boost_LIBRARIES}
+  )
+
+
 
 
 # sensor programs to the install target
@@ -138,6 +148,7 @@ INSTALL(PROGRAMS
   ${CMAKE_CURRENT_BINARY_DIR}/fc-getid
   ${CMAKE_CURRENT_BINARY_DIR}/fc-gol
   ${CMAKE_CURRENT_BINARY_DIR}/fc-perlin
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-leader
   ${CMAKE_CURRENT_BINARY_DIR}/fc-read-image
   ${CMAKE_CURRENT_BINARY_DIR}/fc-flowmap
   DESTINATION bin)

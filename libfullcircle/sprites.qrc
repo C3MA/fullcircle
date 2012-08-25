@@ -2,6 +2,7 @@
   <qresource>
     <file>sprites/space_invader_8x8.png</file>
     <file>sprites/test_sprite_2x2.png</file>
+    <file>sprites/quadrat_red_6x6.png</file>
     <file>sprites/fonts/font1_5x5_A.png</file>
     <file>sprites/fonts/font1_5x5_B.png</file>	
     <file>sprites/fonts/font1_5x5_C.png</file>
