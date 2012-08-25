@@ -175,10 +175,7 @@ int main (int argc, char* argv[]) {
 	  startFrame->fill_whole(colors->get_background());
 		
 		// build a better algorithom to spread color on the first frame
-		fullcircle::RGB_t white;
-		white.red = white.green = white.blue = 255;
-		
-		startFrame->fill_whole(white); //colors->get_secondary(),  get_primary()
+		startFrame->fill_gradient_horizontal(colors->get_primary(), colors->get_secondary() );	
 		
 		fullcircle::FlowMap::Ptr fm(new fullcircle::FlowMap());
 		fm->init(hash, width, height);
