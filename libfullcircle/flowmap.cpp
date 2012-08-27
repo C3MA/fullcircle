@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <cmath>
-
+#include <algorithm>
 
 using namespace fullcircle;
 
@@ -14,30 +14,55 @@ FlowMap::FlowMap()
 
 void FlowMap::init(std::string hash, uint16_t width, uint16_t height)
 {
+	RGB_t pixelHeight;
+	
 	// create a new frame, where the hills are written to
 	fullcircle::Frame::Ptr frame(new fullcircle::Frame(width, height));
-	
 	_hills = frame;
+	
+	// reset every height values to zero
+	pixelHeight.red = pixelHeight.green = pixelHeight.blue = 0;
+	_hills->fill_whole(pixelHeight);
 	
 	// Fill the frame with values.
 	uint64_t arraySize = width * height;
+	std::cerr << "Dimensions are " << _hills->width() << "x" << _hills->height() << " -> array is " << arraySize << std::endl;
 	
 	/* combine more and more characters together */
-	uint32_t step;
-	uint16_t combinedChar = 0;
+	uint16_t i, x, y, relative;
 	uint64_t tmp;
-	do {
-		combinedChar++;
-		step = arraySize / (hash.length() / combinedChar);
-	} while (step == 0);
-	
-    for( uint16_t i = 0; i < hash.length() && (i / width) < height; i += step) {
-		tmp = hash[i];
-		for (uint16_t j = 1 /* one is added before the loop*/; j < combinedChar; j++) {
-			tmp += hash[i+j];
+
+	i = 0;
+	tmp = hash[0];
+    for( x = 0; x < width; x++ )
+    {
+	for( y = 0; y < height; y++ )
+	{	
+		// at the start of the word define a relative value
+		if (i % hash.length() == 0)
+		{
+			uint16_t round = 0;
+			if ( i > 0) // the round could only be calculated like this, if the first time has passed
+				round = i / hash.length();
+			relative=hash[ round ]; // on each round, use another character as relative one.
+			
+			if ( round % 2 == 1) // uneven -> negative value
+				relative = -relative;
 		}
-		_hills->set_pixel(i / width, i % width, tmp & 0xFF0000, tmp & 0xFF00, tmp & 0xFF);
+
+		tmp += hash[i] - relative;
+		pixelHeight = _hills->get_pixel(x, y);
+		pixelHeight.red   += tmp & 0xFF0000;
+		pixelHeight.green += tmp & 0xFF00;
+		pixelHeight.blue  += tmp & 0xFF;
+		_hills->set_pixel(x, y, pixelHeight);
+		i++;
+	}
     }
+	
+	// initialize the frame for the last colored step
+	fullcircle::Frame::Ptr oldframe(new fullcircle::Frame(width, height));
+	_oldColoredFrame = oldframe;
 }
 
 /**
@@ -58,6 +83,11 @@ void FlowMap::init(Frame::Ptr hills)
 	_oldColoredFrame = oldframe;
 }
 
+/**
+ * @param[in] start
+ *		The start frame must defined. This is also the first frame of the generated sequence.
+ *
+ */
 void FlowMap::start_points(Frame::Ptr start)
 {
 	if (start->width() != _hills->width())
@@ -109,7 +139,9 @@ void FlowMap::modify_pixel(uint16_t x, uint16_t y, int32_t diff, int32_t maxDiff
 	//std::cerr << "New RGB " << above.red << "," << above.green << ", " << above.blue << std::endl;
 }
 
-
+/**
+ * Calculates from the actual (or start frame at the first time) a flow of the colors down the hills.
+ */
 Frame::Ptr FlowMap::get_next()
 {
 	// make a deep copy of the 
@@ -215,7 +247,29 @@ void FlowMap::set_speed(uint16_t flowspeed)
 
 bool FlowMap::has_changed()
 {
-	return (_oldColoredFrame != _actualColoredFrame);
+	// only check, if both frames are set.
+	if (_actualColoredFrame == NULL || _oldColoredFrame == NULL 
+		|| _actualColoredFrame->width() != _oldColoredFrame->width()
+		|| _actualColoredFrame->height() != _oldColoredFrame->height()) {
+		return false; // there is an error; STOP
+	}
+	
+	int x, y;
+	RGB_t oldColor, actColor;
+	for (x = 0; x < _oldColoredFrame->width(); x++) {
+		for (y = 0; y < _oldColoredFrame->height(); y++) {
+			oldColor = _oldColoredFrame->get_pixel(x,y);
+			actColor = _actualColoredFrame->get_pixel(x,y);
+			if (oldColor.red != actColor.red 
+				|| oldColor.green != actColor.green
+				|| oldColor.blue != actColor.blue)
+			{
+				return true;
+			}
+		}
+	}
+	
+	return false;
 }
 
 void FlowMap::dump_hills(std::ostream& os)
