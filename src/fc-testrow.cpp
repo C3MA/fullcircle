@@ -45,7 +45,7 @@ fullcircle::Sequence::Ptr mk_test_row(
         }
       }
     }
-    for( uint8_t repeat = 0; repeat < 6; repeat++) {
+    for( uint8_t repeat = 0; repeat < 2*fps; repeat++) {
       seq->add_frame(frame);
     }
   }
