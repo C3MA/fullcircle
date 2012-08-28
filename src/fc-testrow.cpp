@@ -29,11 +29,19 @@ fullcircle::Sequence::Ptr mk_test_row(
     fullcircle::Frame::Ptr frame(new fullcircle::Frame(width,height));
     frame->fill_whole(fullcircle::BLACK);
     // generate RGB pattern
-    uint16_t highlight_row_id=frameID % height;
+    uint16_t highlight_row_id1=frameID % height;
+    uint16_t highlight_row_id2=(frameID+1) % height;
+    uint16_t highlight_row_id3=(frameID+2) % height;
     for( uint16_t y = 0; y < height; y += 1) {
       for( uint16_t x = 0; x < width; x += 1) {
-        if (y == highlight_row_id) {
+        if (y == highlight_row_id1) {
           frame->set_pixel(x,y, fullcircle::RED);
+        }
+        if (y == highlight_row_id2) {
+          frame->set_pixel(x,y, fullcircle::GREEN);
+        }
+        if (y == highlight_row_id3) {
+          frame->set_pixel(x,y, fullcircle::BLUE);
         }
       }
     }
