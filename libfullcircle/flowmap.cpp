@@ -135,6 +135,15 @@ void FlowMap::modify_pixel(uint16_t x, uint16_t y, int32_t diff, int32_t maxDiff
 	above.red += (actualColor.red * _flowspeed * diff) / maxDiff / NEIGHBOUR_FACTOR;
 	above.green += (actualColor.green * _flowspeed * diff) / maxDiff / NEIGHBOUR_FACTOR;
 	above.blue += (actualColor.blue * _flowspeed * diff) / maxDiff / NEIGHBOUR_FACTOR;
+
+	// secure that the color values are always in the visible area
+	if (above.red > 255)
+		above.red = 255;
+	if (above.green > 255)
+		above.green = 255;
+	if (above.blue > 255)
+		above.blue = 255;
+
 	_actualColoredFrame->set_pixel(x, y, above);
 	//std::cerr << "New RGB " << above.red << "," << above.green << ", " << above.blue << std::endl;
 }
