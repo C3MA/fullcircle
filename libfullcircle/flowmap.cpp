@@ -29,7 +29,7 @@ void FlowMap::init(std::string hash, uint16_t width, uint16_t height)
 	std::cerr << "Dimensions are " << _hills->width() << "x" << _hills->height() << " -> array is " << arraySize << std::endl;
 	
 	/* combine more and more characters together */
-	uint16_t i, x, y, relative;
+	uint16_t i, x, y, relative=0;
 	uint64_t tmp;
 
 	i = 0;

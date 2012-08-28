@@ -15,6 +15,7 @@ set(fc-concat_src fc-concat.cpp)
 set(fc-read-image_src fc-read-image.cpp)
 set(fc-leader_src fc-leader.cpp)
 set(fc-testimage_src fc-testimage.cpp)
+set(fc-testrow_src fc-testrow.cpp)
 
 include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_CURRENT_SOURCE_DIR} 
@@ -70,6 +71,10 @@ add_executable(fc-leader
 
 add_executable(fc-testimage
   ${fc-testimage_src}
+  )
+
+add_executable(fc-testrow
+  ${fc-testrow_src}
   )
 
 target_link_libraries(fc-simulator 
@@ -144,6 +149,11 @@ target_link_libraries(fc-testimage
   ${Boost_LIBRARIES}
   )
 
+target_link_libraries(fc-testrow
+  fullcircle 
+  ${Boost_LIBRARIES}
+  )
+
 # sensor programs to the install target
 INSTALL(PROGRAMS 
   ${CMAKE_CURRENT_BINARY_DIR}/fc-simulator
@@ -158,6 +168,7 @@ INSTALL(PROGRAMS
   ${CMAKE_CURRENT_BINARY_DIR}/fc-leader
   ${CMAKE_CURRENT_BINARY_DIR}/fc-read-image
   ${CMAKE_CURRENT_BINARY_DIR}/fc-testimage
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-testrow
   ${CMAKE_CURRENT_BINARY_DIR}/fc-flowmap
   DESTINATION bin)
 
