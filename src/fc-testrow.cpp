@@ -16,7 +16,7 @@
 namespace po = boost::program_options;
 namespace bfs=boost::filesystem;
 
-fullcircle::Sequence::Ptr mk_test_sequence(
+fullcircle::Sequence::Ptr mk_test_row(
     uint8_t fps,
     uint16_t width,
     uint16_t height
@@ -25,42 +25,27 @@ fullcircle::Sequence::Ptr mk_test_sequence(
 
   fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(fps, width, height));
 
-  uint16_t x=0;
-  uint16_t y=0;
   for( int32_t frameID = 0; frameID < width*height*2; ++frameID) {
     fullcircle::Frame::Ptr frame(new fullcircle::Frame(width,height));
     frame->fill_whole(fullcircle::BLACK);
     // generate RGB pattern
-    for( uint16_t fill_y = 0; fill_y < height; fill_y += 1) {
-      for( uint16_t fill_x = 0; fill_x < width; fill_x += 1) {
-        uint16_t color_id=((fill_y*width)+fill_x + frameID) % 3;
-        switch(color_id) {
-          case 0:
-            frame->set_pixel(fill_x,fill_y, fullcircle::RED);
-            break;
-          case 1:
-            frame->set_pixel(fill_x,fill_y, fullcircle::GREEN);
-            break;
-          case 2:
-            frame->set_pixel(fill_x,fill_y, fullcircle::BLUE);
-            break;
-          default:
-            std::cout << "This should not occur - check RGB pattern routine." << std::endl;
-            exit(-2);
+    uint16_t highlight_row_id1=frameID % height;
+    uint16_t highlight_row_id2=(frameID+1) % height;
+    uint16_t highlight_row_id3=(frameID+2) % height;
+    for( uint16_t y = 0; y < height; y += 1) {
+      for( uint16_t x = 0; x < width; x += 1) {
+        if (y == highlight_row_id1) {
+          frame->set_pixel(x,y, fullcircle::RED);
+        }
+        if (y == highlight_row_id2) {
+          frame->set_pixel(x,y, fullcircle::GREEN);
+        }
+        if (y == highlight_row_id3) {
+          frame->set_pixel(x,y, fullcircle::BLUE);
         }
       }
     }
-    // draw one white pixel for the current address
-    if (x >= width) {
-      y=y+1; x=0;
-    }
-    if (y >= height) {
-      y=0; x=0;
-    }
-    frame->set_pixel(x,y, fullcircle::WHITE);
-    x=x+1;
-    //y=y;
-    for( uint8_t repeat = 0; repeat < 6; repeat++) {
+    for( uint8_t repeat = 0; repeat < 2*fps; repeat++) {
       seq->add_frame(frame);
     }
   }
@@ -190,7 +175,7 @@ int main (int argc, char* argv[]) {
       fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(fps, width, height));
       fullcircle::ColorScheme::Ptr colors(new fullcircle::ColorSchemeSmash());
 
-      seq = (*seq) << mk_test_sequence(
+      seq = (*seq) << mk_test_row(
           fps,
           width,
           height
