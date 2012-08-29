@@ -10,6 +10,7 @@
 #include <libfullcircle/fontrenderer.hpp>
 #include <libfullcircle/perlin_noise.hpp>
 #include <libfullcircle/color_scheme_smash.hpp>
+#include <libfullcircle/color_scheme_plain.hpp>
 #include <libfullcircle/sfx/frame_fader.hpp>
 #include <boost/program_options.hpp>
 #include <boost/program_options/positional_options.hpp>
@@ -42,10 +43,12 @@ fullcircle::Sequence::Ptr mk_perlin_noise(
       for( uint16_t y = 0; y < height; ++y) {
         float n=noize->get_3d(x/8.0f, y/8.0f, frameID/10.0f);
         // determine color
-        if (0<=n && n<0.3) {
+        if (0<=n && n<0.2) {
           frame->set_pixel(x,y,colors->get_primary());
-        } else if (0.3<=n && n<0.7) {
+        } else if (0.2<=n && n<0.5) {
           frame->set_pixel(x,y,colors->get_secondary());
+        } else if (0.5<=n && n<0.7) {
+          frame->set_pixel(x,y,colors->get_3rd());
         } else if (0.7<=n && n<=1.0) {
           frame->set_pixel(x,y,colors->get_background());
         } else {
@@ -93,6 +96,7 @@ int main (int argc, char* argv[]) {
 			("version,v", "print version and exit")
       ("sequence,s", po::value<std::string>(), "the sequence file to use")
       ("hash,x", po::value<std::string>(), "the seed hash for the visualization")
+  //    ("colorscheme", po::value<std::string>(), "the color scheme to use (default: plain)")
 			;
 		std::ostringstream oss;
 		oss << "Usage: " << argv[0] << " -s <FILE> -x <HASH> ...";
@@ -125,6 +129,7 @@ int main (int argc, char* argv[]) {
     // Begin processing of commandline parameters.
     std::string sequencefile;
     std::string hash;
+    std::string colorscheme;
     uint16_t fps;
     uint16_t width;
     uint16_t height;
@@ -146,6 +151,14 @@ int main (int argc, char* argv[]) {
     } else {
       sequencefile=vm["sequence"].as<std::string>();
     }
+
+    //if (vm.count("colorscheme") != 1 ) {
+    //  std::cerr << "You must specify a color scheme, e.g. plain or smash." << std::endl;
+    //  return 1;
+    //} else {
+    //  colorscheme=vm["colorscheme"].as<std::string>();
+    //}
+
 
     if (vm.count("hash") != 1 ) {
       std::cerr << "You must specify an hash (-x <hash>)." << std::endl;
@@ -198,7 +211,8 @@ int main (int argc, char* argv[]) {
 
     try {
       fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(fps, width, height));
-      fullcircle::ColorScheme::Ptr colors(new fullcircle::ColorSchemeSmash());
+
+      fullcircle::ColorScheme::Ptr colors(new fullcircle::ColorSchemePlain());
 
       seq = (*seq) << mk_perlin_noise(
           colors,

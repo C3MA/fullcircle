@@ -59,7 +59,7 @@ fullcircle::Sequence::Ptr mk_test_sequence(
     }
     frame->set_pixel(x,y, fullcircle::WHITE);
     x=x+1;
-    y=y;
+    //y=y;
     for( uint8_t repeat = 0; repeat < 6; repeat++) {
       seq->add_frame(frame);
     }

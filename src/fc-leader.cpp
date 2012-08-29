@@ -28,15 +28,15 @@ fullcircle::Sequence::Ptr mk_leader(
     ) 
 {
   fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(fps, width, height));
-  fullcircle::FrameFader::Ptr fader(new fullcircle::FrameFader(2,fps));
+  fullcircle::FrameFader::Ptr fader(new fullcircle::FrameFader(2*fps,fps));
   fullcircle::Frame::Ptr start(new fullcircle::Frame(width,height));
   start->fill_whole(fullcircle::BLACK);
   seq->add_frame(start);
 
-  fullcircle::RGB_t color = fullcircle::RED;
-  fullcircle::Frame::Ptr color_show(new fullcircle::Frame(width,height));
-  color_show->fill_whole(color);
-  seq = (*seq) << fader->fade(seq->get_last_frame(), color_show);
+ // fullcircle::RGB_t color = fullcircle::RED;
+ // fullcircle::Frame::Ptr color_show(new fullcircle::Frame(width,height));
+ // color_show->fill_whole(color);
+ // seq = (*seq) << fader->fade(seq->get_last_frame(), color_show);
 
   //fullcircle::SpriteIO::Ptr sprite_io(new fullcircle::SpriteIO());
   //fullcircle::Frame::Ptr quadrat(
@@ -170,7 +170,7 @@ int main(int argc, char *argv[1]) {
     } else {
       std::istringstream converter(vm["number"].as<std::string>());
       if ( !( converter >> number)) {
-        std::cerr << "Cannot convert width to an integer. " << std::endl;
+        std::cerr << "Cannot convert number to an integer. " << std::endl;
         return 1;
       }
 

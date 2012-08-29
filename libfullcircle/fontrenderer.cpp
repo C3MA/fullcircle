@@ -55,7 +55,7 @@ void FontRenderer::scroll_text(Sequence::Ptr sequence, uint16_t x_offset, uint16
 	
 	Frame::Ptr screen(new Frame(text_screen_width + _width, _height));
 	screen->fill_whole(COLOR_TRANSPARENT);	
-	std::cout << "We want to print: " << text << std::endl;
+	//std::cout << "We want to print: " << text << std::endl;
 	
 	int xcount = 0;
 	for (uint16_t i=0; i < text.size(); i++) {
