@@ -60,6 +60,9 @@ fullcircle::Sequence::Ptr mk_perlin_noise(
       seq->add_frame(frame);
     else
       seq = (*seq) << fader->fade(seq->get_last_frame(), frame);
+    for( uint8_t i = 0; i < 2; i++) {
+      seq->add_frame(frame);
+    }
   }
   return seq;
 }
