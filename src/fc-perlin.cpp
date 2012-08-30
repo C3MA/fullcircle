@@ -27,7 +27,7 @@ fullcircle::Sequence::Ptr mk_perlin_noise(
   std::cout << "Generating Perlin noise demo sequence." << std::endl;
 
   fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(fps, width, height));
-  fullcircle::FrameFader::Ptr fader(new fullcircle::FrameFader(5,fps));
+  fullcircle::FrameFader::Ptr fader(new fullcircle::FrameFader(3,fps));
   fullcircle::FrameFader::Ptr slow_fader(new fullcircle::FrameFader(5,fps));
 
   fullcircle::PerlinNoise::Ptr noize(new fullcircle::PerlinNoise(
@@ -71,7 +71,7 @@ fullcircle::Sequence::Ptr mk_perlin_noise(
     }
   }
   seq = (*seq) << slow_fader->fade(seq->get_last_frame(), blackframe);
-  for( uint8_t i = 0; i < (fps/2); i++) {
+  for( uint8_t i = 0; i < 2; i++) {
     seq->add_frame(blackframe);
   }
   return seq;
