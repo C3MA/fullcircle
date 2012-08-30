@@ -28,6 +28,7 @@ fullcircle::Sequence::Ptr mk_perlin_noise(
 
   fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(fps, width, height));
   fullcircle::FrameFader::Ptr fader(new fullcircle::FrameFader(5,fps));
+  fullcircle::FrameFader::Ptr slow_fader(new fullcircle::FrameFader(5,fps));
 
   fullcircle::PerlinNoise::Ptr noize(new fullcircle::PerlinNoise(
         3,    // octaves
@@ -36,6 +37,8 @@ fullcircle::Sequence::Ptr mk_perlin_noise(
         seed    // seed
         ));
 
+  fullcircle::Frame::Ptr blackframe(new fullcircle::Frame(width,height));
+  blackframe->fill_whole(fullcircle::BLACK);
   for( uint32_t frameID = 0; frameID < 100; ++frameID) {
     fullcircle::Frame::Ptr frame(new fullcircle::Frame(width,height));
     frame->fill_whole(colors->get_background());
@@ -43,26 +46,33 @@ fullcircle::Sequence::Ptr mk_perlin_noise(
       for( uint16_t y = 0; y < height; ++y) {
         float n=noize->get_3d(x/8.0f, y/8.0f, frameID/10.0f);
         // determine color
-        if (0<=n && n<0.2) {
+        if (0<=n && n<0.3) {
           frame->set_pixel(x,y,colors->get_primary());
-        } else if (0.2<=n && n<0.5) {
+        } else if (0.3<=n && n<0.6) {
           frame->set_pixel(x,y,colors->get_secondary());
-        } else if (0.5<=n && n<0.7) {
+        } else if (0.6<=n && n<0.9) {
           frame->set_pixel(x,y,colors->get_3rd());
-        } else if (0.7<=n && n<=1.0) {
+        } else if (0.9<=n && n<=1.0) {
           frame->set_pixel(x,y,colors->get_background());
         } else {
           std::cout << "Error: Unknown noise value: " << n << std::endl;
         }
       }
     }
-    if (seq->size() == 0)
-      seq->add_frame(frame);
-    else
-      seq = (*seq) << fader->fade(seq->get_last_frame(), frame);
+    if (seq->size() == 0) {
+      for( uint8_t i = 0; i < (fps/2); i++) {
+        seq->add_frame(blackframe);
+      }
+      seq = (*seq) << slow_fader->fade(seq->get_last_frame(), frame);
+    } 
+    seq = (*seq) << fader->fade(seq->get_last_frame(), frame);
     for( uint8_t i = 0; i < 2; i++) {
       seq->add_frame(frame);
     }
+  }
+  seq = (*seq) << slow_fader->fade(seq->get_last_frame(), blackframe);
+  for( uint8_t i = 0; i < (fps/2); i++) {
+    seq->add_frame(blackframe);
   }
   return seq;
 }
@@ -84,50 +94,50 @@ int main (int argc, char* argv[]) {
   Q_INIT_RESOURCE(sprites);
 
   try {
-		po::options_description generic("Generic options (config file and command line)");
-		generic.add_options()
+    po::options_description generic("Generic options (config file and command line)");
+    generic.add_options()
       ("width,w", po::value<std::string>(), "the width of the sequence to be generated.")
       ("height,h", po::value<std::string>(), "the height of the sequence to be generated.")
       ("fps,f", po::value<std::string>(), "the frames per second of the sequence to be generated.")
-     ;
+      ;
     std::ostringstream coss;
     coss << "configuration file (" << config_file << " by default).";
-		po::options_description cmd("Command line options");
-		cmd.add_options()
-			("config", po::value<std::string>(), coss.str().c_str())
-			("help,?", "produce help message")
-			("version,v", "print version and exit")
+    po::options_description cmd("Command line options");
+    cmd.add_options()
+      ("config", po::value<std::string>(), coss.str().c_str())
+      ("help,?", "produce help message")
+      ("version,v", "print version and exit")
       ("sequence,s", po::value<std::string>(), "the sequence file to use")
       ("hash,x", po::value<std::string>(), "the seed hash for the visualization")
-  //    ("colorscheme", po::value<std::string>(), "the color scheme to use (default: plain)")
-			;
-		std::ostringstream oss;
-		oss << "Usage: " << argv[0] << " -s <FILE> -x <HASH> ...";
-		po::options_description cmdline_options(oss.str());
-		cmdline_options.add(generic).add(cmd);
+      //    ("colorscheme", po::value<std::string>(), "the color scheme to use (default: plain)")
+      ;
+    std::ostringstream oss;
+    oss << "Usage: " << argv[0] << " -s <FILE> -x <HASH> ...";
+    po::options_description cmdline_options(oss.str());
+    cmdline_options.add(generic).add(cmd);
 
-		po::variables_map vm;
-		po::store(po::parse_command_line(argc, argv, cmdline_options), vm);
-		po::notify(vm);
+    po::variables_map vm;
+    po::store(po::parse_command_line(argc, argv, cmdline_options), vm);
+    po::notify(vm);
 
     // Load additional config file settings.
     if (vm.count("config")) {
-			boost::filesystem::path temp(vm["config"].as<std::string>());
-			if ( boost::filesystem::exists(temp) )
-				config_file = vm["config"].as<std::string>();
-			else {
-				std::cerr << "Configuration file " << vm["config"].as<std::string>() << " not found!" << std::endl;
-				return 1;
-			}
-		}
-
-		po::options_description config_file_options;
-		config_file_options.add(generic);
-		boost::filesystem::path config(config_file);
-		if ( boost::filesystem::exists(config) ) {
-			po::store(po::parse_config_file<char>(config_file.c_str(), config_file_options, true), vm);
+      boost::filesystem::path temp(vm["config"].as<std::string>());
+      if ( boost::filesystem::exists(temp) )
+        config_file = vm["config"].as<std::string>();
+      else {
+        std::cerr << "Configuration file " << vm["config"].as<std::string>() << " not found!" << std::endl;
+        return 1;
+      }
     }
-		po::notify(vm);
+
+    po::options_description config_file_options;
+    config_file_options.add(generic);
+    boost::filesystem::path config(config_file);
+    if ( boost::filesystem::exists(config) ) {
+      po::store(po::parse_config_file<char>(config_file.c_str(), config_file_options, true), vm);
+    }
+    po::notify(vm);
 
     // Begin processing of commandline parameters.
     std::string sequencefile;
