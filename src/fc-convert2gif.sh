@@ -16,7 +16,7 @@ FRAMERATE_OUT=24
 echo "Temporary folder:" $TEMP
 
 echo "Converting sequence to images..."
-./fc-2gif -s $1 -t $TEMP -w 320 -h 240 >/dev/null
+fc-2gif -s $1 -t $TEMP -w 320 -h 240 >/dev/null
 
 echo "Converting image sequence to animation (this might take some time)"
 
@@ -36,7 +36,8 @@ echo "copying first frame for preview"
 cp $TEMP/00000.png $TEMP/$FILENAME.png
 
 echo "uploading files to webspace"
-scp $TEMP/$FILENAME.{mp4,webm,ogv,png} fullcircle@comsound.de:/srv/fullcircle/data/
+#scp $TEMP/$FILENAME.{mp4,webm,ogv,png} fullcircle@comsound.de:/srv/fullcircle/data/
+cp $TEMP/$FILENAME.{mp4,webm,ogv,png} /var/www/data/
 
 rm -rf $TEMP
 

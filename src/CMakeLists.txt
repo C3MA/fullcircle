@@ -74,5 +74,6 @@ INSTALL(PROGRAMS
   ${CMAKE_CURRENT_BINARY_DIR}/fc-simulator
   ${CMAKE_CURRENT_BINARY_DIR}/fc-demo
   ${CMAKE_CURRENT_BINARY_DIR}/fc-2gif
+  fc-convert2gif.sh
   DESTINATION bin)
 
