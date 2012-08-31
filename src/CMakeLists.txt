@@ -16,6 +16,7 @@ set(fc-read-image_src fc-read-image.cpp)
 set(fc-leader_src fc-leader.cpp)
 set(fc-testimage_src fc-testimage.cpp)
 set(fc-testrow_src fc-testrow.cpp)
+set(fc-2gif_src fc-2gif.cpp)
 
 include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_CURRENT_SOURCE_DIR} 
@@ -55,6 +56,9 @@ add_executable(fc-read-image
 
 add_executable(fc-badge
   ${fc-badge_src}
+  )
+add_executable(fc-2gif
+  ${fc-2gif_src}
   )
 
 add_executable(fc-flowmap
@@ -132,6 +136,11 @@ target_link_libraries(fc-flowmap
   ${QT_LIBRARIES}
   )
 
+target_link_libraries(fc-2gif
+  fullcircle
+  ${Boost_LIBRARIES}
+  ${QT_LIBRARIES}
+  )
 
 target_link_libraries(fc-getid
   fullcircle 
@@ -170,5 +179,7 @@ INSTALL(PROGRAMS
   ${CMAKE_CURRENT_BINARY_DIR}/fc-testimage
   ${CMAKE_CURRENT_BINARY_DIR}/fc-testrow
   ${CMAKE_CURRENT_BINARY_DIR}/fc-flowmap
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-2gif
+  fc-convert2gif.sh
   DESTINATION bin)
 
