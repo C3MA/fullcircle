@@ -26,6 +26,7 @@
 #include <testconfig.h>
 #include <libfullcircle/net/envelope.hpp>
 #include <libfullcircle/net/net_server.hpp>
+#include <libfullcircle/net/net_client.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
@@ -108,20 +109,34 @@ BOOST_AUTO_TEST_CASE ( check_ping ) {
   BOOST_CHECK_EQUAL (0, ping2.count());
 }
 
-void run_server() {
- }
-
 BOOST_AUTO_TEST_CASE ( check_ping_online ) {
   std::cout << "preparing server instance." << std::endl;
-  boost::asio::io_service io_service;
-  boost::asio::ip::tcp::endpoint endpoint(
+  boost::asio::io_service server_io_service;
+  boost::asio::ip::tcp::endpoint server_endpoint(
       boost::asio::ip::tcp::v4(), TEST_SERVER_PORT);
   fullcircle::NetServer::Ptr server(
-      new fullcircle::NetServer(io_service, endpoint));
+      new fullcircle::NetServer(server_io_service, server_endpoint));
   server->run();
   std::cout << "Server runs in background now." << std::endl;
-  //waits one second
-  boost::this_thread::sleep( boost::posix_time::seconds(1) );
-  server->shutdown();
 
+  std::cout << "preparing client instance." << std::endl;
+  boost::asio::io_service client_io_service;
+  boost::asio::ip::tcp::resolver resolver(client_io_service);
+  std::ostringstream oss;
+  oss << TEST_SERVER_PORT;
+  boost::asio::ip::tcp::resolver::query query(
+      "localhost", oss.str());
+  boost::asio::ip::tcp::resolver::iterator iterator = 
+    resolver.resolve(query);
+
+  fullcircle::NetClient::Ptr client(
+    new fullcircle::NetClient(client_io_service, iterator));
+  client->run();
+
+  //waits one second
+  std::cout << "Waiting one second." << std::endl;
+  boost::this_thread::sleep( boost::posix_time::seconds(1) );
+  client->shutdown();
+  server->shutdown();
+  std::cout << "EOL." << std::endl;
 }

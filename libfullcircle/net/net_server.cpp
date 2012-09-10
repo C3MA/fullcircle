@@ -4,7 +4,8 @@
 using namespace fullcircle;
 
 void NetServer::run() {
-  _t = boost::thread(boost::bind(&boost::asio::io_service::run, &_io_service));
+  _t = boost::thread(
+      boost::bind(&boost::asio::io_service::run, &_io_service));
 }
 
 void NetServer::shutdown() {
@@ -16,7 +17,7 @@ void NetServer::shutdown() {
 void NetServer::handle_accept(ServerSession::Ptr session, 
     const boost::system::error_code& error) 
 {
-  std::cout << "handle_accept" << std::endl;
+  std::cout << "server handle_accept" << std::endl;
   if (!error) {
     session->start();
   } else {
@@ -27,7 +28,7 @@ void NetServer::handle_accept(ServerSession::Ptr session,
 }
 
 void NetServer::start_accept() {
-  std::cout << "start_accept" << std::endl;
+  std::cout << "server start_accept" << std::endl;
   ServerSession::Ptr new_session(new ServerSession(_io_service));
     _acceptor.async_accept(new_session->socket(),
         boost::bind(&NetServer::handle_accept, this, new_session,
