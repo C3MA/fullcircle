@@ -25,7 +25,11 @@
 #include <sstream>
 #include <testconfig.h>
 #include <libfullcircle/net/envelope.hpp>
+#include <libfullcircle/net/net_server.hpp>
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/bind.hpp>
+#include <boost/asio.hpp>
+#include <boost/thread/thread.hpp>
 #include <libfullcircle/sequence.pb.h>
 
 BOOST_AUTO_TEST_CASE ( check_sanity ) {
@@ -97,10 +101,27 @@ BOOST_AUTO_TEST_CASE ( check_ping ) {
   std::istringstream iss(env2->get_body());
   fullcircle::Snip snip2;
   if (!snip2.ParseFromIstream(&iss)) {
-    throw fullcircle::StoreException("Cannot load snip from input stream.");
+    BOOST_FAIL("Cannot load snip from input stream.");
   }
   std::cout << "Debug: " << snip2.DebugString() << std::endl;
   fullcircle::Snip_PingSnip ping2=snip2.ping_snip();
   BOOST_CHECK_EQUAL (0, ping2.count());
 }
 
+void run_server() {
+ }
+
+BOOST_AUTO_TEST_CASE ( check_ping_online ) {
+  std::cout << "preparing server instance." << std::endl;
+  boost::asio::io_service io_service;
+  boost::asio::ip::tcp::endpoint endpoint(
+      boost::asio::ip::tcp::v4(), TEST_SERVER_PORT);
+  fullcircle::NetServer::Ptr server(
+      new fullcircle::NetServer(io_service, endpoint));
+  server->run();
+  std::cout << "Server runs in background now." << std::endl;
+  //waits one second
+  boost::this_thread::sleep( boost::posix_time::seconds(1) );
+  server->shutdown();
+
+}

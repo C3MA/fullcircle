@@ -59,12 +59,13 @@ set(CMAKE_CXX_FLAGS "-Wall ")
 
 # We depend on boost >= 1.46.1 because of the updated filesystem
 # library.
-SET(Boost_ADDITIONAL_VERSIONS "1.46.1" "1.48.0" "1.48" "1.49" "1.50")
+SET(Boost_ADDITIONAL_VERSIONS "1.46.1" "1.48.0" "1.48" "1.49" "1.50" "1.51")
 FIND_PACKAGE(Boost 1.46.1 COMPONENTS 
   test_exec_monitor 
   program_options 
   filesystem 
   regex
+  thread
   system)
 INCLUDE(FindHiredis)
 # find googles protocol buffers

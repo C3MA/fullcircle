@@ -33,6 +33,10 @@ void Envelope::get_bytes(char* bytes, size_t& length) {
   std::memcpy(bytes, _data, length);
 }
 
+char* Envelope::get_raw_ptr() {
+  return _data;
+}
+
 Envelope::Envelope(char* msg, size_t length) {
   if (length < header_length) {
     throw DataFormatException("Header is too short to contain proper length information");

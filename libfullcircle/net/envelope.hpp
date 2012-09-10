@@ -2,6 +2,8 @@
 #define LIBFULLCIRCLE_NET_ENVELOPE_HPP 1
 
 #include <libfullcircle/common.hpp>
+#include <deque>
+
 
 namespace fullcircle {
   class Envelope {
@@ -17,6 +19,7 @@ namespace fullcircle {
       std::string get_body();
       const size_t get_body_length() const;
       void get_bytes(char* bytes, size_t& length);
+      char* get_raw_ptr();
 
       std::string str();
 
@@ -32,6 +35,8 @@ namespace fullcircle {
       size_t _body_length;
 
   };
+
+  typedef std::deque<Envelope> envelope_queue_t;
 };
 
 
