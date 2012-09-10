@@ -14,6 +14,7 @@ file(GLOB fullcircle_src
   *.cpp *.hpp 
   sfx/*.cpp sfx/*.hpp
   printer/*.cpp printer/*.hpp
+  net/*.cpp net/*.hpp
 )
 set(fullcircle_hdr simulator_main_window.hpp)
 set(fullcircle_forms simulator.ui)
