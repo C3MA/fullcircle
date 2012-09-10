@@ -1,5 +1,7 @@
 package fullcircle;
 
+// used in both files and network
+
 message BinarySequenceMetadata {
   required uint32 frames_per_second = 1;
   required uint32 width = 2;
@@ -24,3 +26,28 @@ message BinarySequence {
   required BinarySequenceMetadata metadata = 1;
   repeated BinaryFrame frame = 2;
 }
+
+// network-only below. A Snip is a single network protocol message
+// containing some payload. The payload can include all protobuf types.
+message Snip {
+
+  enum SnipType {
+    PING = 1;
+    PONG = 2;
+  }
+  required SnipType type = 1;
+
+  message PingSnip {
+    required uint32 count = 1;
+  }
+  optional PingSnip ping_snip = 11;
+
+  message PongSnip {
+    required uint32 count = 1;
+  }
+  optional PongSnip pong_snip = 12;
+
+}
+
+
+

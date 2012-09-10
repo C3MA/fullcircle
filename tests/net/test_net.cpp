@@ -22,9 +22,11 @@
 #include <boost/test/unit_test.hpp>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <testconfig.h>
 #include <libfullcircle/net/envelope.hpp>
 #include <boost/algorithm/string/predicate.hpp>
+#include <libfullcircle/sequence.pb.h>
 
 BOOST_AUTO_TEST_CASE ( check_sanity ) {
   try {
@@ -42,6 +44,7 @@ BOOST_AUTO_TEST_CASE ( check_sanity ) {
 }
 
 BOOST_AUTO_TEST_CASE ( check_envelope ) {
+  std::cout << "### Testing the envelope." << std::endl;
   fullcircle::Envelope::Ptr env(new fullcircle::Envelope());
   std::string payload("Payload! Wohooo!");
   env->set_body(payload);
@@ -72,6 +75,32 @@ BOOST_AUTO_TEST_CASE ( check_envelope ) {
 }
 
 BOOST_AUTO_TEST_CASE ( check_ping ) {
-
+  std::cout << "### Testing a ping snip." << std::endl;
+  fullcircle::Snip snip;
+  snip.set_type(fullcircle::Snip::PING);
+  fullcircle::Snip_PingSnip* ping=snip.mutable_ping_snip();
+  ping->set_count(0);
+  std::ostringstream oss;
+  if (!snip.SerializeToOstream(&oss)) {
+    BOOST_FAIL("ping snip serialization did not work.");
+  }
+  oss.flush();
+  fullcircle::Envelope::Ptr env(new fullcircle::Envelope());
+  env->set_body(oss.str());
+  // simulate transfer over the network.
+  char bytes[fullcircle::Envelope::header_length + 
+    fullcircle::Envelope::max_body_length];
+  size_t length=0;
+  env->get_bytes(bytes, length);
+  fullcircle::Envelope::Ptr env2(
+      new fullcircle::Envelope(bytes, length));
+  std::istringstream iss(env2->get_body());
+  fullcircle::Snip snip2;
+  if (!snip2.ParseFromIstream(&iss)) {
+    throw fullcircle::StoreException("Cannot load snip from input stream.");
+  }
+  std::cout << "Debug: " << snip2.DebugString() << std::endl;
+  fullcircle::Snip_PingSnip ping2=snip2.ping_snip();
+  BOOST_CHECK_EQUAL (0, ping2.count());
 }
 
