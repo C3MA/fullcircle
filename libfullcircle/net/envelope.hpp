@@ -18,17 +18,18 @@ namespace fullcircle {
       void set_body(const std::string& body);
       std::string get_body();
       const size_t get_body_length() const;
+      const size_t get_raw_length() const;
       void get_bytes(char* bytes, size_t& length);
       char* get_raw_ptr();
-
+      char* get_body_ptr();
+      void encode_header();
+      bool decode_header();
       std::string str();
 
     private:
       Envelope (const Envelope& original);
       Envelope& operator= (const Envelope& rhs);
 
-      void encode_header();
-      bool decode_header();
       void set_body_length(size_t new_length);
 
       char _data[header_length + max_body_length];
@@ -36,7 +37,7 @@ namespace fullcircle {
 
   };
 
-  typedef std::deque<Envelope> envelope_queue_t;
+  typedef std::deque<Envelope::Ptr> envelope_queue_t;
 };
 
 

@@ -24,11 +24,17 @@ namespace fullcircle {
       NetClient& operator= (const NetClient& rhs);
       void do_close();
       void handle_connect(const boost::system::error_code& error);
+      void handle_read_header(const boost::system::error_code& error);
+      void handle_read_body(const boost::system::error_code& error);
+      void do_write(Envelope::Ptr msg);
+      void handle_write(const boost::system::error_code& error);
 
       boost::asio::io_service& _io_service;
       boost::asio::ip::tcp::socket _socket;
       boost::asio::ip::tcp::resolver::iterator _endpoint_iterator;
       boost::thread _t;
+      Envelope::Ptr _read_envelope;
+      envelope_queue_t _write_envelopes;
   };
 };
 

@@ -28,6 +28,10 @@ const size_t Envelope::get_body_length() const {
   return _body_length;
 }
 
+const size_t Envelope::get_raw_length() const {
+  return _body_length + header_length;
+}
+
 void Envelope::get_bytes(char* bytes, size_t& length) {
   length = header_length + _body_length;
   std::memcpy(bytes, _data, length);
@@ -35,6 +39,10 @@ void Envelope::get_bytes(char* bytes, size_t& length) {
 
 char* Envelope::get_raw_ptr() {
   return _data;
+}
+
+char* Envelope::get_body_ptr() {
+  return _data + header_length;
 }
 
 Envelope::Envelope(char* msg, size_t length) {
@@ -57,8 +65,7 @@ bool Envelope::decode_header() {
   char header[header_length + 1] = "";
   std::strncat(header, _data, header_length);
   _body_length = std::atoi(header);
-  if (_body_length > max_body_length)
-  {
+  if (_body_length > max_body_length) {
     _body_length = 0;
     return false;
   }

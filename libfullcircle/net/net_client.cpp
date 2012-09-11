@@ -10,6 +10,8 @@ NetClient::NetClient(
   , _socket(_io_service)
   , _endpoint_iterator(endpoint_iterator)
   , _t()
+  , _read_envelope(new Envelope())
+  , _write_envelopes()
 {
 }
 
@@ -30,25 +32,88 @@ void NetClient::shutdown() {
 }
 
 void NetClient::do_close() {
+  std::cout << "Client: Closing socket." << std::endl;
   _socket.close();
 }
 
 void NetClient::write(Envelope::Ptr envelope) {
-  //io_service_.post(boost::bind(&chat_client::do_write, this, envelope));
+  _io_service.post(boost::bind(&NetClient::do_write, this, envelope));
 }
 
-void NetClient::handle_connect(const boost::system::error_code& error)
-{
+void NetClient::handle_connect(const boost::system::error_code& error) {
   if (!error) {
     std::cout << "Client: Connection succeeded." << std::endl;
-    //
-    //    boost::asio::async_read(_socket,
-    //        boost::asio::buffer(read_msg_.data(), chat_message::header_length),
-    //        boost::bind(&chat_client::handle_read_header, this,
-    //          boost::asio::placeholders::error));
+
+    boost::asio::async_read(_socket,
+        boost::asio::buffer(
+          _read_envelope->get_raw_ptr(), Envelope::header_length),
+        boost::bind(&NetClient::handle_read_header, this,
+          boost::asio::placeholders::error));
+  } else {
+    std::cout << "Client: Connection failed: " 
+      << error.message() << std::endl;
+    //do_close();
   }
 }
 
+void NetClient::handle_read_header(const boost::system::error_code& error) {
+  if (!error && _read_envelope->decode_header()) {
+    std::cout << "Client: Reading header succeeded." << std::endl;
+    boost::asio::async_read(_socket,
+        boost::asio::buffer(
+          _read_envelope->get_body_ptr(), 
+          _read_envelope->get_body_length()),
+        boost::bind(&NetClient::handle_read_body, this,
+          boost::asio::placeholders::error));
+  } else {
+    std::cout << "Client: Reading header failed: "
+      << error.message() << std::endl;
+    //do_close();
+  }
+}
 
+void NetClient::handle_read_body(const boost::system::error_code& error) {
+  if (!error) {
+    std::cout << "Client: Received envelope " 
+      << _read_envelope->str() << std::endl;
+    boost::asio::async_read(_socket,
+        boost::asio::buffer(
+          _read_envelope->get_raw_ptr(), Envelope::header_length),
+        boost::bind(&NetClient::handle_read_header, this,
+          boost::asio::placeholders::error));
+  } else {
+    std::cout << "Client: Receiving body failed: "
+      << error.message() << std::endl;
+    //do_close();
+  }
+}
 
+void NetClient::do_write(Envelope::Ptr msg) {
+  bool write_in_progress = !_write_envelopes.empty();
+  _write_envelopes.push_back(msg);
+  if (!write_in_progress) {
+    boost::asio::async_write(_socket,
+        boost::asio::buffer(_write_envelopes.front()->get_raw_ptr(),
+          _write_envelopes.front()->get_raw_length()),
+        boost::bind(&NetClient::handle_write, this,
+          boost::asio::placeholders::error));
+  }
+}
+
+void NetClient::handle_write(const boost::system::error_code& error) {
+  if (!error) {
+    _write_envelopes.pop_front();
+    if (!_write_envelopes.empty()) {
+      boost::asio::async_write(_socket,
+        boost::asio::buffer(_write_envelopes.front()->get_raw_ptr(),
+          _write_envelopes.front()->get_raw_length()),
+        boost::bind(&NetClient::handle_write, this,
+            boost::asio::placeholders::error));
+    }
+  } else {
+    std::cout << "Client: Cannot send envelopes: " 
+      << error.message() << std::endl;
+    //do_close();
+  }
+}
 

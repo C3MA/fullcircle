@@ -110,16 +110,18 @@ BOOST_AUTO_TEST_CASE ( check_ping ) {
 }
 
 BOOST_AUTO_TEST_CASE ( check_ping_online ) {
-  std::cout << "preparing server instance." << std::endl;
+  std::cout << "1. preparing server instance." << std::endl;
   boost::asio::io_service server_io_service;
   boost::asio::ip::tcp::endpoint server_endpoint(
       boost::asio::ip::tcp::v4(), TEST_SERVER_PORT);
-  fullcircle::NetServer::Ptr server(
-      new fullcircle::NetServer(server_io_service, server_endpoint));
+  fullcircle::NetServer::Ptr server = fullcircle::NetServer::create(
+      server_io_service, server_endpoint);
   server->run();
-  std::cout << "Server runs in background now." << std::endl;
 
-  std::cout << "preparing client instance." << std::endl;
+  std::cout << "##### Waiting" << std::endl;
+  boost::this_thread::sleep( boost::posix_time::seconds(5) );
+
+  std::cout << "2. preparing client instance." << std::endl;
   boost::asio::io_service client_io_service;
   boost::asio::ip::tcp::resolver resolver(client_io_service);
   std::ostringstream oss;
@@ -128,15 +130,31 @@ BOOST_AUTO_TEST_CASE ( check_ping_online ) {
       "localhost", oss.str());
   boost::asio::ip::tcp::resolver::iterator iterator = 
     resolver.resolve(query);
-
   fullcircle::NetClient::Ptr client(
     new fullcircle::NetClient(client_io_service, iterator));
   client->run();
 
-  //waits one second
-  std::cout << "Waiting one second." << std::endl;
-  boost::this_thread::sleep( boost::posix_time::seconds(1) );
+  std::cout << "##### Waiting" << std::endl;
+  boost::this_thread::sleep( boost::posix_time::seconds(5) );
+
+  std::cout << "3. Attempting to send a ping message." << std::endl;
+  fullcircle::Snip snip;
+  snip.set_type(fullcircle::Snip::PING);
+  fullcircle::Snip_PingSnip* ping=snip.mutable_ping_snip();
+  ping->set_count(0);
+  std::ostringstream oss2;
+  if (!snip.SerializeToOstream(&oss2)) {
+    BOOST_FAIL("ping snip serialization did not work.");
+  }
+  oss2.flush();
+  fullcircle::Envelope::Ptr env(new fullcircle::Envelope());
+  env->set_body(oss2.str());
+  client->write(env);
+
+  std::cout << "##### Waiting" << std::endl;
+  boost::this_thread::sleep( boost::posix_time::seconds(2) );
+  std::cout << "4. Initiating shutdown." << std::endl;
   client->shutdown();
   server->shutdown();
-  std::cout << "EOL." << std::endl;
+  std::cout << "EOT" << std::endl;
 }
