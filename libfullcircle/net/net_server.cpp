@@ -5,7 +5,7 @@ using namespace fullcircle;
 
 void NetServer::run() {
   _t = boost::thread(
-      boost::bind(&NetServer::do_start, shared_from_this()));
+      boost::bind(&NetServer::do_start, this));
       //boost::bind(&boost::asio::io_service::run, &_io_service));
   //start_accept();
 }
@@ -46,7 +46,7 @@ void NetServer::start_accept() {
     << new_session.use_count() << std::endl;
   _acceptor.async_accept(new_session->socket(),
       boost::bind(
-        &NetServer::handle_accept, shared_from_this(), 
+        &NetServer::handle_accept, this, 
         new_session, boost::asio::placeholders::error));
 }
 

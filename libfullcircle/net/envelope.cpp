@@ -1,5 +1,7 @@
 #include "envelope.hpp"
 #include <cstdlib>
+#include <cstdio>
+#include <cstring>
 #include <sstream>
 
 
@@ -7,7 +9,7 @@ using namespace fullcircle;
 
 void Envelope::set_body(const std::string& body) {
   set_body_length(body.size());
-  std::memcpy(_data + header_length, body.c_str(), body.size());
+  memcpy(_data + header_length, body.c_str(), body.size());
   encode_header();
 }
 
@@ -34,7 +36,7 @@ const size_t Envelope::get_raw_length() const {
 
 void Envelope::get_bytes(char* bytes, size_t& length) {
   length = header_length + _body_length;
-  std::memcpy(bytes, _data, length);
+  memcpy(bytes, _data, length);
 }
 
 char* Envelope::get_raw_ptr() {
@@ -49,7 +51,7 @@ Envelope::Envelope(char* msg, size_t length) {
   if (length < header_length) {
     throw DataFormatException("Header is too short to contain proper length information");
   }
-  std::memcpy(_data, msg, length);
+  memcpy(_data, msg, length);
   if (! decode_header()) {
     throw DataFormatException("Cannot decode header");
   }
@@ -63,8 +65,8 @@ void Envelope::set_body_length(size_t new_length) {
 
 bool Envelope::decode_header() {
   char header[header_length + 1] = "";
-  std::strncat(header, _data, header_length);
-  _body_length = std::atoi(header);
+  strncat(header, _data, header_length);
+  _body_length = atoi(header);
   if (_body_length > max_body_length) {
     _body_length = 0;
     return false;
@@ -74,6 +76,6 @@ bool Envelope::decode_header() {
 
 void Envelope::encode_header() {
   char header[header_length + 1] = "";
-  std::sprintf(header, "%10lu", _body_length);
-  std::memcpy(_data, header, header_length);
+  sprintf(header, "%10lu", _body_length);
+  memcpy(_data, header, header_length);
 }

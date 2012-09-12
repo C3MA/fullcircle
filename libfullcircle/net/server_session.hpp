@@ -12,7 +12,7 @@ namespace fullcircle {
     : public boost::enable_shared_from_this<ServerSession> 
   {
     public:
-      typedef std::tr1::shared_ptr<ServerSession> Ptr;
+      typedef boost::shared_ptr<ServerSession> Ptr;
       static Ptr create(boost::asio::io_service& io_service) {
         return Ptr(new ServerSession(io_service));
       }

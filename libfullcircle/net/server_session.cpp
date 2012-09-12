@@ -25,14 +25,7 @@ boost::asio::ip::tcp::socket& ServerSession::socket() {
 void ServerSession::start() {
   std::cout << "ServerSession: Starting in instance " << this << std::endl;
   try {
-  //  boost::asio::async_read(_socket,
-  //      boost::asio::buffer( _read_envelope->get_raw_ptr(), 
-  //        Envelope::header_length),
-  //      boost::bind(
-  //        &ServerSession::handle_read_header, shared_from_this(), 
-  //        boost::asio::placeholders::error));
-
-    boost::asio::async_read(_socket,
+      boost::asio::async_read(_socket,
         boost::asio::buffer(_read_envelope->get_raw_ptr(), 
           Envelope::header_length),
         boost::bind(
