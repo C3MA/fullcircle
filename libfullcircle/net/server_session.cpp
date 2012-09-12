@@ -1,5 +1,6 @@
 #include "server_session.hpp"
 #include <boost/bind.hpp>
+#include <libfullcircle/sequence.pb.h>
 
 using namespace fullcircle;
 
@@ -64,6 +65,42 @@ void ServerSession::handle_read_body(const boost::system::error_code& error)
   if (!error) {
     std::cout << "ServerSession: Reading body succeeded: " 
       << _read_envelope->str()  << std::endl;
+    // create snip from envelope.
+    std::istringstream iss(_read_envelope->get_body());
+    fullcircle::Snip snip;
+    if (!snip.ParseFromIstream(&iss)) {
+      std::cout << "Cannot load snip from input stream." << std::endl;
+    } else {
+      std::cout << "Reconstructed snip: " << snip.DebugString() << std::endl;
+      switch (snip.type()) {
+        case fullcircle::Snip::PING:
+          {
+            std::cout << "Responding to ping snip." << std::endl;
+            fullcircle::Snip snip;
+            snip.set_type(fullcircle::Snip::PONG);
+            fullcircle::Snip_PongSnip* pong=snip.mutable_pong_snip();
+            pong->set_count(0);
+            std::ostringstream oss;
+            if (!snip.SerializeToOstream(&oss)) {
+              std::cout << "ping snip serialization did not work." << std::endl;
+            }
+            oss.flush();
+            fullcircle::Envelope::Ptr env(new fullcircle::Envelope());
+            env->set_body(oss.str());
+            write(env);
+          }
+          break;
+
+        default: 
+          std::cout << "Unknown snip, discarding." << std::endl;
+          break;
+      }
+    }
+
+
+
+
+    // react to the next message of this client.
     boost::asio::async_read(_socket,
         boost::asio::buffer(_read_envelope->get_raw_ptr(), 
           Envelope::header_length),
