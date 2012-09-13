@@ -11,7 +11,7 @@ namespace fullcircle {
 
   class PerlinNoise {
     public:
-      typedef std::tr1::shared_ptr<PerlinNoise> Ptr;
+      typedef boost::shared_ptr<PerlinNoise> Ptr;
       PerlinNoise (int octaves,float freq,float amp,int seed);
       float get_2d(float x, float y);
       float get_3d(float x, float y, float z);

@@ -1,23 +1,48 @@
 #include "server_session.hpp"
 #include <boost/bind.hpp>
-#include <libfullcircle/sequence.pb.h>
 
 using namespace fullcircle;
-
 
 ServerSession::ServerSession(boost::asio::io_service& io_service)
   : _socket(io_service)
   , _read_envelope(new Envelope())
   , _write_envelopes()
 {
-  std::cout << "ServerSession: Constructed instance " <<
-    this << std::endl;
+  //std::cout << "ServerSession: Constructed instance " <<
+  //  this << std::endl;
 }
 
-ServerSession::~ServerSession() {
-  std::cout << "ServerSession: Destructing instance " <<
-    this << std::endl;
+ServerSession::Ptr ServerSession::create(
+    boost::asio::io_service& io_service) 
+{
+  // First: Create a shared_ptr to a new instance
+  Ptr retval(new ServerSession(io_service));
+  // Then: Initialize the member _dispatcher with this shared_ptr
+//  ServerProtocolDispatcher::Ptr disp(new ServerProtocolDispatcher(retval));
+//  retval->set_dispatcher(disp);
+  return retval;
 }
+
+
+//void ServerSession::set_dispatcher(ServerProtocolDispatcher::Ptr spe) {
+//  _dispatcher=spe;
+//}
+
+ServerSession::~ServerSession() {
+  //std::cout << "ServerSession: Destructing instance " <<
+  //  this << std::endl;
+}
+
+void ServerSession::write(Envelope::Ptr envelope) {
+  do_write(envelope);
+}
+
+boost::signals2::connection ServerSession::do_on_envelope(
+    const on_envelope_slot_t& slot)
+{
+  return _on_envelope.connect(slot);
+}
+
 
 boost::asio::ip::tcp::socket& ServerSession::socket() {
   return _socket;
@@ -26,7 +51,7 @@ boost::asio::ip::tcp::socket& ServerSession::socket() {
 void ServerSession::start() {
   std::cout << "ServerSession: Starting in instance " << this << std::endl;
   try {
-      boost::asio::async_read(_socket,
+    boost::asio::async_read(_socket,
         boost::asio::buffer(_read_envelope->get_raw_ptr(), 
           Envelope::header_length),
         boost::bind(
@@ -63,43 +88,13 @@ void ServerSession::handle_read_header(
 void ServerSession::handle_read_body(const boost::system::error_code& error)
 {
   if (!error) {
-    std::cout << "ServerSession: Reading body succeeded: " 
-      << _read_envelope->str()  << std::endl;
-    // create snip from envelope.
-    std::istringstream iss(_read_envelope->get_body());
-    fullcircle::Snip snip;
-    if (!snip.ParseFromIstream(&iss)) {
-      std::cout << "Cannot load snip from input stream." << std::endl;
-    } else {
-      std::cout << "Reconstructed snip: " << snip.DebugString() << std::endl;
-      switch (snip.type()) {
-        case fullcircle::Snip::PING:
-          {
-            std::cout << "Responding to ping snip." << std::endl;
-            fullcircle::Snip snip;
-            snip.set_type(fullcircle::Snip::PONG);
-            fullcircle::Snip_PongSnip* pong=snip.mutable_pong_snip();
-            pong->set_count(0);
-            std::ostringstream oss;
-            if (!snip.SerializeToOstream(&oss)) {
-              std::cout << "ping snip serialization did not work." << std::endl;
-            }
-            oss.flush();
-            fullcircle::Envelope::Ptr env(new fullcircle::Envelope());
-            env->set_body(oss.str());
-            write(env);
-          }
-          break;
-
-        default: 
-          std::cout << "Unknown snip, discarding." << std::endl;
-          break;
-      }
+    try {
+      _on_envelope(_read_envelope);
+    } catch (const std::exception& e) {
+      std::cout << "Exception during processing of envelope: " 
+        << e.what() << std::endl;
+      // TODO: Send error message back to client.
     }
-
-
-
-
     // react to the next message of this client.
     boost::asio::async_read(_socket,
         boost::asio::buffer(_read_envelope->get_raw_ptr(), 
@@ -111,11 +106,9 @@ void ServerSession::handle_read_body(const boost::system::error_code& error)
       << error.message() << std::endl;
   }
 
+
 }
 
-void ServerSession::write(Envelope::Ptr envelope) {
-  do_write(envelope);
-}
 
 void ServerSession::do_write(Envelope::Ptr envelope) {
   bool write_in_progress = !_write_envelopes.empty();

@@ -109,6 +109,11 @@ BOOST_AUTO_TEST_CASE ( check_ping ) {
   BOOST_CHECK_EQUAL (0, ping2.count());
 }
 
+static void print_envelope(fullcircle::Envelope::Ptr env) {
+  std::cout << "Printing envelope:" << std::endl;
+  std::cout << env->str() << std::endl;
+}
+
 BOOST_AUTO_TEST_CASE ( check_ping_online ) {
   std::cout << "1. preparing server instance." << std::endl;
   boost::asio::io_service server_io_service;
@@ -119,7 +124,7 @@ BOOST_AUTO_TEST_CASE ( check_ping_online ) {
   server->run();
 
   std::cout << "##### Waiting" << std::endl;
-  boost::this_thread::sleep( boost::posix_time::seconds(5) );
+  boost::this_thread::sleep( boost::posix_time::seconds(1) );
 
   std::cout << "2. preparing client instance." << std::endl;
   boost::asio::io_service client_io_service;
@@ -132,10 +137,11 @@ BOOST_AUTO_TEST_CASE ( check_ping_online ) {
     resolver.resolve(query);
   fullcircle::NetClient::Ptr client(
     new fullcircle::NetClient(client_io_service, iterator));
+  client->do_on_envelope(&print_envelope);
   client->run();
 
   std::cout << "##### Waiting" << std::endl;
-  boost::this_thread::sleep( boost::posix_time::seconds(5) );
+  boost::this_thread::sleep( boost::posix_time::seconds(1) );
 
   std::cout << "3. Attempting to send a ping message." << std::endl;
   fullcircle::Snip snip;
@@ -152,7 +158,7 @@ BOOST_AUTO_TEST_CASE ( check_ping_online ) {
   client->write(env);
 
   std::cout << "##### Waiting" << std::endl;
-  boost::this_thread::sleep( boost::posix_time::seconds(2) );
+  boost::this_thread::sleep( boost::posix_time::seconds(1) );
   std::cout << "4. Initiating shutdown." << std::endl;
   client->shutdown();
   server->shutdown();

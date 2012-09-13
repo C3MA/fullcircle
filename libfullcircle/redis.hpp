@@ -8,7 +8,7 @@ namespace fullcircle {
   static const std::string REDIS_COUNTER_VARIABLE("counter");
   class Redis {
     public:
-      typedef std::tr1::shared_ptr<Redis> Ptr;
+      typedef boost::shared_ptr<Redis> Ptr;
       Redis(const std::string& server,
           const uint16_t port);
       virtual ~Redis(); 

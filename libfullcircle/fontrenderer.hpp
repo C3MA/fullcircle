@@ -14,7 +14,7 @@ namespace fullcircle {
 	
   class FontRenderer {
     public:
-      typedef std::tr1::shared_ptr<FontRenderer> Ptr;
+      typedef boost::shared_ptr<FontRenderer> Ptr;
 
       FontRenderer ( uint16_t width, uint16_t height);
       FontRenderer (Frame& rhs);

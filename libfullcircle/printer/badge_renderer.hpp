@@ -8,7 +8,7 @@ namespace bfs=boost::filesystem;
 namespace fullcircle {
   class BadgeRenderer {
     public:
-      typedef std::tr1::shared_ptr<BadgeRenderer> Ptr;
+      typedef boost::shared_ptr<BadgeRenderer> Ptr;
       BadgeRenderer(
           bfs::path templatefile
         ) : _templatefile(templatefile) {};

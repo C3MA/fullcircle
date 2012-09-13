@@ -13,7 +13,7 @@ namespace fullcircle {
     : public boost::enable_shared_from_this<NetServer> 
   {
     public:
-      typedef std::tr1::shared_ptr<NetServer> Ptr;
+      typedef boost::shared_ptr<NetServer> Ptr;
       static Ptr create(
           boost::asio::io_service& io_service,
           boost::asio::ip::tcp::endpoint endpoint) {

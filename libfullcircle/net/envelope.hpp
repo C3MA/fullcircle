@@ -10,7 +10,7 @@ namespace fullcircle {
     public:
       enum { header_length = 10 };
       enum { max_body_length = 1024*1024 };
-      typedef std::tr1::shared_ptr<Envelope> Ptr;
+      typedef boost::shared_ptr<Envelope> Ptr;
       Envelope() : _body_length(0) {};
       Envelope(char* msg, size_t length);
       virtual ~Envelope() {};

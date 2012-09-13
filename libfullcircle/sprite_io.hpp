@@ -7,7 +7,7 @@
 namespace fullcircle {
   class SpriteIO {
     public:
-      typedef std::tr1::shared_ptr<SpriteIO> Ptr;
+      typedef boost::shared_ptr<SpriteIO> Ptr;
       SpriteIO() {};
       virtual ~SpriteIO() {};
       Frame::Ptr load(const std::string& filename);

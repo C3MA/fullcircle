@@ -9,7 +9,7 @@
 namespace fullcircle {
   class Sequence {
     public:
-      typedef std::tr1::shared_ptr<Sequence> Ptr;
+      typedef boost::shared_ptr<Sequence> Ptr;
       typedef std::vector<Frame::Ptr>::const_iterator const_iterator;
       Sequence (
           const uint16_t& frames_per_second, 
