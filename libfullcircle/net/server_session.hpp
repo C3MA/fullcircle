@@ -10,6 +10,13 @@
 #include <boost/asio.hpp>
 #include <boost/signals2.hpp>
 
+/**
+ * The session just extracts the snip from the envelope and provides a
+ * callback to the dispatcher. We use a signal/slot-mechanism to bind
+ * the dispatcher to the session. See also
+ * http://stackoverflow.com/questions/768351/complete-example-using-boostsignals-for-c-eventing
+ */
+
 namespace fullcircle {
   class ServerSession 
     : public boost::enable_shared_from_this<ServerSession> 
@@ -37,7 +44,6 @@ namespace fullcircle {
       void handle_write(const boost::system::error_code& error);
       void handle_read_header(const boost::system::error_code& error);
       void handle_read_body(const boost::system::error_code& error);
-      void set_dispatcher(ServerProtocolDispatcher::Ptr spe);
 
       boost::asio::ip::tcp::socket _socket;
       Envelope::Ptr _read_envelope;

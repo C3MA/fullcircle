@@ -27,6 +27,7 @@
 #include <libfullcircle/net/envelope.hpp>
 #include <libfullcircle/net/net_server.hpp>
 #include <libfullcircle/net/net_client.hpp>
+#include <libfullcircle/net/client_dispatcher.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
@@ -109,11 +110,6 @@ BOOST_AUTO_TEST_CASE ( check_ping ) {
   BOOST_CHECK_EQUAL (0, ping2.count());
 }
 
-static void print_envelope(fullcircle::Envelope::Ptr env) {
-  std::cout << "Printing envelope:" << std::endl;
-  std::cout << env->str() << std::endl;
-}
-
 BOOST_AUTO_TEST_CASE ( check_ping_online ) {
   std::cout << "1. preparing server instance." << std::endl;
   boost::asio::io_service server_io_service;
@@ -137,7 +133,11 @@ BOOST_AUTO_TEST_CASE ( check_ping_online ) {
     resolver.resolve(query);
   fullcircle::NetClient::Ptr client(
     new fullcircle::NetClient(client_io_service, iterator));
-  client->do_on_envelope(&print_envelope);
+  fullcircle::ClientDispatcher::Ptr c_disp(
+      new fullcircle::ClientDispatcher(client));
+  client->do_on_envelope(
+      boost::bind(&fullcircle::ClientDispatcher::handle_envelope, 
+        c_disp, _1));
   client->run();
 
   std::cout << "##### Waiting" << std::endl;

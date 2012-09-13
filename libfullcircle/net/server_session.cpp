@@ -7,26 +7,18 @@ ServerSession::ServerSession(boost::asio::io_service& io_service)
   : _socket(io_service)
   , _read_envelope(new Envelope())
   , _write_envelopes()
-{
-  //std::cout << "ServerSession: Constructed instance " <<
-  //  this << std::endl;
-}
+{}
+
+ServerSession::~ServerSession() 
+{}
 
 ServerSession::Ptr ServerSession::create(
     boost::asio::io_service& io_service) 
 {
-  // First: Create a shared_ptr to a new instance
   Ptr retval(new ServerSession(io_service));
-  // Then: Initialize the member _dispatcher with this shared_ptr
-//  ServerProtocolDispatcher::Ptr disp(new ServerProtocolDispatcher(retval));
-//  retval->set_dispatcher(disp);
   return retval;
 }
 
-
-
-ServerSession::~ServerSession() {
-}
 
 void ServerSession::write(Envelope::Ptr envelope) {
   do_write(envelope);

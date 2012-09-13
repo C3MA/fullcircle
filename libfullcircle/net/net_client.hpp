@@ -3,12 +3,15 @@
 
 #include <libfullcircle/common.hpp>
 #include <libfullcircle/net/envelope.hpp>
+#include <libfullcircle/net/envelope_transport.hpp>
 #include <boost/asio.hpp>
 #include <boost/signals2.hpp>
 #include <boost/thread/thread.hpp>
 
 namespace fullcircle {
-  class NetClient {
+  class NetClient
+    : public fullcircle::EnvelopeTransport
+  {
     public:
       typedef boost::shared_ptr<NetClient> Ptr;
       typedef boost::signals2::signal<void (fullcircle::Envelope::Ptr)> on_envelope_t;
