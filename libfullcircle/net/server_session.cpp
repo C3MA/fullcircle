@@ -24,13 +24,8 @@ ServerSession::Ptr ServerSession::create(
 }
 
 
-//void ServerSession::set_dispatcher(ServerProtocolDispatcher::Ptr spe) {
-//  _dispatcher=spe;
-//}
 
 ServerSession::~ServerSession() {
-  //std::cout << "ServerSession: Destructing instance " <<
-  //  this << std::endl;
 }
 
 void ServerSession::write(Envelope::Ptr envelope) {

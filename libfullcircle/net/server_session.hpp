@@ -42,7 +42,6 @@ namespace fullcircle {
       boost::asio::ip::tcp::socket _socket;
       Envelope::Ptr _read_envelope;
       envelope_queue_t _write_envelopes;
-   //   ServerProtocolDispatcher::Ptr _dispatcher;
       on_envelope_t _on_envelope;
 
   };

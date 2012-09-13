@@ -42,8 +42,10 @@ void NetServer::handle_accept(ServerSession::Ptr session,
 
 void NetServer::start_accept() {
   ServerSession::Ptr new_session = ServerSession::create(_io_service);
-  ServerProtocolDispatcher::Ptr dispatcher(new ServerProtocolDispatcher(new_session));
-  new_session->do_on_envelope(boost::bind(&ServerProtocolDispatcher::handle_envelope, dispatcher));
+  ServerProtocolDispatcher::Ptr dispatcher(
+      new ServerProtocolDispatcher(new_session));
+  new_session->do_on_envelope(
+      boost::bind(&ServerProtocolDispatcher::handle_envelope, dispatcher, _1));
   std::cout << "Server: start_accept, use_count: "
     << new_session.use_count() << std::endl;
   _acceptor.async_accept(new_session->socket(),
