@@ -156,6 +156,17 @@ BOOST_AUTO_TEST_CASE ( check_ping_online ) {
   fullcircle::Envelope::Ptr env(new fullcircle::Envelope());
   env->set_body(oss2.str());
   client->write(env);
+  ping->set_count(1);
+  oss2.clear();
+  oss2.str("");
+  if (!snip.SerializeToOstream(&oss2)) {
+    BOOST_FAIL("ping snip serialization did not work.");
+  }
+  oss2.flush();
+  fullcircle::Envelope::Ptr env2(new fullcircle::Envelope());
+  env2->set_body(oss2.str());
+  client->write(env2);
+
 
   std::cout << "##### Waiting" << std::endl;
   boost::this_thread::sleep( boost::posix_time::seconds(1) );

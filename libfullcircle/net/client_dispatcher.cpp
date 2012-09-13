@@ -1,6 +1,5 @@
 #include "client_dispatcher.hpp"
 #include <sstream>
-#include <libfullcircle/sequence.pb.h>
 
 
 using namespace fullcircle;
@@ -19,7 +18,8 @@ void ClientDispatcher::handle_envelope(
       case fullcircle::Snip::PONG: 
         {
           fullcircle::Snip_PongSnip pong=snip.pong_snip();
-          std::cout << "Received ping reply (no. " << pong.count() << std::endl;
+          std::cout << "Received ping reply (no. " 
+            << pong.count() << ")" << std::endl;
         }
         break;
       default: 
@@ -44,4 +44,10 @@ void ClientDispatcher::send_ping(const uint16_t seq_id) {
   env->set_body(oss2.str());
   _transport->write(env);
   //_transport->write(renv);
+}
+
+boost::signals2::connection ClientDispatcher::do_on_pong(
+    const on_pong_snip_t& slot) 
+{
+  return _on_pong.connect(slot);
 }
