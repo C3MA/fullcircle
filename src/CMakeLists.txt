@@ -16,6 +16,8 @@ set(fc-read-image_src fc-read-image.cpp)
 set(fc-leader_src fc-leader.cpp)
 set(fc-testimage_src fc-testimage.cpp)
 set(fc-testrow_src fc-testrow.cpp)
+set(fc-server_src fc-server.cpp)
+set(fc-ping_src fc-ping.cpp)
 
 include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_CURRENT_SOURCE_DIR} 
@@ -75,6 +77,14 @@ add_executable(fc-testimage
 
 add_executable(fc-testrow
   ${fc-testrow_src}
+  )
+
+add_executable(fc-server
+  ${fc-server_src}
+  )
+
+add_executable(fc-ping
+  ${fc-ping_src}
   )
 
 target_link_libraries(fc-simulator 
@@ -154,6 +164,16 @@ target_link_libraries(fc-testrow
   ${Boost_LIBRARIES}
   )
 
+target_link_libraries(fc-server
+  fullcircle 
+  ${Boost_LIBRARIES}
+  )
+
+target_link_libraries(fc-ping
+  fullcircle 
+  ${Boost_LIBRARIES}
+  )
+
 # sensor programs to the install target
 INSTALL(PROGRAMS 
   ${CMAKE_CURRENT_BINARY_DIR}/fc-simulator
@@ -170,5 +190,6 @@ INSTALL(PROGRAMS
   ${CMAKE_CURRENT_BINARY_DIR}/fc-testimage
   ${CMAKE_CURRENT_BINARY_DIR}/fc-testrow
   ${CMAKE_CURRENT_BINARY_DIR}/fc-flowmap
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-ping
   DESTINATION bin)
 

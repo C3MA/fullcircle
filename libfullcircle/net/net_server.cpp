@@ -10,6 +10,10 @@ void NetServer::run() {
   //start_accept();
 }
 
+void NetServer::join() {
+  _t.join();
+}
+
 void NetServer::do_start() {
   try {
     start_accept();

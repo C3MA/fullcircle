@@ -25,7 +25,7 @@ boost::signals2::connection NetClient::do_on_envelope(
 
 
 void NetClient::run() {
-  std::cout << "Starting client." << std::endl;
+  //std::cout << "Starting client." << std::endl;
   boost::asio::async_connect(_socket, _endpoint_iterator,
         boost::bind(&NetClient::handle_connect, this,
           boost::asio::placeholders::error));
@@ -34,7 +34,7 @@ void NetClient::run() {
 }
 
 void NetClient::shutdown() {
-  std::cout << "Client is shutting down." << std::endl;
+  //std::cout << "Client is shutting down." << std::endl;
   _io_service.post(boost::bind(&NetClient::do_close, this));
   //_io_service.stop();
   _t.join();
@@ -43,6 +43,7 @@ void NetClient::shutdown() {
 void NetClient::do_close() {
   std::cout << "Client: Closing socket." << std::endl;
   _socket.close();
+  _t.join();
 }
 
 void NetClient::write(Envelope::Ptr envelope) {
@@ -51,7 +52,7 @@ void NetClient::write(Envelope::Ptr envelope) {
 
 void NetClient::handle_connect(const boost::system::error_code& error) {
   if (!error) {
-    std::cout << "Client: Connection succeeded." << std::endl;
+    //std::cout << "Client: Connection succeeded." << std::endl;
     boost::asio::async_read(_socket,
         boost::asio::buffer(
           _read_envelope->get_raw_ptr(), Envelope::header_length),
@@ -66,7 +67,7 @@ void NetClient::handle_connect(const boost::system::error_code& error) {
 
 void NetClient::handle_read_header(const boost::system::error_code& error) {
   if (!error && _read_envelope->decode_header()) {
-    std::cout << "Client: Reading header succeeded." << std::endl;
+    //std::cout << "Client: Reading header succeeded." << std::endl;
     boost::asio::async_read(_socket,
         boost::asio::buffer(
           _read_envelope->get_body_ptr(), 
@@ -76,6 +77,7 @@ void NetClient::handle_read_header(const boost::system::error_code& error) {
   } else {
     std::cerr << "Client: Reading header failed: "
       << error.message() << std::endl;
+    // TODO: Implement automatic reconnect.
     do_close();
   }
 }

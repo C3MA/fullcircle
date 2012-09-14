@@ -4,8 +4,8 @@
 #include <libfullcircle/common.hpp>
 #include <libfullcircle/net/envelope_transport.hpp>
 #include <libfullcircle/net/envelope.hpp>
-#include <boost/signals2.hpp>
 #include <libfullcircle/sequence.pb.h>
+#include <boost/signals2.hpp>
 
 
 namespace fullcircle {
@@ -25,7 +25,7 @@ namespace fullcircle {
       void send_ping(const uint16_t seq_id);
       void handle_envelope(fullcircle::Envelope::Ptr env);
 
-      boost::signals2::connection do_on_pong(const on_pong_snip_t& slot);
+      boost::signals2::connection do_on_pong(const on_pong_snip_slot_t& slot);
 
     private:
       ClientDispatcher (const ClientDispatcher& original);

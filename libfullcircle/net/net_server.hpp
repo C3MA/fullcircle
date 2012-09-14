@@ -22,6 +22,7 @@ namespace fullcircle {
 
       virtual ~NetServer() {};
       void run();
+      void join();
       void shutdown();
 
 

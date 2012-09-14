@@ -18,8 +18,9 @@ void ClientDispatcher::handle_envelope(
       case fullcircle::Snip::PONG: 
         {
           fullcircle::Snip_PongSnip pong=snip.pong_snip();
-          std::cout << "Received ping reply (no. " 
-            << pong.count() << ")" << std::endl;
+          //std::cout << "Received ping reply (no. " 
+          //  << pong.count() << ")" << std::endl;
+          _on_pong(pong);
         }
         break;
       default: 
@@ -47,7 +48,7 @@ void ClientDispatcher::send_ping(const uint16_t seq_id) {
 }
 
 boost::signals2::connection ClientDispatcher::do_on_pong(
-    const on_pong_snip_t& slot) 
+    const on_pong_snip_slot_t& slot) 
 {
   return _on_pong.connect(slot);
 }
