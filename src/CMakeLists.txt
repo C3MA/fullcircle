@@ -17,6 +17,7 @@ set(fc-leader_src fc-leader.cpp)
 set(fc-testimage_src fc-testimage.cpp)
 set(fc-testrow_src fc-testrow.cpp)
 set(fc-2gif_src fc-2gif.cpp)
+set(fc-player_src fc-player.cpp)
 
 include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_CURRENT_SOURCE_DIR} 
@@ -79,6 +80,10 @@ add_executable(fc-testimage
 
 add_executable(fc-testrow
   ${fc-testrow_src}
+  )
+
+add_executable(fc-player
+  ${fc-player_src}
   )
 
 target_link_libraries(fc-simulator 
@@ -163,6 +168,10 @@ target_link_libraries(fc-testrow
   ${Boost_LIBRARIES}
   )
 
+target_link_libraries(fc-player
+  fullcircle
+	)
+
 # sensor programs to the install target
 INSTALL(PROGRAMS 
   ${CMAKE_CURRENT_BINARY_DIR}/fc-simulator
@@ -180,6 +189,7 @@ INSTALL(PROGRAMS
   ${CMAKE_CURRENT_BINARY_DIR}/fc-testrow
   ${CMAKE_CURRENT_BINARY_DIR}/fc-flowmap
   ${CMAKE_CURRENT_BINARY_DIR}/fc-2gif
+	${CMAKE_CURRENT_BINARY_DIR}/fc-player
   fc-convert2gif.sh
   DESTINATION bin)
 

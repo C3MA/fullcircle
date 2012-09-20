@@ -44,6 +44,7 @@ target_link_libraries(fullcircle
   ${Boost_LIBRARIES}
   ${PROTOBUF_LIBRARIES}
   ${QT_LIBRARIES}
+	${OLA_LIBRARIES}
   pthread
 )
 
