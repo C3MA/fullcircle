@@ -45,6 +45,10 @@ namespace fullcircle {
       void handle_read_header(const boost::system::error_code& error);
       void handle_read_body(const boost::system::error_code& error);
 
+      void handle_connection_error(
+          const boost::system::error_code& error,
+          const std::string& additional_hint);
+
       boost::asio::ip::tcp::socket _socket;
       Envelope::Ptr _read_envelope;
       envelope_queue_t _write_envelopes;

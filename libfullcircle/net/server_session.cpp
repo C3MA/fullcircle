@@ -36,7 +36,7 @@ boost::asio::ip::tcp::socket& ServerSession::socket() {
 }
 
 void ServerSession::start() {
-  std::cout << "ServerSession: Starting in instance " << this << std::endl;
+  //std::cout << "ServerSession: Starting in instance " << this << std::endl;
   try {
     boost::asio::async_read(_socket,
         boost::asio::buffer(_read_envelope->get_raw_ptr(), 
@@ -46,9 +46,18 @@ void ServerSession::start() {
           boost::asio::placeholders::error));
 
   } catch (const std::exception& e) {
-    std::cout << "ServerSession: Failed to start, " 
+    std::cerr << "ServerSession: Failed to start, " 
       << e.what() << std::endl;
   }
+}
+
+void ServerSession::handle_connection_error(
+    const boost::system::error_code& error,
+    const std::string& additional_hint
+    ) 
+{
+  std::cerr << "ServerSession: " << additional_hint <<
+    ", error: " << error.message() << std::endl;
 }
 
 
@@ -56,7 +65,7 @@ void ServerSession::handle_read_header(
     const boost::system::error_code& error) 
 {
   if (!error && _read_envelope->decode_header()) {
-    std::cout << "ServerSession: Reading header." << std::endl;
+//    std::cout << "ServerSession: Reading header." << std::endl;
     boost::asio::async_read(_socket,
         boost::asio::buffer(
           _read_envelope->get_body_ptr(), 
@@ -65,8 +74,7 @@ void ServerSession::handle_read_header(
           boost::asio::placeholders::error));
   } else {
     if (error) {
-      std::cout << "ServerSession: Cannot read header: " 
-        << error.message() << std::endl;
+      handle_connection_error(error, "can't read header");
     }
   }
 
@@ -89,11 +97,8 @@ void ServerSession::handle_read_body(const boost::system::error_code& error)
         boost::bind(&ServerSession::handle_read_header, shared_from_this(),
           boost::asio::placeholders::error));
   } else {
-    std::cout << "ServerSession: Cannot read body: " 
-      << error.message() << std::endl;
+    handle_connection_error(error, "can't read body");
   }
-
-
 }
 
 
@@ -122,8 +127,7 @@ void ServerSession::handle_write(const boost::system::error_code& error)
             boost::asio::placeholders::error));
     }
   } else {
-    std::cout << "ServerSession: Cannot handle write: " 
-      << error.message() << std::endl;
+    handle_connection_error(error, "can't write");
   }
 }
 
