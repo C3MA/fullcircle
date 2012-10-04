@@ -144,14 +144,35 @@ BOOST_AUTO_TEST_CASE ( check_ping_online ) {
   boost::this_thread::sleep( boost::posix_time::seconds(1) );
 
   std::cout << "3. Attempting to send a ping message." << std::endl;
+  fullcircle::Snip snip;
+  snip.set_type(fullcircle::Snip::PING);
+  fullcircle::Snip_PingSnip* ping=snip.mutable_ping_snip();
+  ping->set_count(0);
+  std::ostringstream oss2;
+  if (!snip.SerializeToOstream(&oss2)) {
+    BOOST_FAIL("ping snip serialization did not work.");
+  }
+  oss2.flush();
+  fullcircle::Envelope::Ptr env(new fullcircle::Envelope());
+  env->set_body(oss2.str());
+  client->write(env);
+  ping->set_count(1);
+  oss2.clear();
+  oss2.str("");
+  if (!snip.SerializeToOstream(&oss2)) {
+    BOOST_FAIL("ping snip serialization did not work.");
+  }
+  oss2.flush();
+  fullcircle::Envelope::Ptr env2(new fullcircle::Envelope());
+  env2->set_body(oss2.str());
+  client->write(env2);
 
-  c_disp->send_ping(0);
-  c_disp->send_ping(1);
 
   std::cout << "##### Waiting" << std::endl;
   boost::this_thread::sleep( boost::posix_time::seconds(1) );
-  std::cout << "4. Initiating shutdown." << std::endl;
+  std::cout << "4. Client shutdown." << std::endl;
   client->shutdown();
+  std::cout << "5. Server shutdown." << std::endl;
   server->shutdown();
   std::cout << "EOT" << std::endl;
 }
