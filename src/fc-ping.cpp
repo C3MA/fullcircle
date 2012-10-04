@@ -126,6 +126,8 @@ int main (int argc, char const* argv[]) {
     client->do_on_envelope(
         boost::bind(&fullcircle::ClientDispatcher::handle_envelope, 
           c_disp, _1));
+    //TODO: Implement error handling:
+    // client->do_on_error(.....)
     c_disp->do_on_pong(&pong_receiver);
     client->run();
     

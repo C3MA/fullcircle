@@ -13,6 +13,7 @@ NetClient::NetClient(
   , _read_envelope(new Envelope())
   , _write_envelopes()
   , _on_envelope()
+  , _on_error()
 {
 }
 
@@ -23,6 +24,11 @@ boost::signals2::connection NetClient::do_on_envelope(
   return _on_envelope.connect(slot);
 }
 
+boost::signals2::connection NetClient::do_on_error(
+    const on_error_slot_t& slot)
+{
+  return _on_error.connect(slot);
+}
 
 void NetClient::run() {
   std::cout << "Starting client." << std::endl;
@@ -58,8 +64,10 @@ void NetClient::handle_connect(const boost::system::error_code& error) {
         boost::bind(&NetClient::handle_read_header, this,
           boost::asio::placeholders::error));
   } else {
-    std::cerr << "Client: Connection failed: " 
+    std::ostringstream oss;
+    oss << "Netclient error: Connection failed: " 
       << error.message() << std::endl;
+    _on_error(oss.str());
     do_close();
   }
 }
@@ -74,8 +82,10 @@ void NetClient::handle_read_header(const boost::system::error_code& error) {
         boost::bind(&NetClient::handle_read_body, this,
           boost::asio::placeholders::error));
   } else {
-    std::cerr << "Client: Reading header failed: "
+    std::ostringstream oss;
+    oss << "Netclient error: Reading header failed: "
       << error.message() << std::endl;
+    _on_error(oss.str());
     do_close();
   }
 }
@@ -96,8 +106,10 @@ void NetClient::handle_read_body(const boost::system::error_code& error) {
         boost::bind(&NetClient::handle_read_header, this,
           boost::asio::placeholders::error));
   } else {
-    std::cerr << "Client: Receiving body failed: "
+    std::ostringstream oss;
+    oss << "Netclient error: Receiving body failed: "
       << error.message() << std::endl;
+    _on_error(oss.str());
     do_close();
   }
 }
@@ -125,8 +137,10 @@ void NetClient::handle_write(const boost::system::error_code& error) {
             boost::asio::placeholders::error));
     }
   } else {
-    std::cerr << "Client: Cannot send envelopes: " 
+    std::ostringstream oss;
+    oss << "Client: Cannot send envelopes: " 
       << error.message() << std::endl;
+    _on_error(oss.str());
     do_close();
   }
 }

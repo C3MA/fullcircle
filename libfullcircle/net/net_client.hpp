@@ -14,8 +14,6 @@ namespace fullcircle {
   {
     public:
       typedef boost::shared_ptr<NetClient> Ptr;
-      typedef boost::signals2::signal<void (fullcircle::Envelope::Ptr)> on_envelope_t;
-      typedef on_envelope_t::slot_type on_envelope_slot_t;
       NetClient (
           boost::asio::io_service& io_service,
           boost::asio::ip::tcp::resolver::iterator endpoint_iterator
@@ -25,7 +23,13 @@ namespace fullcircle {
       void shutdown();
       void write(Envelope::Ptr envelope);
 
+      typedef boost::signals2::signal<void (fullcircle::Envelope::Ptr)> on_envelope_t;
+      typedef on_envelope_t::slot_type on_envelope_slot_t;
       boost::signals2::connection do_on_envelope(const on_envelope_slot_t& slot);
+
+      typedef boost::signals2::signal<void (std::string)> on_error_t;
+      typedef on_error_t::slot_type on_error_slot_t;
+      boost::signals2::connection do_on_error(const on_error_slot_t& slot);
 
 
     private:
@@ -45,6 +49,7 @@ namespace fullcircle {
       Envelope::Ptr _read_envelope;
       envelope_queue_t _write_envelopes;
       on_envelope_t _on_envelope;
+      on_error_t _on_error;
   };
 };
 
