@@ -12,14 +12,14 @@ void ServerProtocolDispatcher::handle_envelope(
   std::istringstream iss(env->get_body());
   fullcircle::Snip snip;
   if (!snip.ParseFromIstream(&iss)) {
-    std::cout << "Cannot load snip from input stream." << std::endl;
+    throw fullcircle::DataFormatException("Cannot load snip from input stream.");
   } else {
     //std::cout << "Reconstructed snip: " << snip.DebugString() << std::endl;
     switch (snip.type()) {
       case fullcircle::Snip::PING: 
         {
-          std::cout << "Responding to ping snip." << std::endl;
           fullcircle::Snip_PingSnip ping=snip.ping_snip();
+          std::cout << "Responding to ping (no. " << ping.count() << ")" << std::endl;
           fullcircle::Snip snop;
           snop.set_type(fullcircle::Snip::PONG);
           fullcircle::Snip_PongSnip* pong=snop.mutable_pong_snip();

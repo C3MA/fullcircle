@@ -34,6 +34,7 @@ message Snip {
   enum SnipType {
     PING = 1;
     PONG = 2;
+    ERROR = 3;
   }
   required SnipType type = 1;
 
@@ -46,6 +47,17 @@ message Snip {
     required uint32 count = 1;
   }
   optional PongSnip pong_snip = 12;
+
+  enum ErrorCodeType {
+    OK = 1;
+    DECODING_ERROR = 2;
+    // To be extended.
+  }
+  message ErrorSnip {
+    required ErrorCodeType errorcode = 1;
+    required string description = 2;
+  }
+  optional ErrorSnip error_snip = 13;
 
 }
 

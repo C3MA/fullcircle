@@ -23,6 +23,11 @@ static void pong_receiver(fullcircle::Snip_PongSnip pong) {
   ping_send_time.erase(pong.count());
 }
 
+static bool shutdown_toggle = false;
+static void net_error_receiver(std::string error_msg) {
+  std::cout << "Server connection failed - " << error_msg << std::endl;
+  shutdown_toggle = true;
+}
 
 int main (int argc, char const* argv[]) {
   std::cout << "FullCircle Ping Utility" << std::endl;
@@ -126,19 +131,20 @@ int main (int argc, char const* argv[]) {
     client->do_on_envelope(
         boost::bind(&fullcircle::ClientDispatcher::handle_envelope, 
           c_disp, _1));
-    //TODO: Implement error handling:
-    // client->do_on_error(.....)
+    client->do_on_error(&net_error_receiver);
     c_disp->do_on_pong(&pong_receiver);
     client->run();
     
     uint16_t seq_id=0;
-    while(true) {
+    while(! shutdown_toggle) {
       pt::ptime send_time(pt::microsec_clock::local_time());
       ping_send_time.insert ( 
           std::pair<uint16_t,pt::ptime>(seq_id, send_time));
       c_disp->send_ping(seq_id++);
       boost::this_thread::sleep( boost::posix_time::seconds(1) );
     }
+
+    client->shutdown();
   } catch (fullcircle::GenericException& ex) {
     std::cout << "Caught exception: " << ex.what() << std::endl;
     exit(1);

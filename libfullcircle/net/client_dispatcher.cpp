@@ -23,6 +23,12 @@ void ClientDispatcher::handle_envelope(
           _on_pong(pong);
         }
         break;
+      case fullcircle::Snip::ERROR: 
+        {
+          fullcircle::Snip_ErrorSnip error=snip.error_snip();
+          _on_error(error);
+        }
+        break;
       default: 
         std::cout << "Unknown snip, discarding." << std::endl;
         break;
@@ -44,11 +50,16 @@ void ClientDispatcher::send_ping(const uint16_t seq_id) {
   fullcircle::Envelope::Ptr env(new fullcircle::Envelope());
   env->set_body(oss2.str());
   _transport->write(env);
-  //_transport->write(renv);
 }
 
 boost::signals2::connection ClientDispatcher::do_on_pong(
     const on_pong_snip_slot_t& slot) 
 {
   return _on_pong.connect(slot);
+}
+
+boost::signals2::connection ClientDispatcher::do_on_error(
+    const on_error_snip_slot_t& slot) 
+{
+  return _on_error.connect(slot);
 }

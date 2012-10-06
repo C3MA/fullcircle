@@ -110,6 +110,11 @@ BOOST_AUTO_TEST_CASE ( check_ping ) {
   BOOST_CHECK_EQUAL (0, ping2.count());
 }
 
+/**
+ * this is a manual test. Do not simply copy this code! A much easier to
+ * use version of the client code is in src/fc-ping.cpp or in other
+ * testcases below.
+ */
 BOOST_AUTO_TEST_CASE ( check_ping_online ) {
   std::cout << "1. preparing server instance." << std::endl;
   boost::asio::io_service server_io_service;
@@ -174,5 +179,91 @@ BOOST_AUTO_TEST_CASE ( check_ping_online ) {
   client->shutdown();
   std::cout << "5. Server shutdown." << std::endl;
   server->shutdown();
-  std::cout << "EOT" << std::endl;
+  std::cout << "EOT." << std::endl;
+
+  std::cout << "##### Waiting to allow for proper teardown." << std::endl;
+  boost::this_thread::sleep( boost::posix_time::seconds(1) );
 }
+
+/** 
+ * helper code for next testcase
+ */
+static bool error_toggle = false;
+static void error_receiver(fullcircle::Snip_ErrorSnip esnip) {
+  //uint32_t errorcode = esnip.errorcode();
+  std::string error_msg(esnip.description());
+  std::cout << "Server error - " << error_msg << std::endl;
+  error_toggle = true;
+}
+
+
+BOOST_AUTO_TEST_CASE ( check_corrupt_snip ) {
+  std::cout << "########## CHECKING FOR CORRUPT SNIP ERROR " << std::endl;
+  std::cout << "1. preparing server instance." << std::endl;
+  boost::asio::io_service server_io_service;
+  boost::asio::ip::tcp::endpoint server_endpoint(
+      boost::asio::ip::tcp::v4(), TEST_SERVER_PORT);
+  fullcircle::NetServer::Ptr server = fullcircle::NetServer::create(
+      server_io_service, server_endpoint);
+  server->run();
+
+  std::cout << "##### Waiting" << std::endl;
+  boost::this_thread::sleep( boost::posix_time::seconds(1) );
+
+  std::cout << "2. preparing client instance." << std::endl;
+  boost::asio::io_service client_io_service;
+  boost::asio::ip::tcp::resolver resolver(client_io_service);
+  std::ostringstream oss;
+  oss << TEST_SERVER_PORT;
+  boost::asio::ip::tcp::resolver::query query(
+      "localhost", oss.str());
+  boost::asio::ip::tcp::resolver::iterator iterator = 
+    resolver.resolve(query);
+  fullcircle::NetClient::Ptr client(
+      new fullcircle::NetClient(client_io_service, iterator));
+  fullcircle::ClientDispatcher::Ptr c_disp(
+      new fullcircle::ClientDispatcher(client));
+  client->do_on_envelope(
+      boost::bind(&fullcircle::ClientDispatcher::handle_envelope, 
+        c_disp, _1));
+  c_disp->do_on_error(&error_receiver);
+  client->run();
+
+  std::cout << "##### Waiting" << std::endl;
+  boost::this_thread::sleep( boost::posix_time::seconds(1) );
+
+  std::cout << "Sending a corrupted ping message." << std::endl;
+  fullcircle::Snip snip;
+  snip.set_type(fullcircle::Snip::PING);
+  fullcircle::Snip_PingSnip* ping=snip.mutable_ping_snip();
+  ping->set_count(0);
+  std::ostringstream oss2;
+  if (!snip.SerializeToOstream(&oss2)) {
+    BOOST_FAIL("ping snip serialization did not work.");
+  }
+  oss2 << "HORST"; // This is an invalid part of the message.
+  oss2.flush();
+  fullcircle::Envelope::Ptr env(new fullcircle::Envelope());
+  env->set_body(oss2.str());
+  client->write(env);
+
+  std::cout << "##### Waiting" << std::endl;
+  boost::this_thread::sleep( boost::posix_time::seconds(1) );
+
+  if (! error_toggle) {
+    BOOST_FAIL("The invalid message was not rejected by the server \
+        - no error message was sent.");
+  }
+
+  std::cout << "4. Client shutdown." << std::endl;
+  client->shutdown();
+  std::cout << "5. Server shutdown." << std::endl;
+  server->shutdown();
+  std::cout << "EOT." << std::endl;
+
+  std::cout << "##### Waiting to allow for proper teardown." << std::endl;
+  boost::this_thread::sleep( boost::posix_time::seconds(1) );
+
+}
+
+

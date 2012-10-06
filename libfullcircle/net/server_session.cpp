@@ -1,5 +1,6 @@
 #include "server_session.hpp"
 #include <boost/bind.hpp>
+#include <libfullcircle/sequence.pb.h>
 
 using namespace fullcircle;
 
@@ -10,7 +11,9 @@ ServerSession::ServerSession(boost::asio::io_service& io_service)
 {}
 
 ServerSession::~ServerSession() 
-{}
+{
+  std::cout << "Server: Deleting session " << this << std::endl;
+}
 
 ServerSession::Ptr ServerSession::create(
     boost::asio::io_service& io_service) 
@@ -36,7 +39,7 @@ boost::asio::ip::tcp::socket& ServerSession::socket() {
 }
 
 void ServerSession::start() {
-  //std::cout << "ServerSession: Starting in instance " << this << std::endl;
+  std::cout << "ServerSession: Starting session " << this << std::endl;
   try {
     boost::asio::async_read(_socket,
         boost::asio::buffer(_read_envelope->get_raw_ptr(), 
@@ -86,9 +89,23 @@ void ServerSession::handle_read_body(const boost::system::error_code& error)
     try {
       _on_envelope(_read_envelope);
     } catch (const std::exception& e) {
-      std::cout << "Exception during processing of envelope: " 
-        << e.what() << std::endl;
-      // TODO: Send error message back to client.
+      std::ostringstream oss;
+      oss << "ServerSession: Exception during processing of envelope: " 
+        << e.what() << " Sending error snip back to client." << std::endl;
+      std::cerr << oss.str() << std::endl;
+      fullcircle::Snip error;
+      error.set_type(fullcircle::Snip::ERROR);
+      fullcircle::Snip_ErrorSnip* esnip=error.mutable_error_snip();
+      esnip->set_errorcode(fullcircle::Snip::DECODING_ERROR);
+      esnip->set_description(oss.str());
+      std::ostringstream oss2;
+      if (!error.SerializeToOstream(&oss2)) {
+        std::cout << "error snip serialization did not work." << std::endl;
+      }
+      oss2.flush();
+      fullcircle::Envelope::Ptr renv(new fullcircle::Envelope());
+      renv->set_body(oss2.str());
+      do_write(renv);
     }
     // react to the next message of this client.
     boost::asio::async_read(_socket,
@@ -117,7 +134,7 @@ void ServerSession::do_write(Envelope::Ptr envelope) {
 void ServerSession::handle_write(const boost::system::error_code& error) 
 {
   if (!error) {
-    std::cout << "ServerSession: Handling write" << std::endl;
+    //std::cout << "ServerSession: Handling write" << std::endl;
     _write_envelopes.pop_front();
     if (!_write_envelopes.empty()) {
       boost::asio::async_write(_socket,
