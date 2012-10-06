@@ -11,7 +11,7 @@ namespace fullcircle {
 	
   class FlowMap {
     public:
-      typedef std::tr1::shared_ptr<FlowMap> Ptr;
+      typedef boost::shared_ptr<FlowMap> Ptr;
       FlowMap();
 	  
 	  void init(std::string hash, uint16_t width, uint16_t height); // generate hill profile from a hash

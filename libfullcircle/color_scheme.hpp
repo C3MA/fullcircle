@@ -21,7 +21,7 @@ namespace fullcircle {
   // Pure virtual class
   class ColorScheme {
     public:
-      typedef std::tr1::shared_ptr<ColorScheme> Ptr;
+      typedef boost::shared_ptr<ColorScheme> Ptr;
       ColorScheme() {};
       virtual ~ColorScheme() {};
       virtual RGB_t get_primary() const = 0;

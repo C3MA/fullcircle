@@ -7,7 +7,7 @@ namespace fullcircle {
  
   class ColorSchemePlain : public ColorScheme{
     public:
-      typedef std::tr1::shared_ptr<ColorSchemeSmash> Ptr;
+      typedef boost::shared_ptr<ColorSchemeSmash> Ptr;
       ColorSchemePlain() {};
       virtual ~ColorSchemePlain() {};
 

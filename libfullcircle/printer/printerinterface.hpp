@@ -8,7 +8,7 @@ namespace bfs=boost::filesystem;
 namespace fullcircle {
   class PrinterInterface {
     public:
-      typedef std::tr1::shared_ptr<PrinterInterface> Ptr;
+      typedef boost::shared_ptr<PrinterInterface> Ptr;
       PrinterInterface (bfs::path serial_device);
       virtual ~PrinterInterface(); 
 

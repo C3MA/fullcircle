@@ -16,7 +16,7 @@ namespace fullcircle {
     Q_OBJECT 
 
     public:
-      typedef std::tr1::shared_ptr<SimulatorMainWindow> Ptr;
+      typedef boost::shared_ptr<SimulatorMainWindow> Ptr;
       SimulatorMainWindow (bfs::path sequence_file);
       virtual ~SimulatorMainWindow();
 

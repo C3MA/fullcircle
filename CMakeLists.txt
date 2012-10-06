@@ -16,8 +16,8 @@ set(CMAKE_VERBOSE_MAKEFILE true)
 ENABLE_TESTING()
 
 set(V_MAJOR 0)
-set(V_MINOR 2)
-set(V_PATCH 1)
+set(V_MINOR 3)
+set(V_PATCH 0)
 
 # add a path where some libraries might be stored
 set(CMAKE_ADDITIONAL_PATH "$ENV{CMAKE_ADDITIONAL_PATH}" CACHE PATH "Path where many locally installed libraries can be found")
@@ -59,12 +59,13 @@ set(CMAKE_CXX_FLAGS "-Wall ")
 
 # We depend on boost >= 1.46.1 because of the updated filesystem
 # library.
-SET(Boost_ADDITIONAL_VERSIONS "1.46.1" "1.48.0" "1.48" "1.49" "1.50")
+SET(Boost_ADDITIONAL_VERSIONS "1.46.1" "1.48.0" "1.48" "1.49" "1.50" "1.51")
 FIND_PACKAGE(Boost 1.46.1 COMPONENTS 
   test_exec_monitor 
   program_options 
   filesystem 
   regex
+  thread
   system)
 INCLUDE(FindHiredis)
 # find googles protocol buffers

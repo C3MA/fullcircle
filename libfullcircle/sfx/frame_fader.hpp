@@ -9,7 +9,7 @@
 namespace fullcircle {
   class FrameFader {
     public:
-      typedef std::tr1::shared_ptr<FrameFader> Ptr;
+      typedef boost::shared_ptr<FrameFader> Ptr;
       FrameFader (uint16_t num_intermediate_frames, uint16_t fps)
         : _num_intermediate_frames(num_intermediate_frames)
         , _fps(fps)
