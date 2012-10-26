@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+   <FileVersion major="1" minor="6" />
+   <Project>
+      <Option title="fc-bml2fcs" />
+      <Option makefile_is_custom="1" />
+      <Option compiler="gcc" />
+      <Option virtualFolders="CMake Files\;CMake Files\bml2fcs\;CMake Files\modules\;CMake Files\src\;CMake Files\libfullcircle\;CMake Files\tests\;CMake Files\tests\sequences\;CMake Files\tests\frame\;CMake Files\tests\fonts\;CMake Files\tests\sprites\;CMake Files\tests\configfile\;CMake Files\tests\flow_map\;" />
+      <Build>
+      <Target title="all">
+         <Option working_dir="/home/tobi/fullcircle/bml2fcs" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/tobi/fullcircle/bml2fcs/Makefile&quot;  VERBOSE=1 all" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/tobi/fullcircle/bml2fcs/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/tobi/fullcircle/bml2fcs/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/tobi/fullcircle/bml2fcs/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="fc-bml2fcs">
+         <Option output="/home/tobi/fullcircle/bml2fcs/fc-bml2fcs" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/tobi/fullcircle/bml2fcs" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DQT_NO_DEBUG" />
+            <Add option="-DQT_GUI_LIB" />
+            <Add option="-DQT_CORE_LIB" />
+            <Add option="-DQT_NO_DEBUG" />
+            <Add option="-DQT_GUI_LIB" />
+            <Add option="-DQT_XML_LIB" />
+            <Add option="-DQT_CORE_LIB" />
+            <Add directory="/home/tobi/fullcircle" />
+            <Add directory="/home/tobi/fullcircle/bml2fcs" />
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/4.6" />
+            <Add directory="/usr/include/c++/4.6/backward" />
+            <Add directory="/usr/include/c++/4.6/i686-linux-gnu/." />
+            <Add directory="/usr/include/i386-linux-gnu" />
+            <Add directory="/usr/include/qt4" />
+            <Add directory="/usr/include/qt4/QtCore" />
+            <Add directory="/usr/include/qt4/QtGui" />
+            <Add directory="/usr/include/qt4/QtXml" />
+            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.6/include" />
+            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.6/include-fixed" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/tobi/fullcircle/bml2fcs/Makefile&quot;  VERBOSE=1 fc-bml2fcs" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/tobi/fullcircle/bml2fcs/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/tobi/fullcircle/bml2fcs/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/tobi/fullcircle/bml2fcs/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="fc-bml2fcs/fast">
+         <Option output="/home/tobi/fullcircle/bml2fcs/fc-bml2fcs" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/tobi/fullcircle/bml2fcs" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DQT_NO_DEBUG" />
+            <Add option="-DQT_GUI_LIB" />
+            <Add option="-DQT_CORE_LIB" />
+            <Add option="-DQT_NO_DEBUG" />
+            <Add option="-DQT_GUI_LIB" />
+            <Add option="-DQT_XML_LIB" />
+            <Add option="-DQT_CORE_LIB" />
+            <Add directory="/home/tobi/fullcircle" />
+            <Add directory="/home/tobi/fullcircle/bml2fcs" />
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/4.6" />
+            <Add directory="/usr/include/c++/4.6/backward" />
+            <Add directory="/usr/include/c++/4.6/i686-linux-gnu/." />
+            <Add directory="/usr/include/i386-linux-gnu" />
+            <Add directory="/usr/include/qt4" />
+            <Add directory="/usr/include/qt4/QtCore" />
+            <Add directory="/usr/include/qt4/QtGui" />
+            <Add directory="/usr/include/qt4/QtXml" />
+            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.6/include" />
+            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.6/include-fixed" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/tobi/fullcircle/bml2fcs/Makefile&quot;  VERBOSE=1 fc-bml2fcs/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/tobi/fullcircle/bml2fcs/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/tobi/fullcircle/bml2fcs/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/tobi/fullcircle/bml2fcs/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      </Build>
+      <Unit filename="/home/tobi/fullcircle/bml2fcs/SaxHandler.cpp">
+      </Unit>
+      <Unit filename="/home/tobi/fullcircle/bml2fcs/fc-bml2fcs.cpp">
+      </Unit>
+      <Unit filename="/home/tobi/fullcircle/bml2fcs/SaxHandler.h">
+      </Unit>
+      <Unit filename="/home/tobi/fullcircle/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\" />
+      </Unit>
+      <Unit filename="/home/tobi/fullcircle/bml2fcs/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\bml2fcs\" />
+      </Unit>
+      <Unit filename="/home/tobi/fullcircle/bml2fcs/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\bml2fcs\" />
+      </Unit>
+      <Unit filename="/home/tobi/fullcircle/modules/FindHiredis.cmake">
+          <Option virtualFolder="CMake Files\modules\" />
+      </Unit>
+      <Unit filename="/home/tobi/fullcircle/src/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\" />
+      </Unit>
+      <Unit filename="/home/tobi/fullcircle/libfullcircle/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\libfullcircle\" />
+      </Unit>
+      <Unit filename="/home/tobi/fullcircle/libfullcircle/config.h.in">
+          <Option virtualFolder="CMake Files\libfullcircle\" />
+      </Unit>
+      <Unit filename="/home/tobi/fullcircle/libfullcircle/sprites.qrc">
+          <Option virtualFolder="CMake Files\libfullcircle\" />
+      </Unit>
+      <Unit filename="/home/tobi/fullcircle/tests/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\tests\" />
+      </Unit>
+      <Unit filename="/home/tobi/fullcircle/tests/testconfig.h.in">
+          <Option virtualFolder="CMake Files\tests\" />
+      </Unit>
+      <Unit filename="/home/tobi/fullcircle/tests/sequences/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\tests\sequences\" />
+      </Unit>
+      <Unit filename="/home/tobi/fullcircle/tests/frame/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\tests\frame\" />
+      </Unit>
+      <Unit filename="/home/tobi/fullcircle/tests/fonts/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\tests\fonts\" />
+      </Unit>
+      <Unit filename="/home/tobi/fullcircle/tests/sprites/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\tests\sprites\" />
+      </Unit>
+      <Unit filename="/home/tobi/fullcircle/tests/configfile/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\tests\configfile\" />
+      </Unit>
+      <Unit filename="/home/tobi/fullcircle/tests/flow_map/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\tests\flow_map\" />
+      </Unit>
+   </Project>
+</CodeBlocks_project_file>

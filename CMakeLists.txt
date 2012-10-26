@@ -94,6 +94,7 @@ include(CMakeBackwardCompatibilityCXX)
 add_subdirectory(src)
 add_subdirectory(libfullcircle)
 add_subdirectory(tests)
+add_subdirectory(bml2fcs)
 
 # add some files to the installation target
 INSTALL(FILES README.md LICENSE DESTINATION share/doc/libfullcircle)
