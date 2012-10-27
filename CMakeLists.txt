@@ -84,6 +84,11 @@ FIND_PACKAGE( Qt4 REQUIRED )
 # (QT_USE_FILE is a variable defined by FIND_PACKAGE( Qt4 ) that contains a path to CMake script)
 INCLUDE( ${QT_USE_FILE} )
 
+INCLUDE(FindOLA)
+IF (OLA_FOUND)
+	message(STATUS "Found Ola: ${OLA_LIBRARIES}")
+	include_directories(${OLA_INCLUDE_DIR})
+ENDIF (OLA_FOUND)
 
 include_directories(${CMAKE_BINARY_DIR})
 
@@ -131,5 +136,6 @@ message("  boost filesystem lib: ${Boost_FILESYSTEM_LIBRARY}")
 message("  hiredis include: ${HIREDIS_INCLUDE_DIR}, lib: ${HIREDIS_LIBRARIES}")
 message("  PB include: ${PROTOBUF_INCLUDE_DIRS}, lib: ${PROTOBUF_LIBRARIES}")
 message("  QT4 include: ${QT_INCLUDE_DIR}, lib: ${QT_LIBRARIES}")
+message("  OLA include: ${OLA_INCLUDE_DIR}, lib: ${OLA_LIBRARIES}")
 message("  extended logging: ${ENABLE_LOGGING}")
 
