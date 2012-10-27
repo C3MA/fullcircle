@@ -35,6 +35,13 @@ message Snip {
     PING = 1;
     PONG = 2;
     ERROR = 3;
+    REQUEST = 4;
+    START = 5;
+    FRAME = 6;
+    ACK = 7;
+    NACK = 8;
+    TIMEOUT = 9;
+    ABORT = 10;
   }
   required SnipType type = 1;
 
@@ -59,6 +66,37 @@ message Snip {
   }
   optional ErrorSnip error_snip = 13;
 
+  message RequestSnip {
+    required string color = 1;
+    required uint32 seqId = 2;
+    required BinarySequenceMetadata meta = 3;
+  }
+  optional RequestSnip req_snip = 14;
+
+  message StartSnip {
+  }
+  optional StartSnip start_snip = 15;
+
+  message FrameSnip {
+    required BinaryFrame frame = 1;
+  }
+  optional FrameSnip frame_snip = 16;
+
+  message AckSnip {
+  }
+  optional AckSnip ack_snip = 17;
+
+  message NackSnip {
+  }
+  optional NackSnip nack_snip = 18;
+
+  message TimeoutSnip {
+  }
+  optional TimeoutSnip timeout_snip = 19;
+
+  message AbortSnip {
+  }
+  optional AbortSnip abort_snip = 20;
 }
 
 

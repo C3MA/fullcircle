@@ -5,6 +5,7 @@
 #include <libfullcircle/net/envelope_transport.hpp>
 #include <libfullcircle/net/envelope.hpp>
 #include <libfullcircle/sequence.pb.h>
+#include <libfullcircle/frame.hpp>
 #include <boost/signals2.hpp>
 
 
@@ -15,12 +16,14 @@ namespace fullcircle {
 
       ClientDispatcher ( fullcircle::EnvelopeTransport::Ptr transport) 
         : _transport(transport) 
-        , _on_pong()
-        , _on_error()
-      {};
+          , _on_pong()
+          , _on_error()
+    {};
       virtual ~ClientDispatcher() {};
 
       void send_ping(const uint16_t seq_id);
+      void send_request(std::string color, uint32_t seq_id, fullcircle::BinarySequenceMetadata* meta);
+      void send_frame(fullcircle::Frame::Ptr frame);
       void handle_envelope(fullcircle::Envelope::Ptr env);
 
       /**
@@ -43,9 +46,9 @@ namespace fullcircle {
       fullcircle::EnvelopeTransport::Ptr _transport;
       on_pong_snip_t _on_pong;
       on_error_snip_t _on_error;
-      
+
   };
-  
+
 };
 
 

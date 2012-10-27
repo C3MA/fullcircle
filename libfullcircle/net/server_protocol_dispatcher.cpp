@@ -34,6 +34,21 @@ void ServerProtocolDispatcher::handle_envelope(
           _transport->write(renv);
         }
         break;
+      case fullcircle::Snip::REQUEST:
+        {
+          std::cout << "Request!" << std::endl;
+        }
+        break;
+      case fullcircle::Snip::FRAME:
+        {
+          std::cout << "Frame!" << std::endl;
+        }
+        break;
+      case fullcircle::Snip::TIMEOUT:
+        {
+          std::cout << "Timeout!" << std::endl;
+        }
+        break;
       default: 
         std::cout << "Unknown snip, discarding." << std::endl;
         break;
