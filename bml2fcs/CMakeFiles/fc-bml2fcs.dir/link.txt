@@ -1,1 +1,0 @@
-/usr/bin/c++   -Wall     CMakeFiles/fc-bml2fcs.dir/fc-bml2fcs.cpp.o CMakeFiles/fc-bml2fcs.dir/SaxHandler.cpp.o  -o fc-bml2fcs -rdynamic ../libfullcircle/libfullcircle.a -Wl,-Bstatic -lboost_test_exec_monitor-mt -Wl,-Bdynamic -lboost_program_options-mt -lboost_filesystem-mt -lboost_regex-mt -lboost_system-mt -lQtGui -lQtXml -lQtCore -lprotobuf -lQtGui -lpthread -lQtCore 
