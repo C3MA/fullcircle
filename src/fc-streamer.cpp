@@ -37,9 +37,9 @@ namespace fullcircle {
 				_netClient->do_on_error(boost::bind(&fullcircle::Client::do_on_error, this, _1));
 				//c_disp->do_on_pong(&pong_receiver); // code from Ping-example from MD
 				//FIXME generate some implementation of functions
-				_dispatcher->do_on_ack(boost::bind(&fullcircle::Client::do_on_nack, this, _1));
-				//_dispatcher->do_on_nack(boost::bind(&fullcircle::Client::do_on_nack, this, _1));
-				//_dispatcher->do_on_start(boost::bind(&fullcircle::Client::do_on_start, this, _1));
+				_dispatcher->do_on_ack(boost::bind(&fullcircle::Client::do_on_nack, this));
+				_dispatcher->do_on_nack(boost::bind(&fullcircle::Client::do_on_nack, this));
+				_dispatcher->do_on_start(boost::bind(&fullcircle::Client::do_on_start, this));
 				_netClient->run();
 // manuell du_on_start ra
 
