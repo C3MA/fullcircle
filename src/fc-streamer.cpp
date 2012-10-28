@@ -12,6 +12,85 @@
 namespace po = boost::program_options;
 namespace bfs=boost::filesystem;
 
+namespace fullcircle {
+	enum clientState_t {
+		IDLE = 0,
+		WAITING,
+		TRANSMITTING,
+		ERROR
+	};
+
+	class Client {
+		public:
+			Client(boost::asio::io_service *client_io_service, boost::asio::ip::tcp::resolver::iterator *iterator, std::string source)
+				: _state(IDLE),
+					_netClient(
+							new fullcircle::NetClient(*client_io_service, *iterator)),
+					_dispatcher(
+							new fullcircle::ClientDispatcher(_netClient)),
+					_file(source)
+			{
+				_netClient->do_on_envelope(
+						boost::bind(&fullcircle::ClientDispatcher::handle_envelope, 
+							_dispatcher, _1));
+				_netClient->do_on_error(boost::bind(&fullcircle::Client::do_on_error, this, _1));
+				//c_disp->do_on_pong(&pong_receiver);
+				//_dispatcher->do_on_ack(&do_on_ack);
+				//_dispatcher->do_on_nack(&do_on_nack);
+				//_dispatcher->do_on_start(&do_on_start);
+				_netClient->run();
+
+				idle();
+			}
+
+			~Client()
+			{
+    		_netClient->shutdown();
+			}
+
+			virtual void do_on_ack() {};
+			virtual void do_on_nack() {};
+			virtual void do_on_start()
+			{
+				std::cout << "Reading " << _file.c_str() << std::endl;
+				std::fstream input(_file.c_str(), std::ios::in | std::ios::binary);
+				fullcircle::Sequence::Ptr loaded_seq(new fullcircle::Sequence(input));
+				input.close();
+
+				double ifs = 1000/loaded_seq->fps();
+				for ( uint32_t frameId = 0; frameId < loaded_seq->size(); frameId++ ) {
+					std::cout << frameId << std::endl;
+					fullcircle::Frame::Ptr frame = loaded_seq->get_frame(frameId);
+					_dispatcher->send_frame(frame);
+
+					usleep(ifs*1000);
+				}
+			}
+
+			virtual void do_on_error(std::string error_msg)
+			{
+				std::cout << "Server connection failed - " << error_msg << std::endl;
+				exit(1);
+			}
+
+			void idle() {
+				fullcircle::BinarySequenceMetadata* meta = new fullcircle::BinarySequenceMetadata();
+				meta->set_frames_per_second(25);
+				meta->set_width(10);
+				meta->set_height(8);
+				meta->set_generator_name("test");
+				meta->set_generator_version("-1");
+				_dispatcher->send_request("blue", 14, meta);
+			}
+
+		private:
+			clientState_t _state;
+			fullcircle::NetClient::Ptr _netClient;
+			fullcircle::ClientDispatcher::Ptr _dispatcher;
+			std::string _file;
+	};
+}
+
 /*static void pong_receiver(fullcircle::Snip_PongSnip pong) {
   pt::ptime recv_time(pt::microsec_clock::local_time());
   pt::time_duration roundtrip = recv_time - ping_send_time[pong.count()];
@@ -21,10 +100,10 @@ namespace bfs=boost::filesystem;
   }*/
 
 //static bool shutdown_toggle = false;
-static void net_error_receiver(std::string error_msg) {
+/*static void net_error_receiver(std::string error_msg) {
   std::cout << "Server connection failed - " << error_msg << std::endl;
   exit(1);
-}
+}*/
 
 int main (int argc, char const* argv[]) {
   std::cout << "FullCircle Sequence Streamer" << std::endl;
@@ -122,50 +201,18 @@ int main (int argc, char const* argv[]) {
       srcfile = vm["input"].as<std::string>();
     }
 
-    boost::asio::io_service client_io_service;
-    boost::asio::ip::tcp::resolver resolver(client_io_service);
-    std::ostringstream oss2;
-    oss2 << port;
-    boost::asio::ip::tcp::resolver::query query(
-        server, oss2.str());
-    boost::asio::ip::tcp::resolver::iterator iterator = 
-      resolver.resolve(query);
-    fullcircle::NetClient::Ptr client(
-        new fullcircle::NetClient(client_io_service, iterator));
-    fullcircle::ClientDispatcher::Ptr c_disp(
-        new fullcircle::ClientDispatcher(client));
-    client->do_on_envelope(
-        boost::bind(&fullcircle::ClientDispatcher::handle_envelope, 
-          c_disp, _1));
-    client->do_on_error(&net_error_receiver);
-    //c_disp->do_on_pong(&pong_receiver);
-    client->run();
+		boost::asio::io_service client_io_service;
+		boost::asio::ip::tcp::resolver resolver(client_io_service);
+		std::ostringstream oss2;
+		oss2 << port;
+		boost::asio::ip::tcp::resolver::query query(
+				server, oss2.str());
+		boost::asio::ip::tcp::resolver::iterator iterator = 
+			resolver.resolve(query);
 
-    fullcircle::BinarySequenceMetadata* meta = new fullcircle::BinarySequenceMetadata();
-    meta->set_frames_per_second(25);
-    meta->set_width(10);
-    meta->set_height(8);
-    meta->set_generator_name("test");
-    meta->set_generator_version("-1");
-    c_disp->send_request("blue", 14, meta);
-
+		fullcircle::Client client(&client_io_service, &iterator, srcfile);
     //TODO: wait for ack from the server
 
-    std::cout << "Reading " << srcfile.c_str() << std::endl;
-    std::fstream input(srcfile.c_str(), std::ios::in | std::ios::binary);
-    fullcircle::Sequence::Ptr loaded_seq(new fullcircle::Sequence(input));
-    input.close();
-
-    double ifs = 1000/loaded_seq->fps();
-    for ( uint32_t frameId = 0; frameId < loaded_seq->size(); frameId++ ) {
-      std::cout << frameId << std::endl;
-      fullcircle::Frame::Ptr frame = loaded_seq->get_frame(frameId);
-      c_disp->send_frame(frame);
-
-      usleep(ifs*1000);
-    }
-
-    client->shutdown();
   } catch (fullcircle::GenericException& ex) {
     std::cout << "Caught exception: " << ex.what() << std::endl;
     exit(1);
