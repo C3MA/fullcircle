@@ -73,7 +73,9 @@ void ClientDispatcher::send_request(std::string color, uint32_t seq_id, fullcirc
   oss.flush();
   fullcircle::Envelope::Ptr env(new fullcircle::Envelope());
   env->set_body(oss.str());
+  std::cout << "Preparation complete" << std::endl;
   _transport->write(env);
+  std::cout << "sent!!!!" << std::endl;
 }
 
 void ClientDispatcher::send_frame(fullcircle::Frame::Ptr frame) {

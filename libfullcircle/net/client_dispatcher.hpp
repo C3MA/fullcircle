@@ -25,6 +25,14 @@ namespace fullcircle {
       virtual ~ClientDispatcher() {};
 
       void send_ping(const uint16_t seq_id);
+
+
+      /**
+       * Send a request in order to get a timmeslot to send dynamic information
+       * @param color Each input-station has a unique color
+       * @param seq_id unique id for every interaction
+       * @param meta Meta information
+       */
       void send_request(std::string color, uint32_t seq_id, fullcircle::BinarySequenceMetadata* meta);
       void send_frame(fullcircle::Frame::Ptr frame);
       void handle_envelope(fullcircle::Envelope::Ptr env);

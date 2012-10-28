@@ -35,13 +35,10 @@ namespace fullcircle {
 							_dispatcher, _1));
 				// link all protobuf types to cpp-functions
 				_netClient->do_on_error(boost::bind(&fullcircle::Client::do_on_error, this, _1));
-				//c_disp->do_on_pong(&pong_receiver); // code from Ping-example from MD
-				//FIXME generate some implementation of functions
 				_dispatcher->do_on_ack(boost::bind(&fullcircle::Client::do_on_nack, this));
 				_dispatcher->do_on_nack(boost::bind(&fullcircle::Client::do_on_nack, this));
 				_dispatcher->do_on_start(boost::bind(&fullcircle::Client::do_on_start, this));
 				_netClient->run();
-// manuell du_on_start ra
 
 				idle();
 			}
@@ -50,8 +47,9 @@ namespace fullcircle {
 			{
     		_netClient->shutdown();
 			}
-
+			// TODO: Fill!
 			virtual void do_on_ack() {};
+			// TODO: Fill!
 			virtual void do_on_nack() {};
 			virtual void do_on_start()
 			{
@@ -80,12 +78,21 @@ namespace fullcircle {
 			}
 
 			void idle() {
+				// read fcs file in order to get the meta information
+				std::cout << "Reading " << _file.c_str() << std::endl;
+                                std::fstream input(_file.c_str(), std::ios::in | std::ios::binary);
+                                fullcircle::Sequence::Ptr loaded_seq(new fullcircle::Sequence(input));
+                                input.close();
+
+				// fill meta information with content of the fcs-file
 				fullcircle::BinarySequenceMetadata* meta = new fullcircle::BinarySequenceMetadata();
-				meta->set_frames_per_second(25);
-				meta->set_width(10);
-				meta->set_height(8);
-				meta->set_generator_name("test");
-				meta->set_generator_version("-1");
+				meta->set_frames_per_second(loaded_seq->fps());
+				meta->set_width(loaded_seq->width());
+				meta->set_height(loaded_seq->height());
+				meta->set_generator_name(loaded_seq->generator_name());
+				meta->set_generator_version(loaded_seq->generator_version());
+
+				// ask the server for a timeslot
 				_dispatcher->send_request("blue", 14, meta);
 			}
 
