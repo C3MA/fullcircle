@@ -37,9 +37,9 @@ namespace fullcircle {
 				_netClient->do_on_error(boost::bind(&fullcircle::Client::do_on_error, this, _1));
 				//c_disp->do_on_pong(&pong_receiver); // code from Ping-example from MD
 				//FIXME generate some implementation of functions
-//				_dispatcher->do_on_ack(&do_on_ack);
-//				_dispatcher->do_on_nack(&do_on_nack);
-//				_dispatcher->do_on_start(&do_on_start);
+				_dispatcher->do_on_ack(boost::bind(&fullcircle::Client::do_on_nack, this, _1));
+				//_dispatcher->do_on_nack(boost::bind(&fullcircle::Client::do_on_nack, this, _1));
+				//_dispatcher->do_on_start(boost::bind(&fullcircle::Client::do_on_start, this, _1));
 				_netClient->run();
 // manuell du_on_start ra
 
@@ -218,8 +218,7 @@ int main (int argc, char const* argv[]) {
 		
 		fullcircle::Client client(&client_io_service, &iterator, srcfile);
     //TODO: wait for ack from the server
-// hier manuell do_on_start manuell aufrufen
-		client.do_on_start();
+
   } catch (fullcircle::GenericException& ex) {
     std::cout << "Caught exception: " << ex.what() << std::endl;
     exit(1);

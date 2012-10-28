@@ -54,6 +54,7 @@ void ClientDispatcher::send_ping(const uint16_t seq_id) {
 
 void ClientDispatcher::send_request(std::string color, uint32_t seq_id, fullcircle::BinarySequenceMetadata* meta) {
   fullcircle::Snip snip;
+  std::cout << "Ask the server to get a timeslot..." << std::endl;
   snip.set_type(fullcircle::Snip::REQUEST);
   fullcircle::Snip_RequestSnip* request = snip.mutable_req_snip();
   request->set_color(color);
@@ -112,3 +113,23 @@ boost::signals2::connection ClientDispatcher::do_on_error(
 {
   return _on_error.connect(slot);
 }
+
+boost::signals2::connection ClientDispatcher::do_on_ack(
+    const on_ack_snip_slot_t& slot) 
+{
+  return _on_ack.connect(slot);
+}
+
+boost::signals2::connection ClientDispatcher::do_on_nack(
+    const on_nack_snip_slot_t& slot) 
+{
+  return _on_nack.connect(slot);
+}
+
+boost::signals2::connection ClientDispatcher::do_on_start(
+    const on_start_snip_slot_t& slot) 
+{
+  return _on_start.connect(slot);
+}
+
+
