@@ -33,12 +33,14 @@ namespace fullcircle {
 				_netClient->do_on_envelope(
 						boost::bind(&fullcircle::ClientDispatcher::handle_envelope, 
 							_dispatcher, _1));
+				// link all protobuf types to cpp-functions
 				_netClient->do_on_error(boost::bind(&fullcircle::Client::do_on_error, this, _1));
-				//c_disp->do_on_pong(&pong_receiver);
-				//_dispatcher->do_on_ack(&do_on_ack);
-				//_dispatcher->do_on_nack(&do_on_nack);
-				//_dispatcher->do_on_start(&do_on_start);
+				//c_disp->do_on_pong(&pong_receiver); // code from Ping-example from MD
+				_dispatcher->do_on_ack(&do_on_ack);
+				_dispatcher->do_on_nack(&do_on_nack);
+				_dispatcher->do_on_start(&do_on_start);
 				_netClient->run();
+// manuell du_on_start ra
 
 				idle();
 			}
@@ -52,10 +54,13 @@ namespace fullcircle {
 			virtual void do_on_nack() {};
 			virtual void do_on_start()
 			{
+				//TODO check if in the correct state WAITING (same for the other methods)
 				std::cout << "Reading " << _file.c_str() << std::endl;
 				std::fstream input(_file.c_str(), std::ios::in | std::ios::binary);
 				fullcircle::Sequence::Ptr loaded_seq(new fullcircle::Sequence(input));
 				input.close();
+
+				_dispatcher->send_ping(1);
 
 				double ifs = 1000/loaded_seq->fps();
 				for ( uint32_t frameId = 0; frameId < loaded_seq->size(); frameId++ ) {
@@ -209,10 +214,11 @@ int main (int argc, char const* argv[]) {
 				server, oss2.str());
 		boost::asio::ip::tcp::resolver::iterator iterator = 
 			resolver.resolve(query);
-
+		
 		fullcircle::Client client(&client_io_service, &iterator, srcfile);
     //TODO: wait for ack from the server
-
+// hier manuell do_on_start manuell aufrufen
+		//client.do_on_start();
   } catch (fullcircle::GenericException& ex) {
     std::cout << "Caught exception: " << ex.what() << std::endl;
     exit(1);

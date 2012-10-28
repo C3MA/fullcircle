@@ -37,6 +37,7 @@ void ServerProtocolDispatcher::handle_envelope(
       case fullcircle::Snip::REQUEST:
         {
           std::cout << "Request!" << std::endl;
+	// kommunikation mit sceduler um zu checken von Ressourcen bereit gesetllt sind!
         }
         break;
       case fullcircle::Snip::FRAME:

@@ -31,7 +31,6 @@ namespace fullcircle {
       typedef on_error_t::slot_type on_error_slot_t;
       boost::signals2::connection do_on_error(const on_error_slot_t& slot);
 
-
     private:
       NetClient (const NetClient& original);
       NetClient& operator= (const NetClient& rhs);
