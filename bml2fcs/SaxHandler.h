@@ -6,7 +6,7 @@
 #include <QString>
 #include <libfullcircle/sequence.hpp>
 
-typedef enum SaxHandlerStates {Doc, Root, RootAfterHeader, Header, HeaderElement, Frame, Row } SaxHandlerStates_t;
+typedef enum SaxHandlerStates {Doc, Root, RootAfterHeader, Header, HeaderElement, FRAME, ROW } SaxHandlerStates_t;
 
 class SaxHandler : public QXmlDefaultHandler
 {
@@ -24,6 +24,8 @@ public:
 
 private:
     fullcircle::Sequence::Ptr sequence;
+    int channels;
+    int bits;
     int height;
     int width;
     int fps;
@@ -31,6 +33,7 @@ private:
     fullcircle::Frame::Ptr currentFrame;
     int currentFrameDuration;
     int currentRow;
+    int frameNumber;
 
 };
 

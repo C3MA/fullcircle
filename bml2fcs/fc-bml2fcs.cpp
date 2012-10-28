@@ -21,14 +21,14 @@ namespace bfs=boost::filesystem;
 
 int main (int argc, char* argv[]) {
 
-  /*** 
+  /***
    * Careful! This must be in the top level namespace of any binary, and must
    * be called only once. Just leave it here.
    */
   Q_INIT_RESOURCE(sprites);
-	
+
   /* Set the default forgroundcolor to white */
-	
+
   try {
     std::ostringstream oss;
     oss << "Usage: " << argv[0] << " ACTION [additional options] <sequence1> <sequence2> ...";
@@ -43,13 +43,13 @@ int main (int argc, char* argv[]) {
     po::store(parsed, vm);
     po::notify(vm);
 
-	
+
     // Begin processing of commandline parameters.
     std::string sequencefile;
 	// store the unkown attributes (aka input files)
 	std::vector<std::string> input = collect_unrecognized(parsed.options, po::include_positional);
     std::string bmlfile;
-	  
+
     if (vm.count("help")) {
       std::cout << desc << std::endl;
       return 1;
@@ -73,12 +73,12 @@ int main (int argc, char* argv[]) {
       return 1;
     } else {
       bmlfile=vm["bml"].as<std::string>();
-    }   
+    }
     //bfs::path sequence(sequencefile);
-	  
+
     try {
 		fullcircle::Sequence::Ptr sum;
-		
+
 		// Open BML
 		SaxHandler handler;
 
@@ -90,34 +90,16 @@ int main (int argc, char* argv[]) {
 			std::cout << "ould not open file" << std::endl;
 			return -1;
 		}
-                
-                QXmlInputSource inputSource(&file);
 
-                reader.parse(inputSource);
-/*
-		// iterate over all input files and add them.
-		for(unsigned int i=0; i < input.size(); i++)
-		{
-			bfs::path sequence(input[i]);
-		
-			std::cout << "Loading sequence" << (i + 1) << " from file " << sequence << std::endl;
-			std::fstream inputStream(sequence.c_str(), std::ios::in | std::ios::binary);
-			fullcircle::Sequence::Ptr inputSeq(new fullcircle::Sequence(inputStream));
-			inputStream.close();
-			
-			// add one sequence to the next.
-			if (sum == NULL)
-				sum = inputSeq;
-			else 
-				sum = sum->add(0, inputSeq, ringBufferFunctionality);
-		}
-*/	
-/*	
-		std::fstream output(sequence.c_str(), 
+        QXmlInputSource inputSource(&file);
+
+        reader.parse(inputSource);
+
+		std::fstream output(sequencefile.c_str(),
 							std::ios::out | std::ios::trunc | std::ios::binary);
-		sum->save(output, "fc-add", version->getVersion());// why the hell is this also stored?
+		handler.GetSequence()->save(output, "fc-bml2fcs", version->getVersion());// why the hell is this also stored?
 		output.close();
-*/		
+
     } catch (fullcircle::GenericException& ex) {
       std::cout << "Caught exception: " << ex.what() << std::endl;
       exit(1);
