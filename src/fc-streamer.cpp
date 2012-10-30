@@ -35,7 +35,7 @@ namespace fullcircle {
 							_dispatcher, _1));
 				// link all protobuf types to cpp-functions
 				_netClient->do_on_error(boost::bind(&fullcircle::Client::do_on_error, this, _1));
-				_dispatcher->do_on_ack(boost::bind(&fullcircle::Client::do_on_nack, this));
+				_dispatcher->do_on_ack(boost::bind(&fullcircle::Client::do_on_ack, this));
 				_dispatcher->do_on_nack(boost::bind(&fullcircle::Client::do_on_nack, this));
 				_dispatcher->do_on_start(boost::bind(&fullcircle::Client::do_on_start, this));
 				_netClient->run();
@@ -67,7 +67,9 @@ namespace fullcircle {
 					return;
 				}
 
+				std::cout << "Server responded with NACK. Aborting." << std::endl;
 				_state = ERROR;
+				exit(1);
 			};
 
 			virtual void do_on_start()

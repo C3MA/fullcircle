@@ -34,13 +34,21 @@ void ClientDispatcher::handle_envelope(
           fullcircle::Snip_AckSnip ack=snip.ack_snip();
           _on_ack(ack);
         }
-			case fullcircle::Snip::START:
-				{
-					fullcircle::Snip_StartSnip start = snip.start_snip();
-					_on_start(start);
-				}
+        break;
+      case fullcircle::Snip::NACK:
+        {
+          fullcircle::Snip_NackSnip nack=snip.nack_snip();
+          _on_nack(nack);
+        }
+        break;
+      case fullcircle::Snip::START:
+        {
+          fullcircle::Snip_StartSnip start = snip.start_snip();
+          _on_start(start);
+        }
+        break;
       default: 
-        std::cout << "Unknown snip, discarding." << std::endl;
+        std::cout << "Unknown snip (" << snip.type() << "), discarding." << std::endl;
         break;
     }
   }
