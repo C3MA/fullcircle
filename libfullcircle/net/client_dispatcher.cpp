@@ -29,6 +29,16 @@ void ClientDispatcher::handle_envelope(
           _on_error(error);
         }
         break;
+      case fullcircle::Snip::ACK:
+        {
+          fullcircle::Snip_AckSnip ack=snip.ack_snip();
+          _on_ack(ack);
+        }
+			case fullcircle::Snip::START:
+				{
+					fullcircle::Snip_StartSnip start = snip.start_snip();
+					_on_start(start);
+				}
       default: 
         std::cout << "Unknown snip, discarding." << std::endl;
         break;

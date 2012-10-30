@@ -59,8 +59,6 @@ namespace fullcircle {
 				fullcircle::Sequence::Ptr loaded_seq(new fullcircle::Sequence(input));
 				input.close();
 
-				_dispatcher->send_ping(1);
-
 				double ifs = 1000/loaded_seq->fps();
 				for ( uint32_t frameId = 0; frameId < loaded_seq->size(); frameId++ ) {
 					std::cout << frameId << std::endl;
@@ -225,6 +223,11 @@ int main (int argc, char const* argv[]) {
 		
 		fullcircle::Client client(&client_io_service, &iterator, srcfile);
     //TODO: wait for ack from the server
+
+		//client.do_on_start();
+		//sleep(100);
+		while ( true )
+			sleep(10);
 
   } catch (fullcircle::GenericException& ex) {
     std::cout << "Caught exception: " << ex.what() << std::endl;

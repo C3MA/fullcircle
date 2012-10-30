@@ -49,15 +49,15 @@ namespace fullcircle {
       typedef on_error_snip_t::slot_type on_error_snip_slot_t;
       boost::signals2::connection do_on_error(const on_error_snip_slot_t& slot);
 
-      typedef boost::signals2::signal<void ()>        on_ack_snip_t;
+      typedef boost::signals2::signal<void (fullcircle::Snip_AckSnip)>        on_ack_snip_t;
       typedef on_ack_snip_t::slot_type on_ack_snip_slot_t;
       boost::signals2::connection do_on_ack(const on_ack_snip_slot_t& slot);
 
-      typedef boost::signals2::signal<void ()>        on_nack_snip_t;
+      typedef boost::signals2::signal<void (fullcircle::Snip_NackSnip)>        on_nack_snip_t;
       typedef on_nack_snip_t::slot_type on_nack_snip_slot_t;
       boost::signals2::connection do_on_nack(const on_nack_snip_slot_t& slot);
 
-      typedef boost::signals2::signal<void ()>        on_start_snip_t;
+      typedef boost::signals2::signal<void (fullcircle::Snip_StartSnip)>        on_start_snip_t;
       typedef on_start_snip_t::slot_type on_start_snip_slot_t;
       boost::signals2::connection do_on_start(const on_start_snip_slot_t& slot);
 

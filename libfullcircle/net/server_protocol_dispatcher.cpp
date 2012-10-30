@@ -14,7 +14,7 @@ void ServerProtocolDispatcher::handle_envelope(
   if (!snip.ParseFromIstream(&iss)) {
     throw fullcircle::DataFormatException("Cannot load snip from input stream.");
   } else {
-    //std::cout << "Reconstructed snip: " << snip.DebugString() << std::endl;
+    std::cout << "Reconstructed snip: " << snip.DebugString() << std::endl;
     switch (snip.type()) {
       case fullcircle::Snip::PING: 
         {
@@ -38,6 +38,17 @@ void ServerProtocolDispatcher::handle_envelope(
         {
           std::cout << "Request!" << std::endl;
 	// kommunikation mit sceduler um zu checken von Ressourcen bereit gesetllt sind!
+          fullcircle::Snip snip;
+          snip.set_type(fullcircle::Snip::START);
+          //fullcircle::Snip_StartSnip* start = snip.mutable_start_snip();
+          std::ostringstream oss;
+          if (!snip.SerializeToOstream(&oss)) {
+            std::cout << "start snip serialization did not work." << std::endl;
+          }
+          oss.flush();
+          fullcircle::Envelope::Ptr renv(new fullcircle::Envelope());
+          renv->set_body(oss.str());
+          _transport->write(renv);
         }
         break;
       case fullcircle::Snip::FRAME:
