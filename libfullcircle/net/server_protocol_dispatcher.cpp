@@ -37,17 +37,28 @@ void ServerProtocolDispatcher::handle_envelope(
       case fullcircle::Snip::REQUEST:
         {
           std::cout << "Request!" << std::endl;
-	// kommunikation mit sceduler um zu checken von Ressourcen bereit gesetllt sind!
+          // kommunikation mit sceduler um zu checken von Ressourcen bereit gesetllt sind!
           fullcircle::Snip snip;
-          snip.set_type(fullcircle::Snip::START);
-          //fullcircle::Snip_StartSnip* start = snip.mutable_start_snip();
+          snip.set_type(fullcircle::Snip::ACK);
           std::ostringstream oss;
           if (!snip.SerializeToOstream(&oss)) {
-            std::cout << "start snip serialization did not work." << std::endl;
+            std::cout << "ack snip serialization did not work." << std::endl;
           }
           oss.flush();
+          fullcircle::Envelope::Ptr ackenv(new fullcircle::Envelope());
+          ackenv->set_body(oss.str());
+          _transport->write(ackenv);
+          // dieser teil sollte vom scheduler getriggert werden
+          sleep(10);
+          fullcircle::Snip snop;
+          snop.set_type(fullcircle::Snip::START);
+          std::ostringstream oss2;
+          if (!snop.SerializeToOstream(&oss2)) {
+            std::cout << "start snip serialization did not work." << std::endl;
+          }
+          oss2.flush();
           fullcircle::Envelope::Ptr renv(new fullcircle::Envelope());
-          renv->set_body(oss.str());
+          renv->set_body(oss2.str());
           _transport->write(renv);
         }
         break;
