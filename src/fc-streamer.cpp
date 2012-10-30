@@ -15,8 +15,8 @@ namespace bfs=boost::filesystem;
 namespace fullcircle {
 	enum clientState_t {
 		IDLE = 0,
-		WAITING,
-		TRANSMITTING,
+		WAIT_FOR_ACK,
+		WAIT_FOR_START,
 		ERROR
 	};
 
@@ -47,13 +47,37 @@ namespace fullcircle {
 			{
     		_netClient->shutdown();
 			}
-			// TODO: Fill!
-			virtual void do_on_ack() {};
-			// TODO: Fill!
-			virtual void do_on_nack() {};
+
+			virtual void do_on_ack()
+			{
+				if ( _state != WAIT_FOR_ACK )
+				{
+					_state = ERROR;
+					return;
+				}
+
+				_state = WAIT_FOR_START;
+			};
+
+			virtual void do_on_nack()
+			{
+				if ( _state != WAIT_FOR_ACK )
+				{
+					_state = ERROR;
+					return;
+				}
+
+				_state = ERROR;
+			};
+
 			virtual void do_on_start()
 			{
-				//TODO check if in the correct state WAITING (same for the other methods)
+				if ( _state != WAIT_FOR_START )
+				{
+					_state = ERROR;
+					return;
+				}
+
 				std::cout << "Reading " << _file.c_str() << std::endl;
 				std::fstream input(_file.c_str(), std::ios::in | std::ios::binary);
 				fullcircle::Sequence::Ptr loaded_seq(new fullcircle::Sequence(input));
@@ -67,6 +91,9 @@ namespace fullcircle {
 
 					usleep(ifs*1000);
 				}
+
+				_state = IDLE;
+				exit(0);
 			}
 
 			virtual void do_on_error(std::string error_msg)
@@ -76,6 +103,12 @@ namespace fullcircle {
 			}
 
 			void idle() {
+				if ( _state != IDLE )
+				{
+					_state = ERROR;
+					return;
+				}
+
 				// read fcs file in order to get the meta information
 				std::cout << "Reading " << _file.c_str() << std::endl;
                                 std::fstream input(_file.c_str(), std::ios::in | std::ios::binary);
@@ -92,6 +125,8 @@ namespace fullcircle {
 
 				// ask the server for a timeslot
 				_dispatcher->send_request("blue", 14, meta);
+
+				_state = WAIT_FOR_ACK;
 			}
 
 		private:
