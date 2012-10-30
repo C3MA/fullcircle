@@ -225,9 +225,8 @@ int main (int argc, char const* argv[]) {
     //TODO: wait for ack from the server
 
 		//client.do_on_start();
-		//sleep(100);
-		while ( true )
-			sleep(10);
+
+		client_io_service.run();
 
   } catch (fullcircle::GenericException& ex) {
     std::cout << "Caught exception: " << ex.what() << std::endl;
