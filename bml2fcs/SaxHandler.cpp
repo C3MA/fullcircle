@@ -10,11 +10,27 @@ SaxHandler::SaxHandler() {
     //default 25 fps
     fps = 25;
     state = Doc;
+    verbose = false;
+}
+
+SaxHandler::SaxHandler(bool verbose) {
+    //default 25 fps
+    fps = 25;
+    state = Doc;
+    this->verbose = verbose;
+}
+
+SaxHandler::SaxHandler(int fps, bool verbose) {
+    //default 25 fps
+    this->fps = fps;
+    state = Doc;
+    this->verbose = verbose;
 }
 
 SaxHandler::SaxHandler(int fps) {
     this->fps = fps;
     state = Doc;
+    verbose = false;
 }
 
 fullcircle::Sequence::Ptr SaxHandler::GetSequence() {
@@ -26,18 +42,23 @@ bool SaxHandler::startElement(const QString &namespacURI,
                   const QString &qName,
                   const QXmlAttributes &attributes)
 {
-    std::cout << "startElement: qname=" << qName.toStdString() << std::endl;
+    if (verbose)
+    {
+        std::cout << "startElement: qname=" << qName.toStdString() << std::endl;
+    }
     switch(state)
     {
         case Doc:
                 if( qName.compare("blm") == 0)
                 {
-                    std::cout << "blm: " << qName.toStdString() << std::endl;
-                    std::cout << "\twitdh=" << attributes.value("width").toStdString() << std::endl;
-                    std::cout << "\theight=" << attributes.value("height").toStdString() << std::endl;
-                    std::cout << "\tchanels=" << attributes.value("channels").toStdString() << std::endl;
-                    std::cout << "\tbits=" << attributes.value("bits").toStdString() << std::endl;
-
+                    if (verbose)
+                    {
+                        std::cout << "blm: " << qName.toStdString() << std::endl;
+                        std::cout << "\twitdh=" << attributes.value("width").toStdString() << std::endl;
+                        std::cout << "\theight=" << attributes.value("height").toStdString() << std::endl;
+                        std::cout << "\tchanels=" << attributes.value("channels").toStdString() << std::endl;
+                        std::cout << "\tbits=" << attributes.value("bits").toStdString() << std::endl;
+                    }
                     // check if heigth and width are present
                     width = attributes.value("width").toInt();
                     height = attributes.value("height").toInt();
@@ -71,7 +92,10 @@ bool SaxHandler::startElement(const QString &namespacURI,
                 if( qName.compare("frame") == 0)
                 {
                     state = FRAME;
-                    std::cout << "\tduration=" << attributes.value("duration").toStdString() << std::endl;
+                    if(verbose)
+                    {
+                        std::cout << "\tduration=" << attributes.value("duration").toStdString() << std::endl;
+                    }
                     currentFrameDuration = attributes.value("duration").toInt();
                     fullcircle::Frame::Ptr frame(new fullcircle::Frame(width, height));
                     currentFrame = frame;
@@ -86,7 +110,10 @@ bool SaxHandler::startElement(const QString &namespacURI,
                 if(qName.compare("row") == 0)
                 {
                     state = ROW;
-                    std::cout << "\tRownum=" << currentRow << std::endl;
+                    if(verbose)
+                    {
+                        std::cout << "\tRownum=" << currentRow << std::endl;
+                    }
                 }
                 else
                 {
@@ -106,7 +133,10 @@ bool SaxHandler::endElement(const QString &namespacURI,
                             const QString &qName)
 {
     int framesToAdd = 0;
-    std::cout << "endElement: qname=" << qName.toStdString() << std::endl;
+    if(verbose)
+    {
+        std::cout << "endElement: qname=" << qName.toStdString() << std::endl;
+    }
     switch(state)
     {
         case HeaderElement:
@@ -146,7 +176,10 @@ bool SaxHandler::endElement(const QString &namespacURI,
 
 bool SaxHandler::characters(const QString &str)
 {
-    std::cout << "chars: data=" << str.toStdString() << std::endl;
+    if(verbose)
+    {
+        std::cout << "chars: data=" << str.toStdString() << std::endl;
+    }
     switch (state)
     {
         bool ok;

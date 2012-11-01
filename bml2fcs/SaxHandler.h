@@ -13,6 +13,8 @@ class SaxHandler : public QXmlDefaultHandler
 public:
     SaxHandler();
     SaxHandler(int fps);
+    SaxHandler(bool verbose);
+    SaxHandler(int fps, bool verbose);
 
     bool startElement(const QString &namespacURI, const QString &localName,
                       const QString &qName, const QXmlAttributes &attributes);
@@ -23,6 +25,7 @@ public:
     fullcircle::Sequence::Ptr GetSequence();
 
 private:
+    bool verbose;
     fullcircle::Sequence::Ptr sequence;
     int channels;
     int bits;
