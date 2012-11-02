@@ -1,6 +1,7 @@
 #include "SaxHandler.h"
 #include <math.h>
 #include <iostream>
+#include <libfullcircle/common.hpp>
 #include <libfullcircle/frame.hpp>
 #include <libfullcircle/sprite_io.hpp>
 #include <libfullcircle/sfx/frame_fader.hpp>
@@ -60,10 +61,32 @@ bool SaxHandler::startElement(const QString &namespacURI,
                         std::cout << "\tbits=" << attributes.value("bits").toStdString() << std::endl;
                     }
                     // check if heigth and width are present
-                    width = attributes.value("width").toInt();
-                    height = attributes.value("height").toInt();
-                    bits = attributes.value("bits").toInt();
-                    channels = attributes.value("channels").toInt();
+                    bool Ok;
+                    width = attributes.value("width").toInt(&Ok);
+                    if (!Ok)
+                    {
+                        throw fullcircle::DataFormatException("This is not a valid BML file. There is no width.");
+                    }
+                    height = attributes.value("height").toInt(&Ok);
+                    if (!Ok)
+                    {
+                        throw fullcircle::DataFormatException("This is not a valid BML file. There is no height.");
+                    }
+                    bits = attributes.value("bits").toInt(&Ok);
+                    if (!Ok)
+                    {
+                        throw fullcircle::DataFormatException("This is not a valid BML file. There is not defined how many bits are used for a channel.");
+                    }
+                    channels = attributes.value("channels").toInt(&Ok);
+                    if (!Ok)
+                    {
+                        throw fullcircle::DataFormatException("This is not a valid BML file. There is no number of channles.");
+                    }
+
+                    if (bits!=8)
+                    {
+                        throw fullcircle::DataFormatException("The handling of BML files with more or less then 8 bits per channel is not implemented.");
+                    }
 
                     fullcircle::Sequence::Ptr Seq(new fullcircle::Sequence(this->fps, width, height));
                     sequence = Seq;
@@ -71,7 +94,7 @@ bool SaxHandler::startElement(const QString &namespacURI,
                 }
                 else
                 {
-                    //Throw exception
+                    throw fullcircle::DataFormatException("This is not a BML file.");
                 }
                 state = Root;
                 break;
@@ -82,7 +105,7 @@ bool SaxHandler::startElement(const QString &namespacURI,
                 }
                 else
                 {
-                    //throw
+                    throw fullcircle::DataFormatException("This is not a valid BML file.");
                 }
                 break;
         case Header:
@@ -103,7 +126,7 @@ bool SaxHandler::startElement(const QString &namespacURI,
                 }
                 else
                 {
-                    //throw
+                    throw fullcircle::DataFormatException("This is not a valid BML file.");
                 }
                 break;
         case FRAME:
@@ -117,11 +140,11 @@ bool SaxHandler::startElement(const QString &namespacURI,
                 }
                 else
                 {
-                   //throw
+                   throw fullcircle::DataFormatException("This is not a valid BML file.");
                 }
                 break;
         default:
-                //throw
+                throw fullcircle::DataFormatException("This is not a valid BML file.");
                 break;
     }
 
@@ -167,7 +190,7 @@ bool SaxHandler::endElement(const QString &namespacURI,
                 state = RootAfterHeader;
                 break;
         default:
-                //throw
+                throw fullcircle::DataFormatException("This is not a valid BML file.");
                 break;
 
     }
@@ -206,10 +229,12 @@ bool SaxHandler::characters(const QString &str)
                                 }
                                 break;
                         default:
+                                throw fullcircle::DataFormatException("The handling of BML files with more or less than 3 channals is not implemented.");
                                 break;
                     }
                     break;
         default:
+                    throw fullcircle::DataFormatException("This is not a valid BML file.");
                     break;
     }
 
