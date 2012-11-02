@@ -234,7 +234,6 @@ bool SaxHandler::characters(const QString &str)
                     }
                     break;
         default:
-                    throw fullcircle::DataFormatException("This is not a valid BML file.");
                     break;
     }
 

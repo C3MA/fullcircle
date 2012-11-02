@@ -130,8 +130,6 @@ int main (int argc, char* argv[]) {
     }
 
     try {
-		fullcircle::Sequence::Ptr sum;
-
 		// init the SaxHandler for Xml  parsing
 		SaxHandler handler(fps, verbose);
 
