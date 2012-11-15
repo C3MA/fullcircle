@@ -1,7 +1,6 @@
 #include <libfullcircle/common.hpp>
 #include <libfullcircle/sequence.hpp>
-#include <libfullcircle/net/net_client.hpp>
-#include <libfullcircle/net/client_dispatcher.hpp>
+#include <libfullcircle/net/client.hpp>
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
 #include <boost/filesystem.hpp>
@@ -13,73 +12,47 @@ namespace po = boost::program_options;
 namespace bfs=boost::filesystem;
 
 namespace fullcircle {
-	enum clientState_t {
-		IDLE = 0,
-		WAIT_FOR_ACK,
-		WAIT_FOR_START,
-		ERROR
-	};
-
-	class Client {
+	class StreamingClient : public Client {
 		public:
-			Client(boost::asio::io_service *client_io_service, boost::asio::ip::tcp::resolver::iterator *iterator, std::string source)
-				: _state(IDLE),
-					_netClient(
-							new fullcircle::NetClient(*client_io_service, *iterator)),
-					_dispatcher(
-							new fullcircle::ClientDispatcher(_netClient)),
+			StreamingClient(boost::asio::io_service *client_io_service, boost::asio::ip::tcp::resolver::iterator *iterator, std::string source)
+				: Client(client_io_service, iterator),
 					_file(source)
 			{
-				_netClient->do_on_envelope(
-						boost::bind(&fullcircle::ClientDispatcher::handle_envelope, 
-							_dispatcher, _1));
-				// link all protobuf types to cpp-functions
-				_netClient->do_on_error(boost::bind(&fullcircle::Client::do_on_error, this, _1));
-				_dispatcher->do_on_ack(boost::bind(&fullcircle::Client::do_on_ack, this));
-				_dispatcher->do_on_nack(boost::bind(&fullcircle::Client::do_on_nack, this));
-				_dispatcher->do_on_start(boost::bind(&fullcircle::Client::do_on_start, this));
-				_netClient->run();
-
-				idle();
 			}
 
-			~Client()
+			~StreamingClient()
 			{
-    		_netClient->shutdown();
 			}
 
-			virtual void do_on_ack()
+			void idle()
 			{
-				if ( _state != WAIT_FOR_ACK )
-				{
-					_state = ERROR;
-					return;
-				}
+				// read fcs file in order to get the meta information
+				std::cout << "Reading " << _file.c_str() << std::endl;
+                                std::fstream input(_file.c_str(), std::ios::in | std::ios::binary);
+                                fullcircle::Sequence::Ptr loaded_seq(new fullcircle::Sequence(input));
+                                input.close();
 
-				_state = WAIT_FOR_START;
-			};
+				// fill meta information with content of the fcs-file
+				fullcircle::BinarySequenceMetadata* meta = new fullcircle::BinarySequenceMetadata();
+				meta->set_frames_per_second(loaded_seq->fps());
+				meta->set_width(loaded_seq->width());
+				meta->set_height(loaded_seq->height());
+				meta->set_generator_name(loaded_seq->generator_name());
+				meta->set_generator_version(loaded_seq->generator_version());
 
-			virtual void do_on_nack()
+				send_request("blue", 14, meta);
+			}
+
+			virtual void ack()
 			{
-				if ( _state != WAIT_FOR_ACK )
-				{
-					_state = ERROR;
-					return;
-				}
+			}
 
-				std::cout << "Server responded with NACK. Aborting." << std::endl;
-				_state = ERROR;
-				exit(1);
-			};
-
-			virtual void do_on_start()
+			virtual void nack()
 			{
-				if ( _state != WAIT_FOR_START )
-				{
-					_state = ERROR;
-					return;
-				}
+			}
 
+			virtual void start()
+			{
 				std::cout << "Reading " << _file.c_str() << std::endl;
 				std::fstream input(_file.c_str(), std::ios::in | std::ios::binary);
 				fullcircle::Sequence::Ptr loaded_seq(new fullcircle::Sequence(input));
@@ -95,46 +68,9 @@ namespace fullcircle {
 				}
 
 				_state = IDLE;
-				exit(0);
-			}
-
-			virtual void do_on_error(std::string error_msg)
-			{
-				std::cout << "Server connection failed - " << error_msg << std::endl;
-				exit(1);
-			}
-
-			void idle() {
-				if ( _state != IDLE )
-				{
-					_state = ERROR;
-					return;
-				}
-
-				// read fcs file in order to get the meta information
-				std::cout << "Reading " << _file.c_str() << std::endl;
-                                std::fstream input(_file.c_str(), std::ios::in | std::ios::binary);
-                                fullcircle::Sequence::Ptr loaded_seq(new fullcircle::Sequence(input));
-                                input.close();
-
-				// fill meta information with content of the fcs-file
-				fullcircle::BinarySequenceMetadata* meta = new fullcircle::BinarySequenceMetadata();
-				meta->set_frames_per_second(loaded_seq->fps());
-				meta->set_width(loaded_seq->width());
-				meta->set_height(loaded_seq->height());
-				meta->set_generator_name(loaded_seq->generator_name());
-				meta->set_generator_version(loaded_seq->generator_version());
-
-				// ask the server for a timeslot
-				_dispatcher->send_request("blue", 14, meta);
-
-				_state = WAIT_FOR_ACK;
 			}
 
 		private:
-			clientState_t _state;
-			fullcircle::NetClient::Ptr _netClient;
-			fullcircle::ClientDispatcher::Ptr _dispatcher;
 			std::string _file;
 	};
 }
@@ -258,11 +194,10 @@ int main (int argc, char const* argv[]) {
 		boost::asio::ip::tcp::resolver::iterator iterator = 
 			resolver.resolve(query);
 		
-		fullcircle::Client client(&client_io_service, &iterator, srcfile);
-    //TODO: wait for ack from the server
+		fullcircle::StreamingClient client(&client_io_service, &iterator, srcfile);
+		client.run();
 
-		//client.do_on_start();
-
+		// enter the asio event loop
 		client_io_service.run();
 
   } catch (fullcircle::GenericException& ex) {
