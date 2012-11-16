@@ -217,9 +217,9 @@ int main (int argc, char* argv[]) {
 		}
 		client.start();
 
-		std::string in;
-		std::cin >> in;
-		std::cout << in << std::endl;
+    while (true) {
+      usleep(10000);
+    }
 
 		client.stop();
 	} catch(std::exception& e) {
