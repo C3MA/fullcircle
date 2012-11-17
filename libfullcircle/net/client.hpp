@@ -12,6 +12,7 @@ namespace fullcircle {
 		PLAYING,
 		ERROR
 	};
+	const char* stateNames[] = { "IDLE", "WAIT_FOR_ACK", "WAIT_FOR_START", "PLAYING", "ERROR" };
 
 	class Client {
 		public:
@@ -53,7 +54,9 @@ namespace fullcircle {
 				if ( _state != WAIT_FOR_ACK )
 				{
 					_state = ERROR;
-					error();
+					std::stringstream ss;
+					ss << "Unexpected ACK received while in state " << stateNames[_state];
+					error(ss.str());
 					return;
 				}
 
@@ -70,7 +73,9 @@ namespace fullcircle {
 				if ( _state != WAIT_FOR_ACK )
 				{
 					_state = ERROR;
-					error();
+					std::stringstream ss;
+					ss << "Unexpected NACK received while in state " << stateNames[_state];
+					error(ss.str());
 					return;
 				}
 
@@ -84,7 +89,9 @@ namespace fullcircle {
 				if ( _state != WAIT_FOR_START )
 				{
 					_state = ERROR;
-					error();
+					std::stringstream ss;
+					ss << "Unexpected START received while in state " << stateNames[_state];
+					error(ss.str());
 					return;
 				}
 
@@ -109,7 +116,7 @@ namespace fullcircle {
 				if ( !e )
 					error("Timeout!");
 				else
-					error();
+					error("Unkown timeout error!");
 			}
 
 			void run()
