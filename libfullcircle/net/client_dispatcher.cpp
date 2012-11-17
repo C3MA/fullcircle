@@ -13,7 +13,7 @@ void ClientDispatcher::handle_envelope(
   if (!snip.ParseFromIstream(&iss)) {
     std::cout << "Cannot load snip from input stream." << std::endl;
   } else {
-    //std::cout << "Reconstructed snip: " << snip.DebugString() << std::endl;
+    std::cout << "Reconstructed snip: " << snip.DebugString() << std::endl;
     switch (snip.type()) {
       case fullcircle::Snip::PONG: 
         {

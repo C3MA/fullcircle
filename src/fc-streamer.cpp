@@ -12,67 +12,73 @@ namespace po = boost::program_options;
 namespace bfs=boost::filesystem;
 
 namespace fullcircle {
-	class StreamingClient : public Client {
-		public:
-			StreamingClient(boost::asio::io_service *client_io_service, boost::asio::ip::tcp::resolver::iterator *iterator, std::string source)
-				: Client(client_io_service, iterator),
-					_file(source)
-			{
-			}
+  class StreamingClient : public Client {
+    public:
+      StreamingClient(boost::asio::io_service *client_io_service, boost::asio::ip::tcp::resolver::iterator *iterator, std::string source)
+        : Client(client_io_service, iterator),
+        _file(source)
+    {
+    }
 
-			~StreamingClient()
-			{
-			}
+      ~StreamingClient()
+      {
+      }
 
-			void idle()
-			{
-				// read fcs file in order to get the meta information
-				std::cout << "Reading " << _file.c_str() << std::endl;
-                                std::fstream input(_file.c_str(), std::ios::in | std::ios::binary);
-                                fullcircle::Sequence::Ptr loaded_seq(new fullcircle::Sequence(input));
-                                input.close();
+      void idle()
+      {
+        // read fcs file in order to get the meta information
+        std::cout << "Reading " << _file.c_str() << std::endl;
+        std::fstream input(_file.c_str(), std::ios::in | std::ios::binary);
+        _sequence.reset(new fullcircle::Sequence(input));
+        input.close();
 
-				// fill meta information with content of the fcs-file
-				fullcircle::BinarySequenceMetadata* meta = new fullcircle::BinarySequenceMetadata();
-				meta->set_frames_per_second(loaded_seq->fps());
-				meta->set_width(loaded_seq->width());
-				meta->set_height(loaded_seq->height());
-				meta->set_generator_name(loaded_seq->generator_name());
-				meta->set_generator_version(loaded_seq->generator_version());
+        // fill meta information with content of the fcs-file
+        fullcircle::BinarySequenceMetadata* meta = new fullcircle::BinarySequenceMetadata();
+        meta->set_frames_per_second(_sequence->fps());
+        meta->set_width(_sequence->width());
+        meta->set_height(_sequence->height());
+        meta->set_generator_name(_sequence->generator_name());
+        meta->set_generator_version(_sequence->generator_version());
 
-				send_request("blue", 14, meta);
-			}
+        send_request("blue", 14, meta);
+      }
 
-			virtual void ack()
-			{
-			}
+      virtual void ack()
+      {
+        std::cout << "Ack" << std::endl;
+      }
 
-			virtual void nack()
-			{
-			}
+      virtual void nack()
+      {
+      }
 
-			virtual void start()
-			{
-				std::cout << "Reading " << _file.c_str() << std::endl;
-				std::fstream input(_file.c_str(), std::ios::in | std::ios::binary);
-				fullcircle::Sequence::Ptr loaded_seq(new fullcircle::Sequence(input));
-				input.close();
+      virtual void start()
+      {
+        _ifs = 1000/_sequence->fps();
+        _frameId = 0;
+        _timer.expires_from_now(boost::posix_time::milliseconds(_ifs));
+        _timer.async_wait(boost::bind(&fullcircle::StreamingClient::send_frame, this));
+      }
 
-				double ifs = 1000/loaded_seq->fps();
-				for ( uint32_t frameId = 0; frameId < loaded_seq->size(); frameId++ ) {
-					std::cout << frameId << std::endl;
-					fullcircle::Frame::Ptr frame = loaded_seq->get_frame(frameId);
-					_dispatcher->send_frame(frame);
+      void send_frame()
+      {
+        if ( _frameId < _sequence->size() )
+        {
+          fullcircle::Frame::Ptr frame = _sequence->get_frame(_frameId++);
+          _dispatcher->send_frame(frame);
 
-					usleep(ifs*1000);
-				}
+          _timer.expires_from_now(boost::posix_time::milliseconds(_ifs));
+          _timer.async_wait(boost::bind(&fullcircle::StreamingClient::send_frame, this));
+        } else
+          _state = IDLE;
+      }
 
-				_state = IDLE;
-			}
-
-		private:
-			std::string _file;
-	};
+    private:
+      std::string _file;
+      fullcircle::Sequence::Ptr _sequence;
+      uint32_t _frameId;
+      double _ifs;
+  };
 }
 
 /*static void pong_receiver(fullcircle::Snip_PongSnip pong) {
@@ -87,7 +93,7 @@ namespace fullcircle {
 /*static void net_error_receiver(std::string error_msg) {
   std::cout << "Server connection failed - " << error_msg << std::endl;
   exit(1);
-}*/
+  }*/
 
 int main (int argc, char const* argv[]) {
   std::cout << "FullCircle Sequence Streamer" << std::endl;
@@ -185,20 +191,20 @@ int main (int argc, char const* argv[]) {
       srcfile = vm["input"].as<std::string>();
     }
 
-		boost::asio::io_service client_io_service;
-		boost::asio::ip::tcp::resolver resolver(client_io_service);
-		std::ostringstream oss2;
-		oss2 << port;
-		boost::asio::ip::tcp::resolver::query query(
-				server, oss2.str());
-		boost::asio::ip::tcp::resolver::iterator iterator = 
-			resolver.resolve(query);
-		
-		fullcircle::StreamingClient client(&client_io_service, &iterator, srcfile);
-		client.run();
+    boost::asio::io_service client_io_service;
+    boost::asio::ip::tcp::resolver resolver(client_io_service);
+    std::ostringstream oss2;
+    oss2 << port;
+    boost::asio::ip::tcp::resolver::query query(
+        server, oss2.str());
+    boost::asio::ip::tcp::resolver::iterator iterator = 
+      resolver.resolve(query);
 
-		// enter the asio event loop
-		client_io_service.run();
+    fullcircle::StreamingClient client(&client_io_service, &iterator, srcfile);
+    client.run();
+
+    // enter the asio event loop
+    client_io_service.run();
 
   } catch (fullcircle::GenericException& ex) {
     std::cout << "Caught exception: " << ex.what() << std::endl;
