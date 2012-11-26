@@ -177,7 +177,7 @@ void SimulatorMainWindow::do_on_frame(fullcircle::Snip_FrameSnip snip) {
   fullcircle::BinaryFrame bf = snip.frame();
   fullcircle::Frame::Ptr frame(new fullcircle::Frame(_width, _height));
   for( int pixelID = 0; pixelID < bf.pixel_size(); pixelID++) {
-    fullcircle::RGB_Value binpixel=bf.pixel(pixelID);
+    fullcircle::RGBValue binpixel=bf.pixel(pixelID);
     frame->set_pixel(binpixel.x(), binpixel.y(), 
         binpixel.red(), binpixel.green(), binpixel.blue());
   }

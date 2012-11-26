@@ -205,7 +205,7 @@ Frame::Ptr Scheduler::getNextFrame(Sequence::Ptr sequence)
 	Frame::Ptr frame(new Frame(sequence->width(), sequence->height()));
 	for ( int pixelID = 0; pixelID < binframe.pixel_size(); pixelID++ )
 	{
-		RGB_Value pixel = binframe.pixel(pixelID);
+		RGBValue pixel = binframe.pixel(pixelID);
 		frame->set_pixel(pixel.x(), pixel.y(),
 			pixel.red(), pixel.green(), pixel.blue());
 	}

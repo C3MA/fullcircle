@@ -104,7 +104,7 @@ void ClientDispatcher::send_frame(fullcircle::Frame::Ptr frame) {
   for (uint16_t x=0; x<frame->width(); ++x) {
     for (uint16_t y=0; y<frame->height(); ++y) {
       fullcircle::RGB_t pixel=frame->get_pixel(x,y);
-      fullcircle::RGB_Value* binpixel = bframe->add_pixel();
+      fullcircle::RGBValue* binpixel = bframe->add_pixel();
       binpixel->set_red(pixel.red);
       binpixel->set_green(pixel.green);
       binpixel->set_blue(pixel.blue);
