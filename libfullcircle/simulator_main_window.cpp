@@ -91,15 +91,15 @@ void SimulatorMainWindow::draw_frame(int frameID) {
   //qreal pixelwidth=size.width()/_seq->width();
   //qreal pixelheight=size.height()/_seq->height();
   //std::cout << "Pixel: " << pixelwidth << "x" << pixelheight << std::endl;
-  fullcircle::Frame::Ptr frame=_seq->get_frame(frameID);
+  fullcircle::Frame::Ptr frame(_seq->get_frame(frameID));
 
   draw_frame(frame);
   emit valueChanged(frameID);
 }
 
 void SimulatorMainWindow::draw_frame(fullcircle::Frame::Ptr frame) {
-	int w = 8;
-	int h = 8;
+	int w = frame->width();
+	int h = frame->height();
   //qreal pixelwidth=800/_seq->width();
 	qreal pixelwidth = 800/w;
   //qreal pixelheight=600/_seq->height();
@@ -167,12 +167,15 @@ void SimulatorMainWindow::closeEvent(QCloseEvent *event) {
 
 void SimulatorMainWindow::do_on_request(fullcircle::Snip_RequestSnip request) {
   std::cout << "Hello!" << std::endl;
+	fullcircle::BinarySequenceMetadata meta = request.meta();
+	_width = meta.width();
+	_height = meta.height();
   _dispatcher->send_ack();
 }
 
 void SimulatorMainWindow::do_on_frame(fullcircle::Snip_FrameSnip snip) {
   fullcircle::BinaryFrame bf = snip.frame();
-  fullcircle::Frame::Ptr frame(new fullcircle::Frame(8, 8));
+  fullcircle::Frame::Ptr frame(new fullcircle::Frame(_width, _height));
   for( int pixelID = 0; pixelID < bf.pixel_size(); pixelID++) {
     fullcircle::RGB_Value binpixel=bf.pixel(pixelID);
     frame->set_pixel(binpixel.x(), binpixel.y(), 

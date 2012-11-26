@@ -51,6 +51,7 @@ namespace fullcircle {
       QTimer* _timer;
       int _current_frame;
       ServerProtocolDispatcher::Ptr _dispatcher;
+			int _width, _height;
   };
 
 };
