@@ -6,10 +6,12 @@
 
 #include <boost/multi_array.hpp>
 
+#include "scheduler.hpp"
+
 namespace fullcircle {
 	class DmxClient {
 		public:
-			DmxClient();
+			DmxClient(fullcircle::Scheduler::Ptr scheduler);
 			void setUniverse(int universe);
 			void setMapping(std::map< int, std::map<int, int> > *map);
 			void setDebug(bool debug);
@@ -24,6 +26,7 @@ namespace fullcircle {
 			bool _running;
 			pthread_t _thread;
 			int _universe;
+			fullcircle::Scheduler::Ptr _scheduler;
 	};
 }
 
