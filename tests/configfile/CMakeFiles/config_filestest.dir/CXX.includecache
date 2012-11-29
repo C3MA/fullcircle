@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/c3ma/Development/fullcircle/tests/configfile/test_config_file.cpp
+boost/test/unit_test.hpp
+-
+iostream
+-
+fstream
+-
+testconfig.h
+-
+boost/algorithm/string/predicate.hpp
+-
+boost/filesystem.hpp
+-
+boost/cstdint.hpp
+-
+boost/program_options.hpp
+-
+boost/program_options/positional_options.hpp
+-
+
+testconfig.h
+
