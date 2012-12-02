@@ -60,7 +60,6 @@ Scheduler::Scheduler()
 	, _dstdir("")
 	, _dispatcher()
 	, _net_queue()
-	, _net_frame()
 {
 }
 
