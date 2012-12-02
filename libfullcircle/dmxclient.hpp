@@ -21,6 +21,7 @@ namespace fullcircle {
 			void play();
 			void playSequence(Sequence::Ptr seq, double ifs);
 			void playFrame(Frame::Ptr frame);
+			void seqFinished();
 			static void *play_helper(void *client);
 			uint16_t posMap(uint16_t x, uint16_t y);
 			std::map< int, std::map<int, int> > *_addressMap;

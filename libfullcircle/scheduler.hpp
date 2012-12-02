@@ -21,6 +21,7 @@ namespace fullcircle {
 			void setPort(int port);
 			void addConnection(Snip_RequestSnip request);
 			void addFrame(Snip_FrameSnip frame);
+			void seqEnd();
 			Sequence::Ptr getNextSequence();
 
 			typedef boost::signals2::signal<void (fullcircle::Frame::Ptr)>     on_frame_t;

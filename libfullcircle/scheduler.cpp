@@ -234,6 +234,11 @@ void Scheduler::addFrame(Snip_FrameSnip frame)
 	_on_frame(framep);
 }
 
+void Scheduler::seqEnd()
+{
+	_on_end();
+}
+
 boost::signals2::connection Scheduler::do_on_frame(
 		const on_frame_slot_t& slot)
 {
