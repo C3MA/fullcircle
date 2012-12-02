@@ -35,6 +35,9 @@ namespace fullcircle {
        */
       void send_request(std::string color, uint32_t seq_id, fullcircle::BinarySequenceMetadata* meta);
       void send_frame(fullcircle::Frame::Ptr frame);
+      void send_timeout();
+      void send_abort();
+      void send_eos();
       void handle_envelope(fullcircle::Envelope::Ptr env);
 
       /**
@@ -61,6 +64,14 @@ namespace fullcircle {
       typedef on_start_snip_t::slot_type on_start_snip_slot_t;
       boost::signals2::connection do_on_start(const on_start_snip_slot_t& slot);
 
+      typedef boost::signals2::signal<void (fullcircle::Snip_AbortSnip)>        on_abort_snip_t;
+      typedef on_abort_snip_t::slot_type on_abort_snip_slot_t;
+      boost::signals2::connection do_on_abort(const on_abort_snip_slot_t& slot);
+
+      typedef boost::signals2::signal<void (fullcircle::Snip_TimeoutSnip)>        on_timeout_snip_t;
+      typedef on_timeout_snip_t::slot_type on_timeout_snip_slot_t;
+      boost::signals2::connection do_on_timeout(const on_timeout_snip_slot_t& slot);
+
     private:
       ClientDispatcher (const ClientDispatcher& original);
       ClientDispatcher& operator= (const ClientDispatcher& rhs);
@@ -70,6 +81,8 @@ namespace fullcircle {
       on_ack_snip_t _on_ack;
       on_nack_snip_t _on_nack;
       on_start_snip_t _on_start;
+      on_abort_snip_t _on_abort;
+      on_timeout_snip_t _on_timeout;
   };
 
 };

@@ -47,6 +47,18 @@ void ClientDispatcher::handle_envelope(
           _on_start(start);
         }
         break;
+      case fullcircle::Snip::ABORT:
+        {
+          fullcircle::Snip_AbortSnip abort = snip.abort_snip();
+          _on_abort(abort);
+        }
+        break;
+      case fullcircle::Snip::TIMEOUT:
+        {
+          fullcircle::Snip_TimeoutSnip timeout = snip.timeout_snip();
+          _on_timeout(timeout);
+        }
+        break;
       default: 
         std::cout << "Unknown snip (" << snip.type() << "), discarding." << std::endl;
         break;
@@ -114,8 +126,47 @@ void ClientDispatcher::send_frame(fullcircle::Frame::Ptr frame) {
   }
   std::ostringstream oss;
   if ( !snip.SerializeToOstream(&oss)) {
-    std::cerr << "request snip serialization did not work." << std::endl;
+    std::cerr << "frame snip serialization did not work." << std::endl;
   }
+  oss.flush();
+  fullcircle::Envelope::Ptr env(new fullcircle::Envelope());
+  env->set_body(oss.str());
+  _transport->write(env);
+}
+
+void ClientDispatcher::send_timeout() {
+	fullcircle::Snip snip;
+	snip.set_type(fullcircle::Snip::TIMEOUT);
+	std::ostringstream oss;
+	if ( !snip.SerializeToOstream(&oss)) {
+    std::cerr << "timeout snip serialization did not work." << std::endl;
+	}
+  oss.flush();
+  fullcircle::Envelope::Ptr env(new fullcircle::Envelope());
+  env->set_body(oss.str());
+  _transport->write(env);
+}
+
+void ClientDispatcher::send_abort() {
+	fullcircle::Snip snip;
+	snip.set_type(fullcircle::Snip::ABORT);
+	std::ostringstream oss;
+	if ( !snip.SerializeToOstream(&oss)) {
+    std::cerr << "abort snip serialization did not work." << std::endl;
+	}
+  oss.flush();
+  fullcircle::Envelope::Ptr env(new fullcircle::Envelope());
+  env->set_body(oss.str());
+  _transport->write(env);
+}
+
+void ClientDispatcher::send_eos() {
+	fullcircle::Snip snip;
+	snip.set_type(fullcircle::Snip::EOS);
+	std::ostringstream oss;
+	if ( !snip.SerializeToOstream(&oss)) {
+    std::cerr << "eos snip serialization did not work." << std::endl;
+	}
   oss.flush();
   fullcircle::Envelope::Ptr env(new fullcircle::Envelope());
   env->set_body(oss.str());
@@ -152,4 +203,9 @@ boost::signals2::connection ClientDispatcher::do_on_start(
   return _on_start.connect(slot);
 }
 
+boost::signals2::connection ClientDispatcher::do_on_abort(
+    const on_abort_snip_slot_t& slot) 
+{
+  return _on_abort.connect(slot);
+}
 

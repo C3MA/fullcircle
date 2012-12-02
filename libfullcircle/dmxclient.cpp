@@ -30,13 +30,13 @@ void DmxClient::play()
 	// enable logging
 	ola::InitLogging(ola::OLA_LOG_WARN, ola::OLA_LOG_STDERR);
 
-	ola::DmxBuffer buffer;
+	//ola::Dmx_buffer _buffer;
 	// set all channels to 0
-	buffer.Blackout();
+	_buffer.Blackout();
 
-	ola::StreamingClient olaClient;
+	_olaClient = new ola::StreamingClient();
 	// Setup the client, this connects to the server
-	if (!olaClient.Setup()) {
+	if (!_olaClient->Setup()) {
 		std::cerr << "Setup failed" << std::endl;
 		exit(1);
 	}
@@ -53,73 +53,70 @@ void DmxClient::play()
 
 			if ( seq->size() > 0 )
 			{
-				for ( uint32_t frameId = 0; frameId < seq->size(); frameId++ ) {
-					_debug && std::cout << frameId;
-					fullcircle::Frame::Ptr frame = seq->get_frame(frameId);
-					_debug && std::cout << ": " << frame->width() << " x " << frame->height() << std::endl;
-					for ( uint16_t y = 0; y < frame->height(); y++ ) {
-						for ( uint16_t x = 0; x < frame->width(); x++ ) {
-							uint16_t addr = posMap(x, y);
-							if ( addr >= 0 )
-							{
-								fullcircle::RGB_t pixel = frame->get_pixel(x, y);
-								buffer.SetChannel( addr    , pixel.red   % 256 );
-								buffer.SetChannel( addr + 1, pixel.green % 256 );
-								buffer.SetChannel( addr + 2, pixel.blue  % 256 );
-							}
-						}
-					}
-
-					if (!olaClient.SendDmx(_universe, buffer)) {
-						std::cerr << "Sending data to DMX failed!" << std::endl;
-						exit(1);
-					}
-
-					// one DMX datagram of 512 slots takes about 23 ms to transmit
-					usleep(ifs*1000);
-				}
+				playSequence(seq, ifs);
 			} else {
-				Frame::Ptr frame;
-				while ( (frame = _scheduler->getNextFrame(seq)) != NULL )
-				{
-					_debug && std::cout << ": " << frame->width() << " x " << frame->height() << std::endl;
-					for ( uint16_t y = 0; y < frame->height(); y++ ) {
-						for ( uint16_t x = 0; x < frame->width(); x++ ) {
-							uint16_t addr = posMap(x, y);
-							if ( addr >= 0 )
-							{
-								fullcircle::RGB_t pixel = frame->get_pixel(x, y);
-								buffer.SetChannel( addr    , pixel.red   % 256 );
-								buffer.SetChannel( addr + 1, pixel.green % 256 );
-								buffer.SetChannel( addr + 2, pixel.blue  % 256 );
-							}
-						}
-					}
-					if (!olaClient.SendDmx(_universe, buffer)) {
-						std::cerr << "Sending data to DMX failed!" << std::endl;
-						exit(1);
-					}
-
-					usleep(ifs*1000);
-				}
+				_scheduler->do_on_frame(boost::bind(&DmxClient::playFrame, this, _1));
 			}
-
-			/*buffer.Blackout();
-
-			if (!olaClient.SendDmx(_universe, buffer)) {
-				std::cerr << "Sending data to DMX failed!" << std::endl;
-				exit(1);
-			}
-
-			sleep(1);*/
 		} else {
 			_debug && std::cout << "Waiting for new sequence" << std::endl;
 			sleep(5);
 		}
 	}
-	olaClient.Stop();
+	_olaClient->Stop();
 
 	pthread_exit(NULL);
+}
+
+void DmxClient::playSequence(Sequence::Ptr seq, double ifs)
+{
+	for ( uint32_t frameId = 0; frameId < seq->size(); frameId++ ) {
+		_debug && std::cout << frameId;
+		fullcircle::Frame::Ptr frame = seq->get_frame(frameId);
+		_debug && std::cout << ": " << frame->width() << " x " << frame->height() << std::endl;
+		for ( uint16_t y = 0; y < frame->height(); y++ ) {
+			for ( uint16_t x = 0; x < frame->width(); x++ ) {
+				uint16_t addr = posMap(x, y);
+				if ( addr >= 0 )
+				{
+					fullcircle::RGB_t pixel = frame->get_pixel(x, y);
+					_buffer.SetChannel( addr    , pixel.red   % 256 );
+					_buffer.SetChannel( addr + 1, pixel.green % 256 );
+					_buffer.SetChannel( addr + 2, pixel.blue  % 256 );
+				}
+			}
+		}
+
+		if (!_olaClient->SendDmx(_universe, _buffer)) {
+			std::cerr << "Sending data to DMX failed!" << std::endl;
+			exit(1);
+		}
+
+		// one DMX datagram of 512 slots takes about 23 ms to transmit
+		usleep(ifs*1000);
+	}
+}
+
+void DmxClient::playFrame(Frame::Ptr frame)
+{
+	_debug && std::cout << ": " << frame->width() << " x " << frame->height() << std::endl;
+	for ( uint16_t y = 0; y < frame->height(); y++ ) {
+		for ( uint16_t x = 0; x < frame->width(); x++ ) {
+			uint16_t addr = posMap(x, y);
+			if ( addr >= 0 )
+			{
+				fullcircle::RGB_t pixel = frame->get_pixel(x, y);
+				_buffer.SetChannel( addr    , pixel.red   % 256 );
+				_buffer.SetChannel( addr + 1, pixel.green % 256 );
+				_buffer.SetChannel( addr + 2, pixel.blue  % 256 );
+			}
+		}
+	}
+	if (!_olaClient->SendDmx(_universe, _buffer)) {
+		std::cerr << "Sending data to DMX failed!" << std::endl;
+		exit(1);
+	}
+}
+
 }
 
 void DmxClient::start()

@@ -69,8 +69,10 @@ namespace fullcircle {
 
           _timer.expires_from_now(boost::posix_time::milliseconds(_ifs));
           _timer.async_wait(boost::bind(&fullcircle::StreamingClient::send_frame, this));
-        } else
+        } else {
+          _dispatcher->send_eos();
           _state = IDLE;
+        }
       }
 
     private:

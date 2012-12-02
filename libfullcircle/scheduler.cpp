@@ -199,25 +199,15 @@ Sequence::Ptr Scheduler::getNextSequence()
 	return Sequence::Ptr();
 }
 
-Frame::Ptr Scheduler::getNextFrame(Sequence::Ptr sequence)
-{
-	BinaryFrame binframe(_net_frame);
-	Frame::Ptr frame(new Frame(sequence->width(), sequence->height()));
-	for ( int pixelID = 0; pixelID < binframe.pixel_size(); pixelID++ )
-	{
-		RGBValue pixel = binframe.pixel(pixelID);
-		frame->set_pixel(pixel.x(), pixel.y(),
-			pixel.red(), pixel.green(), pixel.blue());
-	}
-	return frame;
-}
-
 void Scheduler::addConnection(Snip_RequestSnip request)
 {
 	if ( _net_queue.size() < 10 )
 	{
 		const BinarySequenceMetadata meta = request.meta();
 		_net_queue.push(std::pair<BinarySequenceMetadata, ServerProtocolDispatcher::Ptr>(meta, _dispatcher));
+		_width = meta.width();
+		_height = meta.height();
+		_dispatcher->do_on_eos(boost::bind(&Scheduler::seqEnd, this));
 		_dispatcher->send_ack();
 		std::cout << "addConnection for Sequence " << request.seqid() << " received!" << std::endl;
 	}
@@ -233,5 +223,26 @@ void Scheduler::addConnection(Snip_RequestSnip request)
 void Scheduler::addFrame(Snip_FrameSnip frame)
 {
 	std::cout << "addFrame!" << std::endl;
-	_net_frame = frame.frame();
+	BinaryFrame binframe(frame.frame());
+	Frame::Ptr framep(new Frame(_width, _height));
+	for ( int pixelID = 0; pixelID < binframe.pixel_size(); pixelID++ )
+	{
+		RGBValue pixel = binframe.pixel(pixelID);
+		framep->set_pixel(pixel.x(), pixel.y(),
+				pixel.red(), pixel.green(), pixel.blue());
+	}
+	_on_frame(framep);
 }
+
+boost::signals2::connection Scheduler::do_on_frame(
+		const on_frame_slot_t& slot)
+{
+	return _on_frame.connect(slot);
+}
+
+boost::signals2::connection Scheduler::do_on_end(
+		const on_end_slot_t& slot)
+{
+	return _on_end.connect(slot);
+}
+

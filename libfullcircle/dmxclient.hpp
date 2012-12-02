@@ -19,6 +19,8 @@ namespace fullcircle {
 			void stop();
 		private:
 			void play();
+			void playSequence(Sequence::Ptr seq, double ifs);
+			void playFrame(Frame::Ptr frame);
 			static void *play_helper(void *client);
 			uint16_t posMap(uint16_t x, uint16_t y);
 			std::map< int, std::map<int, int> > *_addressMap;
@@ -27,6 +29,9 @@ namespace fullcircle {
 			pthread_t _thread;
 			int _universe;
 			fullcircle::Scheduler::Ptr _scheduler;
+			ola::DmxBuffer _buffer;
+			ola::StreamingClient *_olaClient;
+			boost::mutex _playing;
 	};
 }
 

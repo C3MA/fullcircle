@@ -50,6 +50,22 @@ void ServerProtocolDispatcher::handle_envelope(
       case fullcircle::Snip::TIMEOUT:
         {
           std::cout << "Timeout!" << std::endl;
+          fullcircle::Snip_TimeoutSnip timeout = snip.timeout_snip();
+          _on_timeout(timeout);
+        }
+        break;
+      case fullcircle::Snip::ABORT:
+        {
+          std::cout << "Abort!" << std::endl;
+          fullcircle::Snip_AbortSnip abort = snip.abort_snip();
+          _on_abort(abort);
+        }
+        break;
+      case fullcircle::Snip::EOS:
+        {
+          std::cout << "EOS!" << std::endl;
+          fullcircle::Snip_EosSnip eos = snip.eos_snip();
+          _on_eos(eos);
         }
         break;
       default: 
@@ -70,6 +86,24 @@ boost::signals2::connection ServerProtocolDispatcher::do_on_frame(
     const on_frame_snip_slot_t& slot)
 {
   return _on_frame.connect(slot);
+}
+
+boost::signals2::connection ServerProtocolDispatcher::do_on_timeout(
+    const on_timeout_snip_slot_t& slot)
+{
+  return _on_timeout.connect(slot);
+}
+
+boost::signals2::connection ServerProtocolDispatcher::do_on_abort(
+    const on_abort_snip_slot_t& slot)
+{
+  return _on_abort.connect(slot);
+}
+
+boost::signals2::connection ServerProtocolDispatcher::do_on_eos(
+    const on_eos_snip_slot_t& slot)
+{
+  return _on_eos.connect(slot);
 }
 
 void ServerProtocolDispatcher::send_ack() {
@@ -114,6 +148,19 @@ void ServerProtocolDispatcher::send_start() {
 void ServerProtocolDispatcher::send_abort() {
   fullcircle::Snip snip;
   snip.set_type(fullcircle::Snip::ABORT);
+  std::ostringstream oss2;
+  if (!snip.SerializeToOstream(&oss2)) {
+    std::cout << "start snip serialization did not work." << std::endl;
+  }
+  oss2.flush();
+  fullcircle::Envelope::Ptr renv(new fullcircle::Envelope());
+  renv->set_body(oss2.str());
+  _transport->write(renv);
+}
+
+void ServerProtocolDispatcher::send_timeout() {
+  fullcircle::Snip snip;
+  snip.set_type(fullcircle::Snip::TIMEOUT);
   std::ostringstream oss2;
   if (!snip.SerializeToOstream(&oss2)) {
     std::cout << "start snip serialization did not work." << std::endl;

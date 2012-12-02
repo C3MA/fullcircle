@@ -22,7 +22,14 @@ namespace fullcircle {
 			void addConnection(Snip_RequestSnip request);
 			void addFrame(Snip_FrameSnip frame);
 			Sequence::Ptr getNextSequence();
-			Frame::Ptr getNextFrame(Sequence::Ptr sequence);
+
+			typedef boost::signals2::signal<void (fullcircle::Frame::Ptr)>     on_frame_t;
+			typedef on_frame_t::slot_type on_frame_slot_t;
+			boost::signals2::connection do_on_frame(const on_frame_slot_t& slot);
+
+			typedef boost::signals2::signal<void (void)>     on_end_t;
+			typedef on_end_t::slot_type on_end_slot_t;
+			boost::signals2::connection do_on_end(const on_end_slot_t& slot);
 
 		private:
 			bool _debug;
@@ -31,7 +38,9 @@ namespace fullcircle {
 			NetServer::Ptr _server;
 			ServerProtocolDispatcher::Ptr _dispatcher;
 			std::queue< std::pair<BinarySequenceMetadata, ServerProtocolDispatcher::Ptr> > _net_queue;
-			BinaryFrame _net_frame;
+			int _width, _height;
+			on_frame_t _on_frame;
+			on_end_t _on_end;
 	};
 }
 
