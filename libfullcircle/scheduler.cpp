@@ -112,7 +112,7 @@ Sequence::Ptr Scheduler::getNextSequence()
 					dispatcher = pair.second;
 					_net_queue.pop();
 
-					if ( dispatcher != NULL )
+					if ( dispatcher->is_active() )
 					{
 						dispatcher->do_on_frame(boost::bind(&fullcircle::Scheduler::addFrame, this, _1));
 

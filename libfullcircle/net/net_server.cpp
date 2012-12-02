@@ -51,6 +51,8 @@ void NetServer::start_accept() {
   // Link signals to slots.
   new_session->do_on_envelope(
       boost::bind(&ServerProtocolDispatcher::handle_envelope, _dispatcher, _1));
+  new_session->do_on_error(
+      boost::bind(&ServerProtocolDispatcher::handle_error, _dispatcher, _1));
   std::cout << "Server: start_accept, use_count: "
     << new_session.use_count() << std::endl;
   _acceptor.async_accept(new_session->socket(),

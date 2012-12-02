@@ -76,6 +76,13 @@ void ServerProtocolDispatcher::handle_envelope(
 
 }
 
+void ServerProtocolDispatcher::handle_error(
+    boost::system::error_code error)
+{
+  std::cout << "ServerProtocolDispatcher::handle_error: " << error.message() << std::endl;
+  _active = false;
+}
+
 boost::signals2::connection ServerProtocolDispatcher::do_on_request(
     const on_request_snip_slot_t& slot)
 {
@@ -169,4 +176,9 @@ void ServerProtocolDispatcher::send_timeout() {
   fullcircle::Envelope::Ptr renv(new fullcircle::Envelope());
   renv->set_body(oss2.str());
   _transport->write(renv);
+}
+
+bool ServerProtocolDispatcher::is_active()
+{
+  return _active;
 }

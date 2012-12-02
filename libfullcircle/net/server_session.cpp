@@ -33,6 +33,11 @@ boost::signals2::connection ServerSession::do_on_envelope(
   return _on_envelope.connect(slot);
 }
 
+boost::signals2::connection ServerSession::do_on_error(
+    const on_error_slot_t& slot)
+{
+  return _on_error.connect(slot);
+}
 
 boost::asio::ip::tcp::socket& ServerSession::socket() {
   return _socket;
@@ -61,6 +66,7 @@ void ServerSession::handle_connection_error(
 {
   std::cerr << "ServerSession: " << additional_hint <<
     ", error: " << error.message() << std::endl;
+  _on_error(error);
 }
 
 

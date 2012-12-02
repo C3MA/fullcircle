@@ -27,6 +27,9 @@ namespace fullcircle {
       typedef boost::signals2::signal<void (fullcircle::Envelope::Ptr)> 
         on_envelope_t;
       typedef on_envelope_t::slot_type on_envelope_slot_t;
+      typedef boost::signals2::signal<void (boost::system::error_code)> 
+        on_error_t;
+      typedef on_error_t::slot_type on_error_slot_t;
       static Ptr create(boost::asio::io_service& io_service);
       virtual ~ServerSession();
 
@@ -34,6 +37,7 @@ namespace fullcircle {
       boost::asio::ip::tcp::socket& socket();
       void write(Envelope::Ptr envelope);
       boost::signals2::connection do_on_envelope(const on_envelope_slot_t& slot);
+      boost::signals2::connection do_on_error(const on_error_slot_t& slot);
 
     private:
       ServerSession(boost::asio::io_service& io_service);
@@ -53,6 +57,7 @@ namespace fullcircle {
       Envelope::Ptr _read_envelope;
       envelope_queue_t _write_envelopes;
       on_envelope_t _on_envelope;
+      on_error_t _on_error;
 
   };
 
