@@ -126,6 +126,7 @@ int main(int argc, char *argv[1]) {
     if (vm.count("simulate") == 0) {
       fullcircle::PrinterInterface::Ptr printer(
           new fullcircle::PrinterInterface(devicefile));
+      printer->print_logo(0);
       printer->print(document);
       printer->cut_paper();
     } else {

@@ -14,6 +14,7 @@ namespace fullcircle {
 
       void print(const std::string& badge);
       void cut_paper();
+      void print_logo(uint8_t logo_id);
 
     private:
       PrinterInterface (const PrinterInterface& original);

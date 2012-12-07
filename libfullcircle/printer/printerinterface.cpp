@@ -70,3 +70,13 @@ void PrinterInterface::cut_paper() {
 	ssize_t success = write(_tty_fd,"\n\n\n\n\x1D\x56\x01",7);
   if (success) {};
 }
+
+void PrinterInterface::print_logo(uint8_t logo_id) {
+  if(_tty_fd == -1) {
+    std::ostringstream oss;
+    oss << "Device " << _serial_device << " not ready";
+    throw CommunicationException(oss.str());
+  }
+	ssize_t success = write(_tty_fd,"\x1B\x1C\x70\x00\x01",10);
+  if (success) {};
+}
