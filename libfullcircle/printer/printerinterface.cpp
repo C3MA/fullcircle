@@ -77,6 +77,7 @@ void PrinterInterface::print_logo(uint8_t logo_id) {
     oss << "Device " << _serial_device << " not ready";
     throw CommunicationException(oss.str());
   }
-	ssize_t success = write(_tty_fd,"\x1B\x1C\x70\x00\x01",10);
+	ssize_t success = write(_tty_fd,"\x1B\x40\x1b\x3d\x01\x1d\x49\x01",8);
+	success = write(_tty_fd,"\x1B\x40\x1c\x70\x01\x30",6);
   if (success) {};
 }
