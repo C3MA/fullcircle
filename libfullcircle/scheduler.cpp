@@ -37,11 +37,11 @@ void Scheduler::setDebug(bool debug)
 
 void Scheduler::setPort(int port)
 {
-  boost::asio::ip::tcp::endpoint server_endpoint(
-      boost::asio::ip::tcp::v4(), port);
-  _server = fullcircle::NetServer::create(
-      _server_io_service, server_endpoint);
-  _server->run();
+	boost::asio::ip::tcp::endpoint server_endpoint(
+			boost::asio::ip::tcp::v4(), port);
+	_server = fullcircle::NetServer::create(
+			_server_io_service, server_endpoint);
+	_server->run();
 
 	_dispatcher = _server->getDispatcher();
 
@@ -191,8 +191,8 @@ Sequence::Ptr Scheduler::getNextSequence()
 			//exit(1);
 		}
 	} catch (bfs::filesystem_error& ex) {
-			std::cerr << "[Scheduler] Caught filesystem exception: " << ex.what() << std::endl;
-			//exit(1);
+		std::cerr << "[Scheduler] Caught filesystem exception: " << ex.what() << std::endl;
+		//exit(1);
 	}
 
 	return Sequence::Ptr();
@@ -206,7 +206,7 @@ void Scheduler::addConnection(Snip_RequestSnip request)
 		_net_queue.push(std::pair<BinarySequenceMetadata, ServerProtocolDispatcher::Ptr>(meta, _dispatcher));
 		_width = meta.width();
 		_height = meta.height();
-		_dispatcher->do_on_eos(boost::bind(&Scheduler::seqEnd, this));
+		_dispatcher->do_on_eos(boost::bind(&Scheduler::seqEnd, this, _dispatcher));
 		_dispatcher->send_ack();
 		std::cout << "addConnection for Sequence " << request.seqid() << " received!" << std::endl;
 	}
@@ -233,9 +233,11 @@ void Scheduler::addFrame(Snip_FrameSnip frame)
 	_on_frame(framep);
 }
 
-void Scheduler::seqEnd()
+void Scheduler::seqEnd(ServerProtocolDispatcher::Ptr dispatcher)
 {
+	std::cout << "seqEnd: session count: " << dispatcher->getSession().use_count() << std::endl;
 	_on_end();
+	dispatcher->getSession()->stop();
 }
 
 boost::signals2::connection Scheduler::do_on_frame(

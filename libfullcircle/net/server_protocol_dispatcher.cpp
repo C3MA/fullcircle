@@ -182,3 +182,13 @@ bool ServerProtocolDispatcher::is_active()
 {
   return _active;
 }
+
+void ServerProtocolDispatcher::setSession(ServerSession::Ptr session)
+{
+  _session = session;
+}
+
+ServerSession::Ptr ServerProtocolDispatcher::getSession()
+{
+  return _session;
+}

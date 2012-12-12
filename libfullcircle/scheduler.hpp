@@ -21,7 +21,7 @@ namespace fullcircle {
 			void setPort(int port);
 			void addConnection(Snip_RequestSnip request);
 			void addFrame(Snip_FrameSnip frame);
-			void seqEnd();
+			void seqEnd(ServerProtocolDispatcher::Ptr dispatcher);
 			Sequence::Ptr getNextSequence();
 
 			typedef boost::signals2::signal<void (fullcircle::Frame::Ptr)>     on_frame_t;
@@ -35,7 +35,7 @@ namespace fullcircle {
 		private:
 			bool _debug;
 			std::string _srcdir, _falldir, _priodir, _dstdir;
-  		boost::asio::io_service _server_io_service;
+			boost::asio::io_service _server_io_service;
 			NetServer::Ptr _server;
 			ServerProtocolDispatcher::Ptr _dispatcher;
 			std::queue< std::pair<BinarySequenceMetadata, ServerProtocolDispatcher::Ptr> > _net_queue;

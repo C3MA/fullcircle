@@ -3,6 +3,7 @@
 
 #include <libfullcircle/common.hpp>
 #include <libfullcircle/net/envelope_transport.hpp>
+#include <libfullcircle/net/server_session.hpp>
 #include <libfullcircle/sequence.pb.h>
 #include <boost/signals2.hpp>
 #include <boost/system/error_code.hpp>
@@ -46,10 +47,14 @@ namespace fullcircle {
       void send_timeout();
       bool is_active();
 
+      void setSession(ServerSession::Ptr session);
+      fullcircle::ServerSession::Ptr getSession();
+
     private:
       ServerProtocolDispatcher (const ServerProtocolDispatcher& original);
       ServerProtocolDispatcher& operator= (const ServerProtocolDispatcher& rhs);
       fullcircle::EnvelopeTransport::Ptr _transport;
+      ServerSession::Ptr _session;
       bool _active;
       on_request_snip_t _on_request;
       on_frame_snip_t _on_frame;

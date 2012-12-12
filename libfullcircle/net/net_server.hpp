@@ -4,6 +4,7 @@
 #include <libfullcircle/common.hpp>
 #include <libfullcircle/net/envelope.hpp>
 #include <libfullcircle/net/server_session.hpp>
+#include <libfullcircle/net/server_protocol_dispatcher.hpp>
 #include <boost/asio.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/enable_shared_from_this.hpp>

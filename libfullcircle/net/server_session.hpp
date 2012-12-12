@@ -4,7 +4,6 @@
 #include <libfullcircle/common.hpp>
 #include <libfullcircle/net/envelope.hpp>
 #include <libfullcircle/net/envelope_transport.hpp>
-#include <libfullcircle/net/server_protocol_dispatcher.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/asio.hpp>
@@ -34,6 +33,7 @@ namespace fullcircle {
       virtual ~ServerSession();
 
       void start();
+      void stop();
       boost::asio::ip::tcp::socket& socket();
       void write(Envelope::Ptr envelope);
       boost::signals2::connection do_on_envelope(const on_envelope_slot_t& slot);

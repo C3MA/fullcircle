@@ -59,6 +59,11 @@ void ServerSession::start() {
   }
 }
 
+void ServerSession::stop() {
+  std::cout << "ServerSession: Terminating session " << this << std::endl;
+  _socket.close();
+}
+
 void ServerSession::handle_connection_error(
     const boost::system::error_code& error,
     const std::string& additional_hint

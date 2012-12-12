@@ -36,6 +36,7 @@ void NetServer::handle_accept(ServerSession::Ptr session,
     <<", use-count: " << session.use_count() << std::endl;
   if (!error) {
     session->start();
+    _dispatcher->setSession(session);
   } else {
     std::cout << "Server: Cannot handle accept: " <<
       error.message() << std::endl;

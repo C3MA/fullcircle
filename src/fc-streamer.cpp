@@ -72,6 +72,7 @@ namespace fullcircle {
         } else {
           _dispatcher->send_eos();
           _state = IDLE;
+          exit(0);
         }
       }
 
