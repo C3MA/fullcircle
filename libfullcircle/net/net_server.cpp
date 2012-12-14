@@ -48,7 +48,7 @@ void NetServer::handle_accept(ServerSession::Ptr session,
 void NetServer::start_accept() {
   ServerSession::Ptr new_session = ServerSession::create(_io_service);
   _dispatcher.reset(
-      new ServerProtocolDispatcher(new_session));
+      new ServerProtocolDispatcher(new_session, _io_service));
   // Link signals to slots.
   new_session->do_on_envelope(
       boost::bind(&ServerProtocolDispatcher::handle_envelope, _dispatcher, _1));

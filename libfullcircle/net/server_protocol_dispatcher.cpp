@@ -42,16 +42,19 @@ void ServerProtocolDispatcher::handle_envelope(
         break;
       case fullcircle::Snip::FRAME:
         {
+          _timer.cancel();
           std::cout << "Frame!" << std::endl;
           fullcircle::Snip_FrameSnip frame = snip.frame_snip();
           _on_frame(frame);
+          _timer.expires_from_now(boost::posix_time::seconds(1));
+          _timer.async_wait(boost::bind(&ServerProtocolDispatcher::timeout, this, _1));
         }
         break;
       case fullcircle::Snip::TIMEOUT:
         {
           std::cout << "Timeout!" << std::endl;
           fullcircle::Snip_TimeoutSnip timeout = snip.timeout_snip();
-          _on_timeout(timeout);
+          _on_timeout_snip(timeout);
         }
         break;
       case fullcircle::Snip::ABORT:
@@ -95,10 +98,10 @@ boost::signals2::connection ServerProtocolDispatcher::do_on_frame(
   return _on_frame.connect(slot);
 }
 
-boost::signals2::connection ServerProtocolDispatcher::do_on_timeout(
+boost::signals2::connection ServerProtocolDispatcher::do_on_timeout_snip(
     const on_timeout_snip_slot_t& slot)
 {
-  return _on_timeout.connect(slot);
+  return _on_timeout_snip.connect(slot);
 }
 
 boost::signals2::connection ServerProtocolDispatcher::do_on_abort(
@@ -111,6 +114,25 @@ boost::signals2::connection ServerProtocolDispatcher::do_on_eos(
     const on_eos_snip_slot_t& slot)
 {
   return _on_eos.connect(slot);
+}
+
+boost::signals2::connection ServerProtocolDispatcher::do_on_timeout(
+    const on_timeout_slot_t& slot)
+{
+  return _on_timeout.connect(slot);
+}
+
+void ServerProtocolDispatcher::timeout(const boost::system::error_code& error)
+{
+  if ( error == boost::asio::error::operation_aborted ) {
+    std::cout << "Timer aborted!" << std::endl;
+  } else if ( !error )
+  {
+    std::cout << "Timeout!" << std::endl;
+    //_on_timeout();
+    send_timeout();
+    _session->stop();
+  }
 }
 
 void ServerProtocolDispatcher::send_ack() {
@@ -150,6 +172,8 @@ void ServerProtocolDispatcher::send_start() {
   fullcircle::Envelope::Ptr renv(new fullcircle::Envelope());
   renv->set_body(oss2.str());
   _transport->write(renv);
+  _timer.expires_from_now(boost::posix_time::seconds(5));
+  _timer.async_wait(boost::bind(&ServerProtocolDispatcher::timeout, this, _1));
 }
 
 void ServerProtocolDispatcher::send_abort() {
