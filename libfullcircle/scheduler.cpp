@@ -207,6 +207,9 @@ void Scheduler::addConnection(Snip_RequestSnip request)
 		_width = meta.width();
 		_height = meta.height();
 		_dispatcher->do_on_eos(boost::bind(&Scheduler::seqEnd, this, _dispatcher));
+		_dispatcher->do_on_timeout_snip(boost::bind(&Scheduler::seqEnd, this, _dispatcher));
+		_dispatcher->do_on_abort(boost::bind(&Scheduler::seqEnd, this, _dispatcher));
+		_dispatcher->do_on_timeout(boost::bind(&Scheduler::seqEnd, this, _dispatcher));
 		_dispatcher->send_ack();
 		std::cout << "addConnection for Sequence " << request.seqid() << " received!" << std::endl;
 	}

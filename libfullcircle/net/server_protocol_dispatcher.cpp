@@ -55,6 +55,7 @@ void ServerProtocolDispatcher::handle_envelope(
           std::cout << "Timeout!" << std::endl;
           fullcircle::Snip_TimeoutSnip timeout = snip.timeout_snip();
           _on_timeout_snip(timeout);
+          _active = false;
         }
         break;
       case fullcircle::Snip::ABORT:
@@ -62,6 +63,7 @@ void ServerProtocolDispatcher::handle_envelope(
           std::cout << "Abort!" << std::endl;
           fullcircle::Snip_AbortSnip abort = snip.abort_snip();
           _on_abort(abort);
+          _active = false;
         }
         break;
       case fullcircle::Snip::EOS:
@@ -69,6 +71,7 @@ void ServerProtocolDispatcher::handle_envelope(
           std::cout << "EOS!" << std::endl;
           fullcircle::Snip_EosSnip eos = snip.eos_snip();
           _on_eos(eos);
+          _active = false;
         }
         break;
       default: 
@@ -129,9 +132,8 @@ void ServerProtocolDispatcher::timeout(const boost::system::error_code& error)
   } else if ( !error )
   {
     std::cout << "Timeout!" << std::endl;
-    //_on_timeout();
+    _on_timeout();
     send_timeout();
-    _session->stop();
   }
 }
 
