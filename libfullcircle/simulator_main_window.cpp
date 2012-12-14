@@ -85,7 +85,7 @@ void SimulatorMainWindow::draw_next_frame() {
 }
 
 void SimulatorMainWindow::draw_frame(int frameID) {
-  _scene->clear();
+  //_scene->clear();
   //QSize size=_ui->frame_slider->size();
   //std::cout << "Size: " << size.width() << "x" << size.height() << std::endl;
   //qreal pixelwidth=size.width()/_seq->width();
@@ -98,6 +98,7 @@ void SimulatorMainWindow::draw_frame(int frameID) {
 }
 
 void SimulatorMainWindow::draw_frame(fullcircle::Frame::Ptr frame) {
+	_scene->clear();
 	int w = frame->width();
 	int h = frame->height();
   //qreal pixelwidth=800/_seq->width();
@@ -174,12 +175,13 @@ void SimulatorMainWindow::do_on_request(fullcircle::Snip_RequestSnip request) {
 }
 
 void SimulatorMainWindow::do_on_frame(fullcircle::Snip_FrameSnip snip) {
-  fullcircle::BinaryFrame bf = snip.frame();
-  fullcircle::Frame::Ptr frame(new fullcircle::Frame(_width, _height));
-  for( int pixelID = 0; pixelID < bf.pixel_size(); pixelID++) {
-    fullcircle::RGBValue binpixel=bf.pixel(pixelID);
-    frame->set_pixel(binpixel.x(), binpixel.y(), 
-        binpixel.red(), binpixel.green(), binpixel.blue());
-  }
-	emit newFrame(frame);
+	BinaryFrame binframe(snip.frame());
+	Frame::Ptr framep(new Frame(_width, _height));
+	for ( int pixelID = 0; pixelID < binframe.pixel_size(); pixelID++ )
+	{
+		RGBValue pixel = binframe.pixel(pixelID);
+		framep->set_pixel(pixel.x(), pixel.y(),
+				pixel.red(), pixel.green(), pixel.blue());
+	}
+	emit newFrame(framep);
 }
