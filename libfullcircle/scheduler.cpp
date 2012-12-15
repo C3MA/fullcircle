@@ -198,6 +198,9 @@ Sequence::Ptr Scheduler::getNextSequence()
 	return Sequence::Ptr();
 }
 
+/* addConnection handles a REQUEST message, extracting metadata, queuing the client in the net_queue
+ * and preparing the new session to handle the next REQUEST
+ */
 void Scheduler::addConnection(Snip_RequestSnip request)
 {
 	if ( _net_queue.size() < 10 )
@@ -222,6 +225,8 @@ void Scheduler::addConnection(Snip_RequestSnip request)
 	}
 }
 
+/* Frame from the client received. We have to extract it from the message and pass it to the DMXClient
+ */
 void Scheduler::addFrame(Snip_FrameSnip frame)
 {
 	std::cout << "addFrame!" << std::endl;
@@ -236,6 +241,8 @@ void Scheduler::addFrame(Snip_FrameSnip frame)
 	_on_frame(framep);
 }
 
+/* For some reason we want to end the current sequence. Therefore we trigger cleanup and stop the session, which closes the socket
+ */
 void Scheduler::seqEnd(ServerProtocolDispatcher::Ptr dispatcher)
 {
 	std::cout << "seqEnd: session count: " << dispatcher->getSession().use_count() << std::endl;

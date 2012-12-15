@@ -43,6 +43,8 @@ boost::asio::ip::tcp::socket& ServerSession::socket() {
   return _socket;
 }
 
+/* Begin a session by opening the socket and registering a reader for it
+ */
 void ServerSession::start() {
   std::cout << "ServerSession: Starting session " << this << std::endl;
   try {
@@ -59,6 +61,8 @@ void ServerSession::start() {
   }
 }
 
+/* Stopping a session involved closing the socket.
+ */
 void ServerSession::stop() {
   std::cout << "ServerSession: Terminating session " << this << std::endl;
   _socket.close();

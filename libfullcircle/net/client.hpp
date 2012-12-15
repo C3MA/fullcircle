@@ -14,6 +14,8 @@ namespace fullcircle {
 	};
 	const char* stateNames[] = { "IDLE", "WAIT_FOR_ACK", "WAIT_FOR_START", "PLAYING", "ERROR" };
 
+	/* The client class is a base class for implementing your own clients.
+	 */
 	class Client {
 		public:
 			Client(boost::asio::io_service *client_io_service, boost::asio::ip::tcp::resolver::iterator *iterator)
@@ -39,16 +41,25 @@ namespace fullcircle {
     		_netClient->shutdown();
 			}
 
+			/* The following functions have to be implemented. They may be empty and should contain tasks,
+			 * that have to be executed when entering the corresponding state.
+			 */
 			virtual void idle() = 0;
 			virtual void ack() = 0;
 			virtual void nack() = 0;
 			virtual void start() = 0;
+
+			/* The error handler has the following default implementation, logging the error and leaving the client.
+			 */
 			virtual void error(std::string error_msg = "")
 			{
 				std::cout << "Server connection failed - " << error_msg << std::endl;
 				exit(1);
 			}
 
+			/* For the following functions it should not be nessecary to reimplement them as the contain the basic
+			 * message handling, timeouts and state transitions.
+			 */
 			void do_on_ack()
 			{
 				if ( _state != WAIT_FOR_ACK )

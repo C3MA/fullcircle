@@ -11,6 +11,8 @@
 namespace po = boost::program_options;
 namespace bfs=boost::filesystem;
 
+/* The StreamingClient is a reference implementation of a client for fullcircle.
+ */
 namespace fullcircle {
   class StreamingClient : public Client {
     public:
@@ -83,20 +85,6 @@ namespace fullcircle {
       double _ifs;
   };
 }
-
-/*static void pong_receiver(fullcircle::Snip_PongSnip pong) {
-  pt::ptime recv_time(pt::microsec_clock::local_time());
-  pt::time_duration roundtrip = recv_time - ping_send_time[pong.count()];
-  std::cout << "Ping " << pong.count() << ": " 
-  << roundtrip.total_microseconds() << " µs." << std::endl;
-  ping_send_time.erase(pong.count());
-  }*/
-
-//static bool shutdown_toggle = false;
-/*static void net_error_receiver(std::string error_msg) {
-  std::cout << "Server connection failed - " << error_msg << std::endl;
-  exit(1);
-  }*/
 
 int main (int argc, char const* argv[]) {
   std::cout << "FullCircle Sequence Streamer" << std::endl;

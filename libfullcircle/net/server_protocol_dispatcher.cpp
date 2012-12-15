@@ -5,6 +5,9 @@
 
 using namespace fullcircle;
 
+/* here we do the real dispatching, determining the message type
+ * and calling the needed functions.
+ */
 void ServerProtocolDispatcher::handle_envelope(
     fullcircle::Envelope::Ptr env) 
 {
@@ -16,7 +19,7 @@ void ServerProtocolDispatcher::handle_envelope(
   } else {
     std::cout << "Reconstructed snip: " << snip.DebugString() << std::endl;
     switch (snip.type()) {
-      case fullcircle::Snip::PING: 
+      case fullcircle::Snip::PING: // pings should be responded with pongs
         {
           fullcircle::Snip_PingSnip ping=snip.ping_snip();
           std::cout << "Responding to ping (no. " << ping.count() << ")" << std::endl;
@@ -34,13 +37,13 @@ void ServerProtocolDispatcher::handle_envelope(
           _transport->write(renv);
         }
         break;
-      case fullcircle::Snip::REQUEST:
+      case fullcircle::Snip::REQUEST: // request are simply passed to the next layer
         {
           fullcircle::Snip_RequestSnip request = snip.req_snip();
           _on_request(request);
         }
         break;
-      case fullcircle::Snip::FRAME:
+      case fullcircle::Snip::FRAME: // when receiving a frame we can cancel the current timer, pass the frame to the next layer and start a new timer
         {
           _timer.cancel();
           std::cout << "Frame!" << std::endl;
@@ -50,7 +53,7 @@ void ServerProtocolDispatcher::handle_envelope(
           _timer.async_wait(boost::bind(&ServerProtocolDispatcher::timeout, this, _1));
         }
         break;
-      case fullcircle::Snip::TIMEOUT:
+      case fullcircle::Snip::TIMEOUT: // A timeout can be seen as error. Therefore we deactivate the current session and pass the event
         {
           std::cout << "Timeout!" << std::endl;
           fullcircle::Snip_TimeoutSnip timeout = snip.timeout_snip();
@@ -58,7 +61,7 @@ void ServerProtocolDispatcher::handle_envelope(
           _active = false;
         }
         break;
-      case fullcircle::Snip::ABORT:
+      case fullcircle::Snip::ABORT: // The client told us to cancel the current session. So we deactivate it and pass the event to the next layer
         {
           std::cout << "Abort!" << std::endl;
           fullcircle::Snip_AbortSnip abort = snip.abort_snip();
@@ -66,7 +69,7 @@ void ServerProtocolDispatcher::handle_envelope(
           _active = false;
         }
         break;
-      case fullcircle::Snip::EOS:
+      case fullcircle::Snip::EOS: // The client finished its transmission. The current session is therefore obsolete and can be deactivated
         {
           std::cout << "EOS!" << std::endl;
           fullcircle::Snip_EosSnip eos = snip.eos_snip();
@@ -74,7 +77,7 @@ void ServerProtocolDispatcher::handle_envelope(
           _active = false;
         }
         break;
-      default: 
+      default: // Unknown snip. Don't know what to do
         std::cout << "Unknown snip, discarding." << std::endl;
         break;
     }
@@ -82,6 +85,8 @@ void ServerProtocolDispatcher::handle_envelope(
 
 }
 
+/* Some error occured at lower levels. Logging it and deactivating the current session seems legit.
+ */
 void ServerProtocolDispatcher::handle_error(
     boost::system::error_code error)
 {
@@ -125,6 +130,9 @@ boost::signals2::connection ServerProtocolDispatcher::do_on_timeout(
   return _on_timeout.connect(slot);
 }
 
+/* This is the handler for the deadline_timer. First we have to check whether the
+ * timer fired or got canceled.
+ */
 void ServerProtocolDispatcher::timeout(const boost::system::error_code& error)
 {
   if ( error == boost::asio::error::operation_aborted ) {
