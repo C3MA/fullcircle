@@ -16,6 +16,7 @@ set(fc-read-image_src fc-read-image.cpp)
 set(fc-leader_src fc-leader.cpp)
 set(fc-testimage_src fc-testimage.cpp)
 set(fc-testrow_src fc-testrow.cpp)
+set(fc-testincremental_src fc-testincremental.cpp)
 set(fc-2gif_src fc-2gif.cpp)
 set(fc-server_src fc-server.cpp)
 set(fc-ping_src fc-ping.cpp)
@@ -82,6 +83,10 @@ add_executable(fc-testimage
 
 add_executable(fc-testrow
   ${fc-testrow_src}
+  )
+
+add_executable(fc-testincremental
+  ${fc-testincremental_src}
   )
 
 add_executable(fc-server
@@ -178,6 +183,11 @@ target_link_libraries(fc-testrow
   ${Boost_LIBRARIES}
   )
 
+target_link_libraries(fc-testincremental
+  fullcircle 
+  ${Boost_LIBRARIES}
+  )
+
 target_link_libraries(fc-server
   fullcircle 
   ${Boost_LIBRARIES}
@@ -207,6 +217,7 @@ INSTALL(PROGRAMS
   ${CMAKE_CURRENT_BINARY_DIR}/fc-read-image
   ${CMAKE_CURRENT_BINARY_DIR}/fc-testimage
   ${CMAKE_CURRENT_BINARY_DIR}/fc-testrow
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-testincremental
   ${CMAKE_CURRENT_BINARY_DIR}/fc-flowmap
   ${CMAKE_CURRENT_BINARY_DIR}/fc-2gif
   ${CMAKE_CURRENT_BINARY_DIR}/fc-ping
