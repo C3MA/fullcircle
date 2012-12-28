@@ -71,7 +71,7 @@ void Sequence::save(std::ostream& os,
     for (uint16_t x=0; x<_width; ++x) {
       for (uint16_t y=0; y<_height; ++y) {
         RGB_t pixel=(*it)->get_pixel(x,y);
-        fullcircle::RGB_Value* binpixel=binframe->add_pixel();
+        fullcircle::RGBValue* binpixel=binframe->add_pixel();
         binpixel->set_red(pixel.red);
         binpixel->set_green(pixel.green);
         binpixel->set_blue(pixel.blue);
@@ -105,7 +105,7 @@ Sequence::Sequence(std::istream& is)
     fullcircle::Frame::Ptr frame(new fullcircle::Frame(_width, _height));
     fullcircle::BinaryFrame binframe=bseq.frame(frameID);
     for( int pixelID = 0; pixelID < binframe.pixel_size(); pixelID++) {
-      fullcircle::RGB_Value binpixel=binframe.pixel(pixelID);
+      fullcircle::RGBValue binpixel=binframe.pixel(pixelID);
       frame->set_pixel(binpixel.x(), binpixel.y(), 
           binpixel.red(), binpixel.green(), binpixel.blue());
     }

@@ -34,6 +34,7 @@ int main (int argc, char* argv[]) {
 			("priority,p", po::value<std::string>(), "the directory containing priority sequence files")
 			("fallback,f", po::value<std::string>(), "the directory containing fallback sequence files")
 			("output,o", po::value<std::string>(), "the directory played sequence files are moved to")
+			("port", po::value<int>(), "the port to listen for network streams")
 			("universe,u", po::value<int>(), "the DMX universe used for output")
 			("debug,d", "print additional info")
 			;
@@ -81,6 +82,8 @@ int main (int argc, char* argv[]) {
 		}
 
 		std::string srcdir, priodir, falldir, dstdir;
+		int port = 0;
+		fullcircle::Scheduler::Ptr scheduler(new fullcircle::Scheduler());
 
 		std::map< int, std::map<int, int> > map;
 		if ( boost::filesystem::exists(config_file) )
@@ -116,6 +119,8 @@ int main (int argc, char* argv[]) {
 						priodir = v.second.get_value<std::string>();
 					else if ( v.first.compare("fallback") == 0 )
 						falldir = v.second.get_value<std::string>();
+					else if ( v.first.compare("port") == 0 )
+						port = v.second.get_value<int>();
 					else if ( v.first.compare("universe") == 0 )
 						universe = v.second.get_value<int>();
 				}
@@ -147,7 +152,7 @@ int main (int argc, char* argv[]) {
 		} else {
 			if ( boost::filesystem::exists(srcdir) )
 			{
-				fullcircle::Scheduler::setInput(srcdir);
+				scheduler->setInput(srcdir);
 				std::cout << "Using " << srcdir << " as source for sequence files" << std::endl;
 			} else {
 				std::cerr << srcdir << " does not exists!" << std::endl;
@@ -166,7 +171,7 @@ int main (int argc, char* argv[]) {
 			else
 			{
 				std::cout << "Using " << priodir << " as source for priority sequence files" << std::endl;
-				fullcircle::Scheduler::setPriority(priodir);
+				scheduler->setPriority(priodir);
 			}
 		}
 
@@ -181,7 +186,7 @@ int main (int argc, char* argv[]) {
 			else
 			{
 				std::cout << "Using " << falldir << " as source for fallback sequence files" << std::endl;
-				fullcircle::Scheduler::setFallback(falldir);
+				scheduler->setFallback(falldir);
 			}
 		}
 
@@ -194,7 +199,7 @@ int main (int argc, char* argv[]) {
 		} else {
 			if ( boost::filesystem::exists(dstdir) )
 			{
-				fullcircle::Scheduler::setOutput(dstdir);
+				scheduler->setOutput(dstdir);
 				std::cout << "Using " << dstdir << " as destination for played sequence files" << std::endl;
 			} else {
 				std::cerr << dstdir << " does not exists!" << std::endl;
@@ -202,18 +207,27 @@ int main (int argc, char* argv[]) {
 			}
 		}
 
+		if ( vm.count("port") )
+			port = vm["port"].as<int>();
+
+		if ( port != 0 )
+		{
+			std::cout << "Listening on port " << port << " for streams" << std::endl;
+			scheduler->setPort(port);
+		}
+
 		if (vm.count("universe")) {
 			universe=vm["universe"].as<int>();
 			std::cout << "Using universe " << universe << std::endl;
 		}
 
-		fullcircle::DmxClient client;
+		fullcircle::DmxClient client(scheduler);
 		client.setUniverse(universe);
 		client.setMapping(&map);
 		if ( debug )
 		{
 			client.setDebug(true);
-			fullcircle::Scheduler::setDebug(true);
+			scheduler->setDebug(true);
 		}
 		client.start();
 

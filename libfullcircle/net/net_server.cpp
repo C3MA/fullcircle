@@ -36,6 +36,7 @@ void NetServer::handle_accept(ServerSession::Ptr session,
     <<", use-count: " << session.use_count() << std::endl;
   if (!error) {
     session->start();
+    _dispatcher->setSession(session);
   } else {
     std::cout << "Server: Cannot handle accept: " <<
       error.message() << std::endl;
@@ -46,11 +47,13 @@ void NetServer::handle_accept(ServerSession::Ptr session,
 
 void NetServer::start_accept() {
   ServerSession::Ptr new_session = ServerSession::create(_io_service);
-  ServerProtocolDispatcher::Ptr dispatcher(
-      new ServerProtocolDispatcher(new_session));
+  _dispatcher.reset(
+      new ServerProtocolDispatcher(new_session, _io_service));
   // Link signals to slots.
   new_session->do_on_envelope(
-      boost::bind(&ServerProtocolDispatcher::handle_envelope, dispatcher, _1));
+      boost::bind(&ServerProtocolDispatcher::handle_envelope, _dispatcher, _1));
+  new_session->do_on_error(
+      boost::bind(&ServerProtocolDispatcher::handle_error, _dispatcher, _1));
   std::cout << "Server: start_accept, use_count: "
     << new_session.use_count() << std::endl;
   _acceptor.async_accept(new_session->socket(),
@@ -59,3 +62,8 @@ void NetServer::start_accept() {
         new_session, boost::asio::placeholders::error));
 }
 
+ServerProtocolDispatcher::Ptr NetServer::getDispatcher() {
+	while ( _dispatcher == NULL )
+		usleep(100);
+	return _dispatcher;
+}
