@@ -75,7 +75,7 @@ namespace fullcircle {
 				_state = WAIT_FOR_START;
 				ack();
 
-				_timer.expires_from_now(boost::posix_time::seconds(15));
+				_timer.expires_from_now(boost::posix_time::seconds(1500));
 				_timer.async_wait(boost::bind(&fullcircle::Client::do_on_timeout, this, _1));
 			}
 
