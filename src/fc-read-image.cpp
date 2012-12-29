@@ -1,110 +1,154 @@
 #include <libfullcircle/common.hpp>
 #include <iostream>
-#include <sstream>
 #include <fstream>
-#include <QApplication>
 #include <boost/filesystem.hpp>
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/lexical_cast.hpp>
 #include <libfullcircle/sequence.hpp>
 #include <libfullcircle/frame.hpp>
 #include <libfullcircle/sprite_io.hpp>
-#include <libfullcircle/fontrenderer.hpp>
-#include <libfullcircle/perlin_noise.hpp>
-#include <libfullcircle/color_scheme_smash.hpp>
-#include <libfullcircle/sfx/frame_fader.hpp>
 #include <boost/program_options.hpp>
 #include <boost/program_options/positional_options.hpp>
+#include <QImage>
+#include <QPen>
 namespace po = boost::program_options;
 namespace bfs=boost::filesystem;
 
+//fullcircle::Sequence::Ptr mk_demo_sequence() {
+//  std::cout << "Generating demo sequence." << std::endl;
+
+//  fullcircle::RGB_t white;
+//  white.red = white.green = white.blue = 255;
+//  fullcircle::RGB_t red;
+//  red.red = 255; red.green = red.blue = 0;
+//  fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(2,10,5));
+
+//  for( uint32_t frameID = 0; frameID < 100; ++frameID) {
+//    fullcircle::Frame::Ptr frame(new fullcircle::Frame(10,5));
+//    uint16_t xpos=frameID % 10;
+//    uint16_t ypos=frameID % 5;
+//    std::cout << " Frame " << frameID
+//      << " Xpos: " << xpos
+//      << " Ypos: " << ypos << std::endl;
+//    frame->set_pixel(xpos, ypos, red);
+//    frame->set_pixel(0, 3, white);
+//    seq->add_frame(frame);
+//    frame->dump_frame(std::cout);
+//  }
+//  return seq;
+//}
+
+
 int main (int argc, char* argv[]) {
 
-  /*** 
-   * Careful! This must be in the top level namespace of any binary, and must
-   * be called only once. Just leave it here.
-   */
-  Q_INIT_RESOURCE(sprites);
-	
-  /* Set the default forgroundcolor to white */
-	
   try {
     std::ostringstream oss;
-    oss << "Usage: " << argv[0] << " ACTION [additional options] <sequence1> <sequence2> ...";
+    oss << "Usage: " << argv[0] << " ACTION [additional options]";
     po::options_description desc(oss.str());
     desc.add_options()
-      ("help,h", "produce help message")
+      ("help", "produce help message")
       ("version,v", "print version and exit")
-      ("sequence,s", po::value<std::string>(), "sequence file that should be generated")
-	  ("ringbuffer,r", "start with the first frame, when a sequence is shorter than the rest.")
-	;
+      ("sequence,s", po::value<std::string>(), "the sequence file to use")
+      ("input,i", po::value<std::string>(), "the input file to use")
+      ("dir,d", po::value<std::string>(), "the input directory to use")
+      ("width,w", po::value<int>(), "width of animation")
+      ("height,h", po::value<int>(), "height of animation")
+      ("fps,f", po::value<int>(), "fps value for the animation")
+      ;
+    po::positional_options_description p;
+    p.add("sequence", 1);
+
     po::variables_map vm;
-    po::parsed_options parsed = po::command_line_parser(argc, argv).options(desc).allow_unregistered().run();
-    po::store(parsed, vm);
+    po::store(po::command_line_parser(argc, argv).
+        options(desc).positional(p).run(), vm);
     po::notify(vm);
 
-	
     // Begin processing of commandline parameters.
     std::string sequencefile;
-	// store the unkown attributes (aka input files)
-	std::vector<std::string> input = collect_unrecognized(parsed.options, po::include_positional);
-    bool ringBufferFunctionality = false; /* start with the first frame from the beginning */
-	  
+    std::string input = "";
+    std::string indir = "";
+    int width;
+    int height;
+    int fps;
+
+
     if (vm.count("help")) {
       std::cout << desc << std::endl;
       return 1;
     }
 
-    fullcircle::VersionInfo::Ptr version(new fullcircle::VersionInfo());
     if (vm.count("version")) {
+      fullcircle::VersionInfo::Ptr version(new fullcircle::VersionInfo());
       std::cout << "fullcircle version " << version->getVersion() << std::endl;
       return 0;
     }
 
-    if (vm.count("sequence") != 1 ) {
-      std::cerr << "You must specify one sequence file (-s <filename>)." << std::endl;
+    if (! vm.count("sequence")) {
+      std::cerr << "You must specify a sequence file." << std::endl;
       return 1;
     } else {
       sequencefile=vm["sequence"].as<std::string>();
     }
-	  
-	if (vm.count("ringbuffer") == 1 ) {
-		ringBufferFunctionality = true;
-	}
-	  
 
-	std::cout << "Found " << input.size() << " sequences." << std::endl;  
-    bfs::path sequence(sequencefile);
-	  
-    try {
-		fullcircle::Sequence::Ptr sum;
-		
-		// iterate over all input files and add them.
-		for(unsigned int i=0; i < input.size(); i++)
-		{
-			bfs::path sequence(input[i]);
-		
-			std::cout << "Loading sequence" << (i + 1) << " from file " << sequence << std::endl;
-			std::fstream inputStream(sequence.c_str(), std::ios::in | std::ios::binary);
-			fullcircle::Sequence::Ptr inputSeq(new fullcircle::Sequence(inputStream));
-			inputStream.close();
-			
-			// add one sequence to the next.
-			if (sum == NULL)
-				sum = inputSeq;
-			else 
-				sum = sum->add(0, inputSeq, ringBufferFunctionality);
-		}
-		
-		std::fstream output(sequence.c_str(), 
-							std::ios::out | std::ios::trunc | std::ios::binary);
-		sum->save(output, "fc-add", version->getVersion());// why the hell is this also stored?
-		output.close();
-		
-    } catch (fullcircle::GenericException& ex) {
-      std::cout << "Caught exception: " << ex.what() << std::endl;
-      exit(1);
+    if (vm.count("input")) {
+      input=vm["input"].as<std::string>();
     }
+
+    if (vm.count("dir")) {
+      indir=vm["dir"].as<std::string>();
+    }
+
+		if (vm.count("input") + vm.count("dir") == 0) {
+			std::cerr << "You have to specify an input file or directory." << std::endl;
+			return 1;
+		}
+
+    if (! vm.count("width")) {
+      std::cerr << "You must specify a frame width." << std::endl;
+      return 1;
+    } else {
+      width=vm["width"].as<int>();
+    }
+
+    if (! vm.count("height")) {
+      std::cerr << "You must specify a frame height." << std::endl;
+      return 1;
+    } else {
+      height=vm["height"].as<int>();
+    }
+
+    if (! vm.count("fps")) {
+      std::cerr << "You must specify an fps value." << std::endl;
+      return 1;
+    } else {
+      fps=vm["fps"].as<int>();
+    }
+
+		fullcircle::SpriteIO::Ptr sprite_io(new fullcircle::SpriteIO());
+		
+		fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(fps, width, height));
+		if ( ! input.empty() )
+		{
+			fullcircle::Frame::Ptr frame = sprite_io->load(input);
+			for ( int i = 0; i < fps; i++)
+				seq->add_frame(frame);
+		} else {
+			typedef std::vector<bfs::path> vec;             // store paths,
+			vec v, vp;                                // so we can sort them later
+
+			copy(bfs::directory_iterator(indir), bfs::directory_iterator(), back_inserter(vp));
+
+			sort(vp.begin(), vp.end());             // sort, since directory iteration
+			
+			for(vec::iterator it = vp.begin(); it != vp.end(); it++)
+			{
+				fullcircle::Frame::Ptr frame = sprite_io->load(it->c_str());
+				seq->add_frame(frame);
+			}
+		}
+		std::fstream output(sequencefile.c_str(), std::ios::out | std::ios::trunc | std::ios::binary);
+		seq->save(output, "fc-read-image", "0.1");
+		output.close();
+
+
   } catch(std::exception& e) {
     std::cerr << "error: " << e.what() << std::endl;
     return 1;
@@ -114,3 +158,5 @@ int main (int argc, char* argv[]) {
   }
   return 0;
 }
+
+
