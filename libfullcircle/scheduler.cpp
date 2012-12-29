@@ -247,18 +247,42 @@ void Scheduler::seqEnd(ServerProtocolDispatcher::Ptr dispatcher)
 {
 	std::cout << "seqEnd: session count: " << dispatcher->getSession().use_count() << std::endl;
 	_on_end();
+	_on_frame.disconnect(&fullcircle::Scheduler::addFrame);
 	dispatcher->getSession()->stop();
 }
 
 boost::signals2::connection Scheduler::do_on_frame(
 		const on_frame_slot_t& slot)
 {
-	return _on_frame.connect(slot);
+	boost::signals2::connection c = _on_frame.connect(slot);
+	_on_frame_connections.push_back(c);
+	return c;
 }
 
 boost::signals2::connection Scheduler::do_on_end(
 		const on_end_slot_t& slot)
 {
-	return _on_end.connect(slot);
+	boost::signals2::connection c = _on_end.connect(slot);
+	_on_end_connections.push_back(c);
+	return c;
 }
 
+void Scheduler::disconnect_on_frame()
+{
+	for(std::list<boost::signals2::connection>::iterator it = _on_frame_connections.begin(); it != _on_frame_connections.end(); it++)
+	{
+		_debug && std::cout << "disconnect: " << &(*it) << std::endl;
+		it->disconnect();
+	}
+	_on_frame_connections.clear();
+}
+
+void Scheduler::disconnect_on_end()
+{
+	for(std::list<boost::signals2::connection>::iterator it = _on_end_connections.begin(); it != _on_end_connections.end(); it++)
+	{
+		_debug && std::cout << "disconnect: " << &(*it) << std::endl;
+		it->disconnect();
+	}
+	_on_end_connections.clear();
+}

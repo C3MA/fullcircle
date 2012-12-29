@@ -43,6 +43,7 @@ void DmxClient::play()
 	_debug && std::cout << "DmxClient started" << std::endl;
 	while ( _running )
 	{
+		_debug && std::cout << "Locking mutex " << &_playing << std::endl;
 		_playing.lock();
 		Sequence::Ptr seq;
 		seq = _scheduler->getNextSequence();
@@ -55,6 +56,7 @@ void DmxClient::play()
 			if ( seq->size() > 0 )
 			{
 				playSequence(seq, ifs);
+				_debug && std::cout << "Unlocking mutex " << &_playing << std::endl;
 				_playing.unlock();
 			} else {
 				_scheduler->do_on_frame(boost::bind(&DmxClient::playFrame, this, _1));
@@ -123,7 +125,9 @@ void DmxClient::playFrame(Frame::Ptr frame)
 
 void DmxClient::seqFinished()
 {
-	_debug && std::cout << "Sequence finished. Unlocking mutex." << std::endl;
+	_scheduler->disconnect_on_frame();
+	_scheduler->disconnect_on_end();
+	_debug && std::cout << "Sequence finished. Unlocking mutex " << &_playing << std::endl;
 	_playing.unlock();
 }
 
