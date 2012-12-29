@@ -111,7 +111,7 @@ namespace fullcircle {
 	    {
   		  _snake->move();
 	    }
-//	    _ifs = 1000 / (((_snake->length - 2) / 15)+1) ;
+	    _ifs = 1000 / (1.0 + _snake->length*0.05);/// (((_snake->length - 2) / 15)+1) ;
 	  _snake->render();
 
           fullcircle::Frame::Ptr frame = Frame::Ptr(new fullcircle::Frame(_gridX, _gridY));
@@ -187,8 +187,8 @@ int main (int argc, char const* argv[]) {
       ("input,i", po::value<std::string>(), "input sequence")
       ("help,?", "produce help message")
       ("version,v", "print version and exit")
-      ("width,w", po::value<int>(), "the width of the sequence to be generated")
-      ("height,h", po::value<int>(), "the height of the sequence to be generated")
+      ("width,w", po::value<std::string>(), "the width of the sequence to be generated")
+      ("height,h", po::value<std::string>(), "the height of the sequence to be generated")
       ;
     std::ostringstream oss;
     oss << "Usage: " << argv[0] << " -s <IP> -p <PORT> ...";
@@ -257,13 +257,21 @@ int main (int argc, char const* argv[]) {
       std::cerr << "You must specify a height (-h <HEIGHT>)." << std::endl;
       return 1;
     } else {
-      height=vm["height"].as<int>();
+      std::istringstream converter(vm["height"].as<std::string>());
+      if ( !( converter >> height)) {
+        std::cerr << "Cannot convert height to an integer. " << std::endl;
+        return 1;
+    }
     }
     if (vm.count("width") != 1 ) {
       std::cerr << "You must specify a width (-w <WIDTH>)." << std::endl;
       return 1;
     } else {
-      width=vm["width"].as<int>();
+      std::istringstream converter(vm["width"].as<std::string>());
+      if ( !( converter >> width)) {
+        std::cerr << "Cannot convert width to an integer. " << std::endl;
+        return 1;
+      }
     }
 
 //    if (vm.count("input") != 1 ) {
