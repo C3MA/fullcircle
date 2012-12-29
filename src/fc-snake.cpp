@@ -25,6 +25,7 @@ namespace fullcircle {
     {
 	    _fp = open(FIFO_FILE, O_RDONLY | O_NONBLOCK);
       _snake = NULL;
+      _framesAfterDeath=5;
     }
 
       ~SnakeClient()
@@ -134,6 +135,29 @@ namespace fullcircle {
 
           _timer.expires_from_now(boost::posix_time::milliseconds(_ifs));
           _timer.async_wait(boost::bind(&fullcircle::SnakeClient::send_frame, this));
+	} else if(_framesAfterDeath > 0)
+	{
+          fullcircle::Frame::Ptr frame = Frame::Ptr(new fullcircle::Frame(_gridX, _gridY));
+	  for(int i=0;i<_gridX;i++)
+	  {
+		  for( int j=0;j<_gridY;j++)
+		  {
+              if(_snake->grid[i*_gridY+j]==0x11)
+                frame->set_pixel(i,j,255,0,0);
+              else if(_snake->grid[i*_gridY+j]==0xff)
+                frame->set_pixel(i,j,0,0,255);
+              else if(_snake->grid[i*_gridY+j]==0x00)
+                frame->set_pixel(i,j,255*(_framesAfterDeath%2),0,0);
+              else
+                frame->set_pixel(i,j,0,_snake->grid[i*_gridY+j],0);
+		  }
+	  }
+          _lastframe = frame;
+          _dispatcher->send_frame(frame);
+
+          _timer.expires_from_now(boost::posix_time::milliseconds(_ifs));
+          _timer.async_wait(boost::bind(&fullcircle::SnakeClient::send_frame, this));
+	_framesAfterDeath--;
         } else {
           _dispatcher->send_eos();
           _state = IDLE;
@@ -153,6 +177,7 @@ namespace fullcircle {
       int _fp;
       fullcircle::Frame::Ptr _lastframe;
       bool _start;
+      int _framesAfterDeath;
   };
 }
 
