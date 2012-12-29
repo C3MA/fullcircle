@@ -123,6 +123,8 @@ namespace fullcircle {
                 frame->set_pixel(i,j,255,0,0);
               else if(_snake->grid[i*_gridY+j]==0xff)
                 frame->set_pixel(i,j,0,0,255);
+              else if(_snake->grid[i*_gridY+j]==0x00)
+                frame->set_pixel(i,j,128,128,128);
               else
                 frame->set_pixel(i,j,0,_snake->grid[i*_gridY+j],0);
 		  }
