@@ -107,8 +107,11 @@ namespace fullcircle {
 			}
 		}
     }
-    if(_start)
-  	  _snake->move();
+	    if(_start)
+	    {
+  		  _snake->move();
+	    }
+//	    _ifs = 1000 / (((_snake->length - 2) / 15)+1) ;
 	  _snake->render();
 
           fullcircle::Frame::Ptr frame = Frame::Ptr(new fullcircle::Frame(_gridX, _gridY));
@@ -118,6 +121,8 @@ namespace fullcircle {
 		  {
               if(_snake->grid[i*_gridY+j]==0x11)
                 frame->set_pixel(i,j,255,0,0);
+              else if(_snake->grid[i*_gridY+j]==0xff)
+                frame->set_pixel(i,j,0,0,255);
               else
                 frame->set_pixel(i,j,0,_snake->grid[i*_gridY+j],0);
 		  }
