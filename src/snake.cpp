@@ -21,6 +21,7 @@ Snake::Snake(int x, int y)
 	tmp.y++;
 	snake.push_front(tmp);
 	dir = 2;
+	lastdir = 2;
 	length = 3;
 	srand(time(0));
 	noms.x = rand() % dimX;
@@ -74,6 +75,7 @@ void Snake::move()
 				pos.y = dimY-1;
 		break;
 	}
+	lastdir = dir;
 	if(pos.x == noms.x && pos.y == noms.y)
 	{
 		length += 1;

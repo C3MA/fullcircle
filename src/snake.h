@@ -45,6 +45,8 @@ class Snake
 
 	bool _alive;
 
+	int lastdir;
+
 
 };
 

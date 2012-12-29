@@ -89,18 +89,22 @@ namespace fullcircle {
 			{
 				case 'r':
 				case 'R':
+				if(_snake->lastdir != 3)
 				_snake->dir = 1;
 				break;
 				case 'd':
 				case 'D':
+				if(_snake->lastdir != 4)
 				_snake->dir = 2;
 				break;
 				case 'l':
 				case 'L':
+				if(_snake->lastdir != 1)
 				_snake->dir = 3;
 				break;
 				case 'u':
 				case 'U':
+				if(_snake->lastdir != 2)
 				_snake->dir = 4;
 				break;
 				//default:
