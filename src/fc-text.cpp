@@ -197,7 +197,7 @@ int main (int argc, char* argv[]) {
       fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(fps, width, height));
 
       fullcircle::FontRenderer::Ptr fr(new fullcircle::FontRenderer(width, height));
-      fr->scroll_text(seq, 0, 0, text, scrolltime /* time in milliseconds */, foreground);
+      fr->scroll_text(seq, 10, 2, text, scrolltime /* time in milliseconds */, foreground);
 
       std::cout << "Saving sequence to file " << sequence << std::endl;
       std::fstream output(sequence.c_str(), 

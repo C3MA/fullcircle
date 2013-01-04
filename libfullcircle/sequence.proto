@@ -42,7 +42,7 @@ message Snip {
     NACK = 8;
     TIMEOUT = 9;
     ABORT = 10;
-		EOS = 11;
+    EOS = 11;
   }
   required SnipType type = 1;
 
@@ -99,9 +99,9 @@ message Snip {
   }
   optional AbortSnip abort_snip = 20;
 
-	message EosSnip {
-	}
-	optional EosSnip eos_snip = 21;
+  message EosSnip {
+  }
+  optional EosSnip eos_snip = 21;
 }
 
 

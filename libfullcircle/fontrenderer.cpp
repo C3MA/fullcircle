@@ -2,7 +2,7 @@
 #include <QApplication>
 #include <libfullcircle/sprite_io.hpp>
 #include <iostream>
-
+#include <stdio.h>
 using namespace fullcircle;
 
 FontRenderer::FontRenderer ( uint16_t width, uint16_t height)
@@ -111,6 +111,9 @@ Frame::Ptr FontRenderer::searchCharacter(char c)
 		case ' ':
 			resource.sprintf(":/sprites/fonts/font1_%dx%d_SPACE.png", _font_width, _font_height);
 			break;
+                case ':':
+                        resource.sprintf(":/sprites/fonts/font1_%dx%d_DP.png", _font_width, _font_height);
+                        break;
 		default: // all normal characters
 			resource.sprintf(":/sprites/fonts/font1_%dx%d_%c.png", _font_width, _font_height, c);
 			break;
