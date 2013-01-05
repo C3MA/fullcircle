@@ -41,8 +41,8 @@ int main (int argc, char* argv[]) {
 		generic.add_options()
       ("width,w", po::value<std::string>(), "the width of the sequence to be generated.")
       ("height,h", po::value<std::string>(), "the height of the sequence to be generated.")
-      ("sequence,s", po::value<std::string>(), "specify sequence.")
       ("fps,f", po::value<std::string>(), "the frames per second of the sequence to be generated.")
+      ("sequence,s", po::value<std::string>(), "specify sequence.")
      ;
     std::ostringstream coss;
     coss << "configuration file (" << config_file << " by default).";
@@ -145,8 +145,10 @@ int main (int argc, char* argv[]) {
     try {
 	fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(fps, width, height));
 	fullcircle::ColorScheme::Ptr colors(new fullcircle::ColorSchemeSmash());
-	int frameCount = 0;
-	int increaseRed = 1;
+	int frameCount		= 0;
+	int increaseRed		= 2;
+	int increaseGreen	= 2;
+
 	/* specify the first frame, where the color should flow down */
 	fullcircle::Frame::Ptr startFrame(new fullcircle::Frame(width, height));
 	startFrame->fill_whole(colors->get_background());
@@ -154,16 +156,21 @@ int main (int argc, char* argv[]) {
 	// build a better algorithom to spread color on the first frame
 	fullcircle::RGB_t white;
 	white.red = white.green = white.blue = 255;
-	fullcircle::RGB_t r;
-	r.red = r.green = r.blue = 0;
+	fullcircle::RGB_t color;
+	color.red = color.green = color.blue = 0;
 	for (int frameCount = 0; frameCount < maximumFrames; frameCount++) {
 		fullcircle::Frame::Ptr frame(new fullcircle::Frame(width, height));
-		r.red+=increaseRed;
-		if (r.red >= 255 || r.red <= 0) {
+		color.red += increaseRed;
+		color.green += increaseGreen;
+		
+		if (color.red >= 0xF5 || color.red <= 0) {
 			increaseRed = -1 * increaseRed;
 		}
-
-		frame->fill_whole(r);
+		
+		if (color.red >= 0xB8 || color.red <= 0) {
+			increaseGreen = -1 * increaseGreen;
+		}
+		frame->fill_whole(color);
 		seq->add_frame(frame);	
 	}
 
