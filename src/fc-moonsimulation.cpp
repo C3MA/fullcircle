@@ -186,6 +186,13 @@ int main (int argc, char* argv[]) {
 	int increaseGreen	= 1;
 	int increaseBlue	= 1;
 
+	if (fade_color.red <= 0)
+		increaseRed = 0;
+	if (fade_color.green <= 0)
+		increaseGreen = 0;
+	if (fade_color.blue <= 0)
+		increaseBlue = 0;
+
 	/* specify the first frame, where the color should flow down */
 	fullcircle::Frame::Ptr startFrame(new fullcircle::Frame(width, height));
 	startFrame->fill_whole(colors->get_background());
