@@ -15,6 +15,8 @@
 #include <boost/program_options/positional_options.hpp>
 #include <libfullcircle/flowmap.hpp>
 
+#define DEFAULT_FRAME_COUNT 1000
+
 namespace po = boost::program_options;
 namespace bfs=boost::filesystem;
 
@@ -49,8 +51,7 @@ int main (int argc, char* argv[]) {
 			("config", po::value<std::string>(), coss.str().c_str())
 			("help,?", "produce help message")
 			("version,v", "print version and exit")
-      ("maximum,m", po::value<int>(), "the maximum frames to render")
-			;
+      ("maximum,m", po::value<int>(), "the maximum frames to render");
 		std::ostringstream oss;
 		oss << "Usage: " << argv[0] << " -s <FILE> -x <HASH> ...";
 		po::options_description cmdline_options(oss.str());
@@ -63,9 +64,9 @@ int main (int argc, char* argv[]) {
     // Load additional config file settings.
     if (vm.count("config")) {
 			boost::filesystem::path temp(vm["config"].as<std::string>());
-			if ( boost::filesystem::exists(temp) )
+			if ( boost::filesystem::exists(temp) ) {
 				config_file = vm["config"].as<std::string>();
-			else {
+			} else {
 				std::cerr << "Configuration file " << vm["config"].as<std::string>() << " not found!" << std::endl;
 				return 1;
 			}
@@ -85,7 +86,7 @@ int main (int argc, char* argv[]) {
     uint16_t width;
     uint16_t height;
     uint16_t speedFlow = 0; // this values will be ignored if 0
-    int maximumFrames = 0;
+    int maximumFrames = DEFAULT_FRAME_COUNT;
 
     if (vm.count("help")) {
       std::cout << cmdline_options << std::endl;
@@ -142,28 +143,35 @@ int main (int argc, char* argv[]) {
 
 	  
     try {
-      fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(fps, width, height));
-      fullcircle::ColorScheme::Ptr colors(new fullcircle::ColorSchemeSmash());
-		int frameCount = 0;
-	  /* specify the first frame, where the color should flow down */
-	  fullcircle::Frame::Ptr startFrame(new fullcircle::Frame(width, height));
-	  startFrame->fill_whole(colors->get_background());
-		
-		// build a better algorithom to spread color on the first frame
-		fullcircle::RGB_t white;
-		white.red = white.green = white.blue = 255;
-		
-		startFrame->fill_whole(white); //colors->get_secondary(),  get_primary()
-		
-//		std::cerr << "The hills:" << std::endl;  //Hills		
-//		fm->dump_hills(std::cerr);
+	fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(fps, width, height));
+	fullcircle::ColorScheme::Ptr colors(new fullcircle::ColorSchemeSmash());
+	int frameCount = 0;
+	int increaseRed = 1;
+	/* specify the first frame, where the color should flow down */
+	fullcircle::Frame::Ptr startFrame(new fullcircle::Frame(width, height));
+	startFrame->fill_whole(colors->get_background());
 
+	// build a better algorithom to spread color on the first frame
+	fullcircle::RGB_t white;
+	white.red = white.green = white.blue = 255;
+	fullcircle::RGB_t r;
+	r.red = r.green = r.blue = 0;
+	for (int frameCount = 0; frameCount < maximumFrames; frameCount++) {
+		fullcircle::Frame::Ptr frame(new fullcircle::Frame(width, height));
+		r.red+=increaseRed;
+		if (r.red >= 255 || r.red <= 0) {
+			increaseRed = -1 * increaseRed;
+		}
 
-      std::cout << "Saving sequence to file " << sequence << std::endl;
-      std::fstream output(sequence.c_str(), 
-          std::ios::out | std::ios::trunc | std::ios::binary);
-      seq->save(output, "fc-moonsimulation", version->getVersion());
-      output.close();
+		frame->fill_whole(r);
+		seq->add_frame(frame);	
+	}
+
+	std::cout << "Saving sequence to file " << sequence << std::endl;
+	std::fstream output(sequence.c_str(), 
+	std::ios::out | std::ios::trunc | std::ios::binary);
+	seq->save(output, "fc-moonsimulation", version->getVersion());
+	output.close();
     } catch (fullcircle::GenericException& ex) {
       std::cout << "Caught exception: " << ex.what() << std::endl;
       exit(1);
