@@ -3,6 +3,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <QApplication>
+#include <boost/algorithm/string/predicate.hpp>
 #include <boost/filesystem.hpp>
 #include <libfullcircle/sequence.hpp>
 #include <libfullcircle/frame.hpp>
@@ -51,7 +52,9 @@ int main (int argc, char* argv[]) {
 			("config", po::value<std::string>(), coss.str().c_str())
 			("help,?", "produce help message")
 			("version,v", "print version and exit")
-      ("maximum,m", po::value<int>(), "the maximum frames to render");
+        ("maximum,m", po::value<int>(), "the maximum frames to render")
+	("color,c", po::value<std::string>(), "color to fade to in the format: '#RRGGBB' RR is red, GG green, BB blue (range of each value is 0x00-0xFF)")
+		;
 		std::ostringstream oss;
 		oss << "Usage: " << argv[0] << " -s <FILE> -x <HASH> ...";
 		po::options_description cmdline_options(oss.str());
@@ -87,6 +90,7 @@ int main (int argc, char* argv[]) {
     uint16_t height;
     uint16_t speedFlow = 0; // this values will be ignored if 0
     int maximumFrames = DEFAULT_FRAME_COUNT;
+    fullcircle::RGB_t fade_color; /* color to fade to at maximum */
 
     if (vm.count("help")) {
       std::cout << cmdline_options << std::endl;
@@ -139,6 +143,38 @@ int main (int argc, char* argv[]) {
       }
     }
 
+    if (vm.count("maximum") == 1 ) {
+	maximumFrames = vm["maximum"].as<int>();
+    }
+
+    if (vm.count("color") == 1) {
+      std::string tmp = vm["color"].as<std::string>();
+      int red, green, blue = 0;
+      try {    
+        if (boost::starts_with(tmp, "#") || tmp.size() != 7)
+        {				
+          std::stringstream ss_red, ss_green, ss_blue;
+          ss_red << std::hex << tmp.substr(1,2);
+          ss_green << std::hex << tmp.substr(3,2);
+          ss_blue << std::hex << tmp.substr(5,2);
+          ss_red >> red;
+          ss_green >> green;
+          ss_blue >> blue;
+          fade_color.red = red;
+          fade_color.green = green;
+          fade_color.blue = blue;
+        } else {
+          std::cerr << "The parameter -c needs an argument like : '#02AA40'" << std::endl;
+          return 1;
+        }
+
+      } catch (.../*boost::bad_cast*/) {
+        std::cerr << "The parameter -c needs an argument like : '#02AA40'" << std::endl;
+        return 1;
+      }
+    }
+
+
     bfs::path sequence(sequencefile);
 
 	  
@@ -146,30 +182,34 @@ int main (int argc, char* argv[]) {
 	fullcircle::Sequence::Ptr seq(new fullcircle::Sequence(fps, width, height));
 	fullcircle::ColorScheme::Ptr colors(new fullcircle::ColorSchemeSmash());
 	int frameCount		= 0;
-	int increaseRed		= 2;
-	int increaseGreen	= 2;
+	int increaseRed		= 1;
+	int increaseGreen	= 1;
+	int increaseBlue	= 1;
 
 	/* specify the first frame, where the color should flow down */
 	fullcircle::Frame::Ptr startFrame(new fullcircle::Frame(width, height));
 	startFrame->fill_whole(colors->get_background());
 
-	// build a better algorithom to spread color on the first frame
-	fullcircle::RGB_t white;
-	white.red = white.green = white.blue = 255;
 	fullcircle::RGB_t color;
 	color.red = color.green = color.blue = 0;
 	for (int frameCount = 0; frameCount < maximumFrames; frameCount++) {
 		fullcircle::Frame::Ptr frame(new fullcircle::Frame(width, height));
 		color.red += increaseRed;
 		color.green += increaseGreen;
+		color.blue += increaseBlue;
 		
-		if (color.red >= 0xF5 || color.red <= 0) {
+		if (color.red >= fade_color.red || color.red <= 0) {
 			increaseRed = -1 * increaseRed;
 		}
 		
-		if (color.red >= 0xB8 || color.red <= 0) {
+		if (color.green >= fade_color.green || color.green <= 0) {
 			increaseGreen = -1 * increaseGreen;
 		}
+		
+		if (color.blue >= fade_color.blue || color.blue <= 0) {
+			increaseBlue = -1 * increaseBlue;
+		}
+
 		frame->fill_whole(color);
 		seq->add_frame(frame);	
 	}
