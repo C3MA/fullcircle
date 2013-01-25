@@ -81,16 +81,19 @@ void ServerProtocolDispatcher::handle_envelope(
         break;
       case fullcircle::Snip::INFO_REQUEST:
 	{
-	 std::cout << "Some request information about us!" << std::endl;
+	 uint16_t width, height, fps;
+	 fullcircle::VersionInfo::Ptr version(new fullcircle::VersionInfo());
+         read_configuration(&width, &height, &fps); 
+	 std::cout << "Request: " << width << "x" << height << " fps: " << fps << " at server-version " << version->getVersion() << std::endl;
           fullcircle::Snip snop;
           snop.set_type(fullcircle::Snip::INFO_ANSWER);
           fullcircle::Snip_InfoAnswerSnip* info=snop.mutable_infoanswer_snip();
 	  fullcircle::BinarySequenceMetadata* metadata = info->mutable_meta();
-           metadata->set_frames_per_second(12); //FIXME read from config 
-	   metadata->set_width(12); //FIXME read from config
-	   metadata->set_height(6); //FIXME read from config
+           metadata->set_frames_per_second(fps); 
+	   metadata->set_width(width); 
+	   metadata->set_height(height); 
 	   metadata->set_generator_name("server");
-	   metadata->set_generator_version("1.0");
+	   metadata->set_generator_version(version->getVersion());
           //FIXME asdasdas
 	  std::ostringstream oss;
           if (!snop.SerializeToOstream(&oss)) {
