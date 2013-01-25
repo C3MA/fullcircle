@@ -112,7 +112,7 @@ const void read_configuration(uint16_t *pWidth, uint16_t *pHeight, uint16_t *pFP
         fps = 0;
       }
     }
-    *pFPS = 0;
+    *pFPS = fps;
   } catch(...) {
     *pHeight = 0;
     *pWidth = 0;
