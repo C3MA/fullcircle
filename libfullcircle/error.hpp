@@ -27,7 +27,7 @@
 namespace fullcircle {
   class GenericException : public std::exception {
 	public:
-	  typedef std::tr1::shared_ptr<GenericException> Ptr;
+	  typedef boost::shared_ptr<GenericException> Ptr;
 	  GenericException (const std::string reason) : _reason(reason) {};
 	  virtual ~GenericException() throw() {};
 	  virtual const char* what() const throw() { return reason().c_str(); }
@@ -39,7 +39,7 @@ namespace fullcircle {
 
   class CommunicationException : public GenericException{
 	public:
-	  typedef std::tr1::shared_ptr<CommunicationException> Ptr;
+	  typedef boost::shared_ptr<CommunicationException> Ptr;
 	  CommunicationException (const std::string reason) :
 		fullcircle::GenericException(reason) {};
 	  virtual ~CommunicationException() throw() {};
@@ -48,7 +48,7 @@ namespace fullcircle {
   
   class DataFormatException : public GenericException{
 	public:
-	  typedef std::tr1::shared_ptr<DataFormatException> Ptr;
+	  typedef boost::shared_ptr<DataFormatException> Ptr;
 	  DataFormatException (const std::string reason) :
 		fullcircle::GenericException(reason) {};
 	  virtual ~DataFormatException() throw() {};
@@ -57,7 +57,7 @@ namespace fullcircle {
 
   class IndexOutOfBoundException : public GenericException{
 	public:
-	  typedef std::tr1::shared_ptr<IndexOutOfBoundException> Ptr;
+	  typedef boost::shared_ptr<IndexOutOfBoundException> Ptr;
 	  IndexOutOfBoundException (const std::string reason) :
 		fullcircle::GenericException(reason) {};
 	  virtual ~IndexOutOfBoundException() throw() {};
@@ -67,7 +67,7 @@ namespace fullcircle {
 
   class StoreException : public GenericException{
 	public:
-	  typedef std::tr1::shared_ptr<StoreException> Ptr;
+	  typedef boost::shared_ptr<StoreException> Ptr;
 	  StoreException (const std::string reason) :
 		fullcircle::GenericException(reason) {};
 	  virtual ~StoreException() throw() {};
@@ -75,7 +75,7 @@ namespace fullcircle {
 	
 	class RenderException : public GenericException {
 	public:
-		typedef std::tr1::shared_ptr<RenderException> Ptr;
+		typedef boost::shared_ptr<RenderException> Ptr;
 		RenderException (const std::string reason) :
 		fullcircle::GenericException(reason) {};
 		virtual ~RenderException() throw() {};	

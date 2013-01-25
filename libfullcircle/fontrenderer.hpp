@@ -14,25 +14,25 @@ namespace fullcircle {
 	
   class FontRenderer {
     public:
-	  typedef std::tr1::shared_ptr<FontRenderer> Ptr;
-	  
+      typedef boost::shared_ptr<FontRenderer> Ptr;
+
       FontRenderer ( uint16_t width, uint16_t height);
       FontRenderer (Frame& rhs);
       virtual ~FontRenderer() {};
-	  void setSize(uint16_t font_width, uint16_t font_height);
-	  	  
-	  void write_text(Sequence::Ptr sequence, uint16_t x_offset, uint16_t y_offset, std::string text);
-	  void write_text(Sequence::Ptr sequence, uint16_t x_offset, uint16_t y_offset, std::string text, RGB_t textColor);
-	  void scroll_text(Sequence::Ptr sequence, uint16_t x_offset, uint16_t y_offset, std::string text, uint16_t	scrollspeed_inms);
-	  void scroll_text(Sequence::Ptr sequence, uint16_t x_offset, uint16_t y_offset, std::string text, uint16_t	scrollspeed_inms, RGB_t textColor);
-	  
-	  
+      void setSize(uint16_t font_width, uint16_t font_height);
+
+      void write_text(Sequence::Ptr sequence, uint16_t x_offset, uint16_t y_offset, std::string text);
+      void write_text(Sequence::Ptr sequence, uint16_t x_offset, uint16_t y_offset, std::string text, RGB_t textColor);
+      void scroll_text(Sequence::Ptr sequence, uint16_t x_offset, uint16_t y_offset, std::string text, uint16_t	scrollspeed_inms);
+      void scroll_text(Sequence::Ptr sequence, uint16_t x_offset, uint16_t y_offset, std::string text, uint16_t	scrollspeed_inms, RGB_t textColor);
+
+
     private:
-	  Frame::Ptr searchCharacter(char c);
+      Frame::Ptr searchCharacter(char c);
       uint16_t _width;
       uint16_t _height;
-	  uint16_t _font_width;
-	  uint16_t _font_height;
+      uint16_t _font_width;
+      uint16_t _font_height;
   };
 };
 

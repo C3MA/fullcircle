@@ -11,11 +11,17 @@ namespace fullcircle {
     uint16_t blue;
   } RGB_t;
 
+  static const RGB_t BLACK = {0,0,0};
+  static const RGB_t WHITE = {255,255,255};
+  static const RGB_t RED = {255,0,0};
+  static const RGB_t YELLOW = {255,255,0};
+  static const RGB_t GREEN = {0,255,0};
+  static const RGB_t BLUE = {0,0,255};
 
   // Pure virtual class
   class ColorScheme {
     public:
-      typedef std::tr1::shared_ptr<ColorScheme> Ptr;
+      typedef boost::shared_ptr<ColorScheme> Ptr;
       ColorScheme() {};
       virtual ~ColorScheme() {};
       virtual RGB_t get_primary() const = 0;

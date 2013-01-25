@@ -11,7 +11,7 @@ namespace fullcircle {
 
   class Frame {
     public:
-      typedef std::tr1::shared_ptr<Frame> Ptr;
+      typedef boost::shared_ptr<Frame> Ptr;
       typedef boost::multi_array<RGB_t, 2> frame_array;
       typedef frame_array::index index;
 

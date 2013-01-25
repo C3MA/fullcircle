@@ -13,10 +13,19 @@ set(fc-read-image_src fc-read-image.cpp)
 set(fc-flowmap_src fc-flowmap.cpp)
 set(fc-concat_src fc-concat.cpp)
 set(fc-read-image_src fc-read-image.cpp)
+set(fc-leader_src fc-leader.cpp)
+set(fc-testimage_src fc-testimage.cpp)
+set(fc-testrow_src fc-testrow.cpp)
+set(fc-2gif_src fc-2gif.cpp)
+set(fc-server_src fc-server.cpp)
+set(fc-ping_src fc-ping.cpp)
+set(fc-streamer_src fc-streamer.cpp)
+set(fc-player_src fc-player.cpp)
+set(fc-snake_src fc-snake.cpp snake.cpp)
 
 include_directories(${CMAKE_SOURCE_DIR}
-                    ${CMAKE_CURRENT_SOURCE_DIR} 
-                    ${Boost_INCLUDE_DIRS})
+  ${CMAKE_CURRENT_SOURCE_DIR} 
+  ${Boost_INCLUDE_DIRS})
 
 add_executable(fc-simulator 
   ${fc-simulator_src}
@@ -53,6 +62,9 @@ add_executable(fc-read-image
 add_executable(fc-badge
   ${fc-badge_src}
   )
+add_executable(fc-2gif
+  ${fc-2gif_src}
+  )
 
 add_executable(fc-flowmap
   ${fc-flowmap_src}
@@ -62,6 +74,37 @@ add_executable(fc-getid
   ${fc-getid_src}
   )
 
+add_executable(fc-leader
+  ${fc-leader_src}
+  )
+
+add_executable(fc-testimage
+  ${fc-testimage_src}
+  )
+
+add_executable(fc-testrow
+  ${fc-testrow_src}
+  )
+
+add_executable(fc-server
+  ${fc-server_src}
+  )
+
+add_executable(fc-ping
+  ${fc-ping_src}
+  )
+
+add_executable(fc-streamer
+  ${fc-streamer_src}
+  )
+
+add_executable(fc-player
+  ${fc-player_src}
+  )
+
+add_executable(fc-snake
+  ${fc-snake_src}
+  )
 
 target_link_libraries(fc-simulator 
   fullcircle 
@@ -118,6 +161,11 @@ target_link_libraries(fc-flowmap
   ${QT_LIBRARIES}
   )
 
+target_link_libraries(fc-2gif
+  fullcircle
+  ${Boost_LIBRARIES}
+  ${QT_LIBRARIES}
+  )
 
 target_link_libraries(fc-getid
   fullcircle 
@@ -125,7 +173,44 @@ target_link_libraries(fc-getid
   ${HIREDIS_LIBRARIES}
   )
 
+target_link_libraries(fc-leader
+  fullcircle 
+  ${Boost_LIBRARIES}
+  )
 
+target_link_libraries(fc-testimage
+  fullcircle 
+  ${Boost_LIBRARIES}
+  )
+
+target_link_libraries(fc-testrow
+  fullcircle 
+  ${Boost_LIBRARIES}
+  )
+
+target_link_libraries(fc-server
+  fullcircle 
+  ${Boost_LIBRARIES}
+  )
+
+target_link_libraries(fc-ping
+  fullcircle 
+  ${Boost_LIBRARIES}
+  )
+
+target_link_libraries(fc-streamer
+  fullcircle
+  ${Boost_LIBRARIES}
+  )
+
+target_link_libraries(fc-player
+  fullcircle
+  )
+
+target_link_libraries(fc-snake
+  fullcircle
+  ${Boost_LIBRARIES}
+  )
 
 # sensor programs to the install target
 INSTALL(PROGRAMS 
@@ -138,7 +223,16 @@ INSTALL(PROGRAMS
   ${CMAKE_CURRENT_BINARY_DIR}/fc-getid
   ${CMAKE_CURRENT_BINARY_DIR}/fc-gol
   ${CMAKE_CURRENT_BINARY_DIR}/fc-perlin
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-leader
   ${CMAKE_CURRENT_BINARY_DIR}/fc-read-image
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-testimage
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-testrow
   ${CMAKE_CURRENT_BINARY_DIR}/fc-flowmap
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-2gif
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-ping
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-streamer
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-player
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-snake
+  fc-convert2gif.sh
   DESTINATION bin)
 

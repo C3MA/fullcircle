@@ -22,7 +22,7 @@
 #define LIBKLIO_COMMON_HPP 1
 
 
-/* Include TR1 shared ptrs in a portable way. */
+/* Include TR1 shared ptrs in a portable way. 
 #include <cstddef> // for __GLIBCXX__
 #ifdef __GLIBCXX__
 #  include <tr1/memory>
@@ -32,6 +32,9 @@
 #  endif
 #  include <memory>
 #endif
+*/
+
+#include <boost/shared_ptr.hpp>
 
 //#define ENABLE_LOGGING 0
 #include <libfullcircle/config.h>
@@ -52,7 +55,7 @@
 namespace fullcircle {
   class VersionInfo {
     public:
-      typedef std::tr1::shared_ptr<VersionInfo> Ptr;
+      typedef boost::shared_ptr<VersionInfo> Ptr;
       VersionInfo () {};
       virtual ~VersionInfo() {};
       const std::string getVersion();

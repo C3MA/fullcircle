@@ -16,8 +16,8 @@ set(CMAKE_VERBOSE_MAKEFILE true)
 ENABLE_TESTING()
 
 set(V_MAJOR 0)
-set(V_MINOR 2)
-set(V_PATCH 1)
+set(V_MINOR 3)
+set(V_PATCH 0)
 
 # add a path where some libraries might be stored
 set(CMAKE_ADDITIONAL_PATH "$ENV{CMAKE_ADDITIONAL_PATH}" CACHE PATH "Path where many locally installed libraries can be found")
@@ -52,19 +52,20 @@ set(CMAKE_CXX_FLAGS_PROFILE "${CMAKE_CXX_FLAGS_PROFILE} -Wno-non-virtual-dtor -p
 set(CMAKE_CXX_FLAGS_PROFILE "${CMAKE_CXX_FLAGS_PROFILE} -ftest-coverage")
 
 # Releases are made with the release build. Optimize code and strip binaries.
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -s -Wno-non-virtual-dtor -Werror")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wno-non-virtual-dtor -Werror")
 
 # always set these flags
 set(CMAKE_CXX_FLAGS "-Wall ")
 
 # We depend on boost >= 1.46.1 because of the updated filesystem
 # library.
-SET(Boost_ADDITIONAL_VERSIONS "1.46.1" "1.48.0" "1.48" "1.49" "1.50")
+SET(Boost_ADDITIONAL_VERSIONS "1.46.1" "1.48.0" "1.48" "1.49" "1.50" "1.51")
 FIND_PACKAGE(Boost 1.46.1 COMPONENTS 
   test_exec_monitor 
   program_options 
   filesystem 
   regex
+  thread
   system)
 INCLUDE(FindHiredis)
 # find googles protocol buffers
@@ -83,6 +84,11 @@ FIND_PACKAGE( Qt4 REQUIRED )
 # (QT_USE_FILE is a variable defined by FIND_PACKAGE( Qt4 ) that contains a path to CMake script)
 INCLUDE( ${QT_USE_FILE} )
 
+INCLUDE(FindOLA)
+IF (OLA_FOUND)
+	message(STATUS "Found Ola: ${OLA_LIBRARIES}")
+	include_directories(${OLA_INCLUDE_DIR})
+ENDIF (OLA_FOUND)
 
 include_directories(${CMAKE_BINARY_DIR})
 
@@ -94,6 +100,7 @@ include(CMakeBackwardCompatibilityCXX)
 add_subdirectory(src)
 add_subdirectory(libfullcircle)
 add_subdirectory(tests)
+add_subdirectory(bml2fcs)
 
 # add some files to the installation target
 INSTALL(FILES README.md LICENSE DESTINATION share/doc/libfullcircle)
@@ -130,5 +137,6 @@ message("  boost filesystem lib: ${Boost_FILESYSTEM_LIBRARY}")
 message("  hiredis include: ${HIREDIS_INCLUDE_DIR}, lib: ${HIREDIS_LIBRARIES}")
 message("  PB include: ${PROTOBUF_INCLUDE_DIRS}, lib: ${PROTOBUF_LIBRARIES}")
 message("  QT4 include: ${QT_INCLUDE_DIR}, lib: ${QT_LIBRARIES}")
+message("  OLA include: ${OLA_INCLUDE_DIR}, lib: ${OLA_LIBRARIES}")
 message("  extended logging: ${ENABLE_LOGGING}")
 

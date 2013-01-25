@@ -53,9 +53,9 @@ void FontRenderer::scroll_text(Sequence::Ptr sequence, uint16_t x_offset, uint16
 		text_screen_width = text.size() * (item->width() + 1) /*we need some space after the last character*/ + x_offset;
 	}
 	
-	Frame::Ptr screen(new Frame(text_screen_width, _height));
+	Frame::Ptr screen(new Frame(text_screen_width + _width, _height));
 	screen->fill_whole(COLOR_TRANSPARENT);	
-	std::cout << "We want to print: " << text << std::endl;
+	//std::cout << "We want to print: " << text << std::endl;
 	
 	int xcount = 0;
 	for (uint16_t i=0; i < text.size(); i++) {
@@ -69,13 +69,15 @@ void FontRenderer::scroll_text(Sequence::Ptr sequence, uint16_t x_offset, uint16
 	}
 	if (scrollspeed_ms == 0)
 	{   // add the simple text (when there is no scrolling)
-		sequence->add_frame(screen);
+		Frame::Ptr frame(new Frame(_width, _height));
+		frame->set_pixel_window(0, 0, screen);
+		sequence->add_frame(frame);
 	}
 	else
 	{
 		uint32_t timePerFrame = (sequence->fps() * scrollspeed_ms / 1000);
 		Frame::Ptr actual_screen_part(new Frame(_width, _height));
-		for (uint16_t i=0; i < text_screen_width - _width; i++) {
+		for (uint16_t i=0; i < text_screen_width; i++) {
 			actual_screen_part->set_pixel_window(i, 0, screen);
 			Frame::Ptr copy(new Frame(actual_screen_part->width(), actual_screen_part->height()));
 			copy->set_pixel(0,0,actual_screen_part); // make a deep copy for the sequence
@@ -84,6 +86,9 @@ void FontRenderer::scroll_text(Sequence::Ptr sequence, uint16_t x_offset, uint16
 			}
 		}
 		sequence->trim_end();
+		for ( uint32_t time=0; time < timePerFrame; time++) {
+			sequence->add_frame(Frame::Ptr(new Frame(_width, _height)));
+		}
 	}
 }
 

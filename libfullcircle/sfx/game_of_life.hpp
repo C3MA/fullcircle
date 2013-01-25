@@ -13,7 +13,7 @@ namespace fullcircle {
 
   class GameOfLife {
     public:
-      typedef std::tr1::shared_ptr<GameOfLife> Ptr;
+      typedef boost::shared_ptr<GameOfLife> Ptr;
       GameOfLife (
           const uint16_t& width, 
           const uint16_t& height,
