@@ -1,6 +1,7 @@
 #include "server_protocol_dispatcher.hpp"
 #include <sstream>
 #include <libfullcircle/sequence.pb.h>
+#include <libfullcircle/common.hpp>
 
 
 using namespace fullcircle;

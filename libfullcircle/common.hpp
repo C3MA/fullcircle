@@ -68,4 +68,11 @@ namespace fullcircle {
 
 };
 
+/*
+ * @param[out] pWidth  the found width in the configuration file
+ * @param[out] pHeight the found height in the configuration file
+ * @param[out] pFPS    the found FPS in the configuration file
+ */
+const void read_configuration(uint16_t *pWidth, uint16_t *pHeight, uint16_t *pFPS);
+
 #endif /* LIBKLIO_COMMON_HPP */
