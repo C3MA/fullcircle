@@ -78,6 +78,29 @@ void ServerProtocolDispatcher::handle_envelope(
           _active = false;
         }
         break;
+      case fullcircle::Snip::INFO_REQUEST:
+	{
+	 std::cout << "Some request information about us!" << std::endl;
+          fullcircle::Snip snop;
+          snop.set_type(fullcircle::Snip::INFO_ANSWER);
+          fullcircle::Snip_InfoAnswerSnip* info=snop.mutable_infoanswer_snip();
+	  fullcircle::BinarySequenceMetadata* metadata = info->mutable_meta();
+           metadata->set_frames_per_second(12); //FIXME read from config 
+	   metadata->set_width(12); //FIXME read from config
+	   metadata->set_height(6); //FIXME read from config
+	   metadata->set_generator_name("server");
+	   metadata->set_generator_version("1.0");
+          //FIXME asdasdas
+	  std::ostringstream oss;
+          if (!snop.SerializeToOstream(&oss)) {
+            std::cout << "info answer snip serialization did not work." << std::endl;
+          }
+          oss.flush();
+          fullcircle::Envelope::Ptr renv(new fullcircle::Envelope());
+          renv->set_body(oss.str());
+          _transport->write(renv);
+	}
+	break;
       default: // Unknown snip. Don't know what to do
         std::cout << "Unknown snip, discarding." << std::endl;
         break;
