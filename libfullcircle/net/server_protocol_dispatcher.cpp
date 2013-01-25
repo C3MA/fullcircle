@@ -72,6 +72,7 @@ void ServerProtocolDispatcher::handle_envelope(
       case fullcircle::Snip::EOS: // The client finished its transmission. The current session is therefore obsolete and can be deactivated
         {
           std::cout << "EOS!" << std::endl;
+          _timer.cancel();
           fullcircle::Snip_EosSnip eos = snip.eos_snip();
           _on_eos(eos);
           _active = false;
