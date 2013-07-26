@@ -10,7 +10,7 @@ message BinarySequenceMetadata {
   required string generator_version = 5;
 }
 
-message RGB_Value {
+message RGBValue {
   required uint32 red = 1;
   required uint32 green = 2;
   required uint32 blue = 3;
@@ -19,7 +19,7 @@ message RGB_Value {
 }
 
 message BinaryFrame {
-  repeated RGB_Value pixel = 1;
+  repeated RGBValue pixel = 1;
 }
 
 message BinarySequence {
@@ -35,6 +35,14 @@ message Snip {
     PING = 1;
     PONG = 2;
     ERROR = 3;
+    REQUEST = 4;
+    START = 5;
+    FRAME = 6;
+    ACK = 7;
+    NACK = 8;
+    TIMEOUT = 9;
+    ABORT = 10;
+		EOS = 11;
   }
   required SnipType type = 1;
 
@@ -59,6 +67,41 @@ message Snip {
   }
   optional ErrorSnip error_snip = 13;
 
+  message RequestSnip {
+    required string color = 1;
+    required uint32 seqId = 2;
+    required BinarySequenceMetadata meta = 3;
+  }
+  optional RequestSnip req_snip = 14;
+
+  message StartSnip {
+  }
+  optional StartSnip start_snip = 15;
+
+  message FrameSnip {
+    required BinaryFrame frame = 1;
+  }
+  optional FrameSnip frame_snip = 16;
+
+  message AckSnip {
+  }
+  optional AckSnip ack_snip = 17;
+
+  message NackSnip {
+  }
+  optional NackSnip nack_snip = 18;
+
+  message TimeoutSnip {
+  }
+  optional TimeoutSnip timeout_snip = 19;
+
+  message AbortSnip {
+  }
+  optional AbortSnip abort_snip = 20;
+
+	message EosSnip {
+	}
+	optional EosSnip eos_snip = 21;
 }
 
 

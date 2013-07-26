@@ -4,6 +4,7 @@
 #include <libfullcircle/common.hpp>
 #include <libfullcircle/net/envelope.hpp>
 #include <libfullcircle/net/server_session.hpp>
+#include <libfullcircle/net/server_protocol_dispatcher.hpp>
 #include <boost/asio.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/enable_shared_from_this.hpp>
@@ -24,6 +25,7 @@ namespace fullcircle {
       void run();
       void join();
       void shutdown();
+      ServerProtocolDispatcher::Ptr getDispatcher();
 
 
     private:
@@ -32,7 +34,7 @@ namespace fullcircle {
         : _io_service(io_service)
           , _acceptor(_io_service, endpoint)
           , _t()
-      { }
+    { }
       NetServer (const NetServer& original);
       NetServer& operator= (const NetServer& rhs);
       void do_start();
@@ -42,6 +44,7 @@ namespace fullcircle {
       boost::asio::io_service& _io_service;
       boost::asio::ip::tcp::acceptor _acceptor;
       boost::thread _t;
+      ServerProtocolDispatcher::Ptr _dispatcher;
   };
 };
 

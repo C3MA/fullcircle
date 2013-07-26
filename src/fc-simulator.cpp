@@ -6,6 +6,9 @@
 #include <libfullcircle/sequence.hpp>
 #include <boost/program_options.hpp>
 #include <boost/program_options/positional_options.hpp>
+#include <boost/asio.hpp>
+#include <libfullcircle/net/net_server.hpp>
+
 namespace po = boost::program_options;
 namespace bfs=boost::filesystem;
 
@@ -19,6 +22,7 @@ int main (int argc, char* argv[]) {
       ("help,h", "produce help message")
       ("version,v", "print version and exit")
       ("sequence,s", po::value<std::string>(), "the sequence file to use")
+      ("port,p", po::value<int>(), "the port to listen at")
       ;
     po::positional_options_description p;
     p.add("sequence", 1);
@@ -30,6 +34,7 @@ int main (int argc, char* argv[]) {
 
     // Begin processing of commandline parameters.
     std::string sequencefile;
+    int port;
 
     if (vm.count("help")) {
       std::cout << desc << std::endl;
@@ -42,23 +47,42 @@ int main (int argc, char* argv[]) {
       return 0;
     }
 
-    if (! vm.count("sequence")) {
+    if (vm.count("sequence") + vm.count("port") < 1) {
       std::cerr << "You must specify a sequence file." << std::endl;
       return 1;
-    } else {
-      sequencefile=vm["sequence"].as<std::string>();
     }
-
-    bfs::path sequence(sequencefile);
 
     QApplication app(argc, argv);
     Q_INIT_RESOURCE(sprites);
 
     try {
-     //app.setStyle("plastique");
-      fullcircle::SimulatorMainWindow mainWindow(sequence);
-      mainWindow.show();
-      return app.exec();
+      if (vm.count("sequence")) {
+        sequencefile=vm["sequence"].as<std::string>();
+
+        bfs::path sequence(sequencefile);
+
+        //app.setStyle("plastique");
+        fullcircle::SimulatorMainWindow mainWindow(sequence);
+        mainWindow.show();
+
+        return app.exec();
+      }
+
+      if (vm.count("port")) {
+        port = vm["port"].as<int>();
+
+        boost::asio::io_service server_io_service;
+        boost::asio::ip::tcp::endpoint server_endpoint(
+            boost::asio::ip::tcp::v4(), port);
+        fullcircle::NetServer::Ptr server = fullcircle::NetServer::create(
+            server_io_service, server_endpoint);
+
+        fullcircle::SimulatorMainWindow mainWindow(server);
+        mainWindow.show();
+        //server->join();
+
+        return app.exec();
+      }
     } catch (fullcircle::GenericException& ex) {
       std::cout << "Caught exception: " << ex.what() << std::endl;
       exit(1);

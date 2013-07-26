@@ -19,11 +19,13 @@ set(fc-testrow_src fc-testrow.cpp)
 set(fc-2gif_src fc-2gif.cpp)
 set(fc-server_src fc-server.cpp)
 set(fc-ping_src fc-ping.cpp)
+set(fc-streamer_src fc-streamer.cpp)
 set(fc-player_src fc-player.cpp)
+set(fc-snake_src fc-snake.cpp snake.cpp)
 
 include_directories(${CMAKE_SOURCE_DIR}
-                    ${CMAKE_CURRENT_SOURCE_DIR} 
-                    ${Boost_INCLUDE_DIRS})
+  ${CMAKE_CURRENT_SOURCE_DIR} 
+  ${Boost_INCLUDE_DIRS})
 
 add_executable(fc-simulator 
   ${fc-simulator_src}
@@ -90,10 +92,18 @@ add_executable(fc-server
 
 add_executable(fc-ping
   ${fc-ping_src}
-	)
+  )
+
+add_executable(fc-streamer
+  ${fc-streamer_src}
+  )
 
 add_executable(fc-player
   ${fc-player_src}
+  )
+
+add_executable(fc-snake
+  ${fc-snake_src}
   )
 
 target_link_libraries(fc-simulator 
@@ -188,9 +198,19 @@ target_link_libraries(fc-ping
   ${Boost_LIBRARIES}
   )
 
+target_link_libraries(fc-streamer
+  fullcircle
+  ${Boost_LIBRARIES}
+  )
+
 target_link_libraries(fc-player
   fullcircle
-	)
+  )
+
+target_link_libraries(fc-snake
+  fullcircle
+  ${Boost_LIBRARIES}
+  )
 
 # sensor programs to the install target
 INSTALL(PROGRAMS 
@@ -210,7 +230,9 @@ INSTALL(PROGRAMS
   ${CMAKE_CURRENT_BINARY_DIR}/fc-flowmap
   ${CMAKE_CURRENT_BINARY_DIR}/fc-2gif
   ${CMAKE_CURRENT_BINARY_DIR}/fc-ping
-	${CMAKE_CURRENT_BINARY_DIR}/fc-player
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-streamer
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-player
+  ${CMAKE_CURRENT_BINARY_DIR}/fc-snake
   fc-convert2gif.sh
   DESTINATION bin)
 

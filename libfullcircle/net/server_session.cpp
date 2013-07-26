@@ -33,11 +33,18 @@ boost::signals2::connection ServerSession::do_on_envelope(
   return _on_envelope.connect(slot);
 }
 
+boost::signals2::connection ServerSession::do_on_error(
+    const on_error_slot_t& slot)
+{
+  return _on_error.connect(slot);
+}
 
 boost::asio::ip::tcp::socket& ServerSession::socket() {
   return _socket;
 }
 
+/* Begin a session by opening the socket and registering a reader for it
+ */
 void ServerSession::start() {
   std::cout << "ServerSession: Starting session " << this << std::endl;
   try {
@@ -54,6 +61,13 @@ void ServerSession::start() {
   }
 }
 
+/* Stopping a session involved closing the socket.
+ */
+void ServerSession::stop() {
+  std::cout << "ServerSession: Terminating session " << this << std::endl;
+  _socket.close();
+}
+
 void ServerSession::handle_connection_error(
     const boost::system::error_code& error,
     const std::string& additional_hint
@@ -61,6 +75,7 @@ void ServerSession::handle_connection_error(
 {
   std::cerr << "ServerSession: " << additional_hint <<
     ", error: " << error.message() << std::endl;
+  _on_error(error);
 }
 
 
