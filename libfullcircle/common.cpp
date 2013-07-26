@@ -22,7 +22,6 @@
 #include <stdint.h>
 
 /* includes, that are needed to load the configuration */
-#include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
 #include <boost/program_options/positional_options.hpp>
 namespace po = boost::program_options;
@@ -41,25 +40,17 @@ const std::string VersionInfo::getVersion() {
  * @param[out] pHeight the found height in the configuration file
  * @param[out] pFPS    the found FPS in the configuration file
  */
-const void read_configuration(uint16_t *pWidth, uint16_t *pHeight, uint16_t *pFPS)
+const void read_configuration(bfs::path config_file, uint16_t *pWidth, uint16_t *pHeight, uint16_t *pFPS)
 {
   uint16_t fps;
   uint16_t width;
   uint16_t height;
 
   po::variables_map vm; 
-  bfs::path config_file;
-  char* homedir = getenv("HOME");
 
   if (pWidth == NULL || pHeight == NULL || pFPS == NULL)
     return;
 
-  if (homedir != NULL) {
-    config_file = config_file / homedir / ".fullcirclerc";
-  } else {
-    config_file = config_file / "etc" / "fullcirclerc";
-  }
-  
  try {
     /* define the settings, we are interessted in from the configuration file */
     po::options_description generic("Generic options (config file and command line)");

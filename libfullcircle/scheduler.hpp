@@ -3,6 +3,7 @@
 
 #include <libfullcircle/sequence.hpp>
 #include <libfullcircle/net/net_server.hpp>
+#include <boost/filesystem.hpp>
 
 #include <queue>
 
@@ -18,7 +19,7 @@ namespace fullcircle {
 			void setFallback(std::string dir);
 			void setOutput(std::string dir);
 			void setDebug(bool debug);
-			void setPort(int port);
+			void setPort(int port, boost::filesystem::path configfile);
 			void addConnection(Snip_RequestSnip request);
 			void addFrame(Snip_FrameSnip frame);
 			void seqEnd(ServerProtocolDispatcher::Ptr dispatcher);

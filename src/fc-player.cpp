@@ -213,7 +213,7 @@ int main (int argc, char* argv[]) {
 		if ( port != 0 )
 		{
 			std::cout << "Listening on port " << port << " for streams" << std::endl;
-			scheduler->setPort(port);
+			scheduler->setPort(port, config_file);
 		}
 
 		if (vm.count("universe")) {

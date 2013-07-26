@@ -83,7 +83,7 @@ void ServerProtocolDispatcher::handle_envelope(
 	{
 	 uint16_t width, height, fps;
 	 fullcircle::VersionInfo::Ptr version(new fullcircle::VersionInfo());
-         read_configuration(&width, &height, &fps); 
+         read_configuration(_config, &width, &height, &fps); 
 	 std::cout << "Request: " << width << "x" << height << " fps: " << fps << " at server-version " << version->getVersion() << std::endl;
           fullcircle::Snip snop;
           snop.set_type(fullcircle::Snip::INFO_ANSWER);
@@ -94,7 +94,6 @@ void ServerProtocolDispatcher::handle_envelope(
 	   metadata->set_height(height); 
 	   metadata->set_generator_name("server");
 	   metadata->set_generator_version(version->getVersion());
-          //FIXME asdasdas
 	  std::ostringstream oss;
           if (!snop.SerializeToOstream(&oss)) {
             std::cout << "info answer snip serialization did not work." << std::endl;
@@ -248,6 +247,11 @@ bool ServerProtocolDispatcher::is_active()
 void ServerProtocolDispatcher::setSession(ServerSession::Ptr session)
 {
   _session = session;
+}
+
+void ServerProtocolDispatcher::setConfig(boost::filesystem::path config)
+{
+ _config = config;
 }
 
 ServerSession::Ptr ServerProtocolDispatcher::getSession()

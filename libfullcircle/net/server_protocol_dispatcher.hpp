@@ -9,6 +9,9 @@
 #include <boost/system/error_code.hpp>
 #include <boost/asio/deadline_timer.hpp>
 
+/* includes, that are needed to load the configuration */
+#include <boost/filesystem.hpp>
+
 namespace fullcircle {
   class ServerProtocolDispatcher {
     public:
@@ -53,6 +56,8 @@ namespace fullcircle {
       void send_timeout();
       bool is_active();
 
+      void setConfig(boost::filesystem::path config);
+
       void setSession(ServerSession::Ptr session);
       fullcircle::ServerSession::Ptr getSession();
 
@@ -63,6 +68,8 @@ namespace fullcircle {
       fullcircle::EnvelopeTransport::Ptr _transport;
       ServerSession::Ptr _session;
 			boost::asio::deadline_timer _timer;
+
+      boost::filesystem::path _config;
       bool _active;
       on_request_snip_t _on_request;
       on_frame_snip_t _on_frame;

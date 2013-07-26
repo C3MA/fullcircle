@@ -21,6 +21,8 @@
 #ifndef LIBKLIO_COMMON_HPP
 #define LIBKLIO_COMMON_HPP 1
 
+/* includes, that are needed to load the configuration */
+#include <boost/filesystem.hpp>
 
 /* Include TR1 shared ptrs in a portable way. 
 #include <cstddef> // for __GLIBCXX__
@@ -73,6 +75,6 @@ namespace fullcircle {
  * @param[out] pHeight the found height in the configuration file
  * @param[out] pFPS    the found FPS in the configuration file
  */
-const void read_configuration(uint16_t *pWidth, uint16_t *pHeight, uint16_t *pFPS);
+const void read_configuration(boost::filesystem::path config_file, uint16_t *pWidth, uint16_t *pHeight, uint16_t *pFPS);
 
 #endif /* LIBKLIO_COMMON_HPP */

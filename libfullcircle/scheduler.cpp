@@ -35,16 +35,17 @@ void Scheduler::setDebug(bool debug)
 	_debug = debug;
 }
 
-void Scheduler::setPort(int port)
+void Scheduler::setPort(int port, boost::filesystem::path config)
 {
 	boost::asio::ip::tcp::endpoint server_endpoint(
 			boost::asio::ip::tcp::v4(), port);
 	_server = fullcircle::NetServer::create(
 			_server_io_service, server_endpoint);
+	 std::cout << "Found config=" << config << std::endl;	
 	_server->run();
 
 	_dispatcher = _server->getDispatcher();
-
+	_dispatcher->setConfig(config);
 	if ( _dispatcher != NULL )
 	{
 		_dispatcher->do_on_request(boost::bind(&fullcircle::Scheduler::addConnection, this, _1));
