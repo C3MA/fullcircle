@@ -92,7 +92,6 @@ tests/net/nettest: /usr/lib/i386-linux-gnu/libQtGui.so
 tests/net/nettest: /usr/lib/i386-linux-gnu/libQtCore.so
 tests/net/nettest: /usr/local/lib/libola.a
 tests/net/nettest: /usr/local/lib/libolacommon.a
-tests/net/nettest: /usr/lib/libboost_system-mt.so
 tests/net/nettest: tests/net/CMakeFiles/nettest.dir/build.make
 tests/net/nettest: tests/net/CMakeFiles/nettest.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking CXX executable nettest"

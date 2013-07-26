@@ -92,7 +92,6 @@ tests/flow_map/flowmaptest: /usr/lib/i386-linux-gnu/libQtGui.so
 tests/flow_map/flowmaptest: /usr/lib/i386-linux-gnu/libQtCore.so
 tests/flow_map/flowmaptest: /usr/local/lib/libola.a
 tests/flow_map/flowmaptest: /usr/local/lib/libolacommon.a
-tests/flow_map/flowmaptest: /usr/lib/libboost_system-mt.so
 tests/flow_map/flowmaptest: tests/flow_map/CMakeFiles/flowmaptest.dir/build.make
 tests/flow_map/flowmaptest: tests/flow_map/CMakeFiles/flowmaptest.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking CXX executable flowmaptest"

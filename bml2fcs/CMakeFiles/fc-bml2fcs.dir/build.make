@@ -116,10 +116,9 @@ bml2fcs/fc-bml2fcs: /usr/lib/i386-linux-gnu/libQtGui.so
 bml2fcs/fc-bml2fcs: /usr/lib/i386-linux-gnu/libQtXml.so
 bml2fcs/fc-bml2fcs: /usr/lib/i386-linux-gnu/libQtCore.so
 bml2fcs/fc-bml2fcs: /usr/lib/libprotobuf.so
+bml2fcs/fc-bml2fcs: /usr/lib/i386-linux-gnu/libQtGui.so
 bml2fcs/fc-bml2fcs: /usr/local/lib/libola.a
 bml2fcs/fc-bml2fcs: /usr/local/lib/libolacommon.a
-bml2fcs/fc-bml2fcs: /usr/lib/libboost_system-mt.so
-bml2fcs/fc-bml2fcs: /usr/lib/i386-linux-gnu/libQtGui.so
 bml2fcs/fc-bml2fcs: /usr/lib/i386-linux-gnu/libQtCore.so
 bml2fcs/fc-bml2fcs: bml2fcs/CMakeFiles/fc-bml2fcs.dir/build.make
 bml2fcs/fc-bml2fcs: bml2fcs/CMakeFiles/fc-bml2fcs.dir/link.txt

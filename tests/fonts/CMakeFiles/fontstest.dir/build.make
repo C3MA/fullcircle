@@ -92,7 +92,6 @@ tests/fonts/fontstest: /usr/lib/i386-linux-gnu/libQtGui.so
 tests/fonts/fontstest: /usr/lib/i386-linux-gnu/libQtCore.so
 tests/fonts/fontstest: /usr/local/lib/libola.a
 tests/fonts/fontstest: /usr/local/lib/libolacommon.a
-tests/fonts/fontstest: /usr/lib/libboost_system-mt.so
 tests/fonts/fontstest: tests/fonts/CMakeFiles/fontstest.dir/build.make
 tests/fonts/fontstest: tests/fonts/CMakeFiles/fontstest.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking CXX executable fontstest"

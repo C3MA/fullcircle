@@ -92,7 +92,6 @@ tests/frame/fillframetest: /usr/lib/i386-linux-gnu/libQtGui.so
 tests/frame/fillframetest: /usr/lib/i386-linux-gnu/libQtCore.so
 tests/frame/fillframetest: /usr/local/lib/libola.a
 tests/frame/fillframetest: /usr/local/lib/libolacommon.a
-tests/frame/fillframetest: /usr/lib/libboost_system-mt.so
 tests/frame/fillframetest: tests/frame/CMakeFiles/fillframetest.dir/build.make
 tests/frame/fillframetest: tests/frame/CMakeFiles/fillframetest.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking CXX executable fillframetest"

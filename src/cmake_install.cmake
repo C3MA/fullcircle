@@ -12,7 +12,7 @@ IF(NOT DEFINED CMAKE_INSTALL_CONFIG_NAME)
     STRING(REGEX REPLACE "^[^A-Za-z0-9_]+" ""
            CMAKE_INSTALL_CONFIG_NAME "${BUILD_TYPE}")
   ELSE(BUILD_TYPE)
-    SET(CMAKE_INSTALL_CONFIG_NAME "")
+    SET(CMAKE_INSTALL_CONFIG_NAME "Debug")
   ENDIF(BUILD_TYPE)
   MESSAGE(STATUS "Install configuration: \"${CMAKE_INSTALL_CONFIG_NAME}\"")
 ENDIF(NOT DEFINED CMAKE_INSTALL_CONFIG_NAME)
@@ -50,7 +50,9 @@ IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspeci
     "/home/c3ma/Development/fullcircle/src/fc-flowmap"
     "/home/c3ma/Development/fullcircle/src/fc-2gif"
     "/home/c3ma/Development/fullcircle/src/fc-ping"
+    "/home/c3ma/Development/fullcircle/src/fc-streamer"
     "/home/c3ma/Development/fullcircle/src/fc-player"
+    "/home/c3ma/Development/fullcircle/src/fc-snake"
     "/home/c3ma/Development/fullcircle/src/fc-convert2gif.sh"
     )
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")

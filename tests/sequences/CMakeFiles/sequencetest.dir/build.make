@@ -92,7 +92,6 @@ tests/sequences/sequencetest: /usr/lib/i386-linux-gnu/libQtGui.so
 tests/sequences/sequencetest: /usr/lib/i386-linux-gnu/libQtCore.so
 tests/sequences/sequencetest: /usr/local/lib/libola.a
 tests/sequences/sequencetest: /usr/local/lib/libolacommon.a
-tests/sequences/sequencetest: /usr/lib/libboost_system-mt.so
 tests/sequences/sequencetest: tests/sequences/CMakeFiles/sequencetest.dir/build.make
 tests/sequences/sequencetest: tests/sequences/CMakeFiles/sequencetest.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking CXX executable sequencetest"

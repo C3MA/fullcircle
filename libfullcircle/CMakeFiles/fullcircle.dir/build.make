@@ -611,7 +611,7 @@ libfullcircle/sequence.pb.h: libfullcircle/sequence.pb.cc
 libfullcircle/moc_simulator_main_window.cxx: libfullcircle/simulator_main_window.hpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/c3ma/Development/fullcircle/CMakeFiles $(CMAKE_PROGRESS_26)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating moc_simulator_main_window.cxx"
-	cd /home/c3ma/Development/fullcircle/libfullcircle && /usr/bin/moc-qt4 -I/usr/include/qt4 -I/usr/include/qt4/QtGui -I/usr/include/qt4/QtCore -I/usr/local/include -I/home/c3ma/Development/fullcircle -I/home/c3ma/Development/fullcircle/libfullcircle -I/usr/include -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DBOOST_TT_HAS_OPERATOR_HPP_INCLUDED -o /home/c3ma/Development/fullcircle/libfullcircle/moc_simulator_main_window.cxx /home/c3ma/Development/fullcircle/libfullcircle/simulator_main_window.hpp
+	cd /home/c3ma/Development/fullcircle/libfullcircle && /usr/bin/moc-qt4 -I/usr/include/qt4 -I/usr/include/qt4/QtGui -I/usr/include/qt4/QtCore -I/usr/local/include -I/home/c3ma/Development/fullcircle -I/home/c3ma/Development/fullcircle/libfullcircle -I/usr/include -DQT_GUI_LIB -DQT_CORE_LIB -DBOOST_TT_HAS_OPERATOR_HPP_INCLUDED -o /home/c3ma/Development/fullcircle/libfullcircle/moc_simulator_main_window.cxx /home/c3ma/Development/fullcircle/libfullcircle/simulator_main_window.hpp
 
 libfullcircle/ui_simulator.h: libfullcircle/simulator.ui
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/c3ma/Development/fullcircle/CMakeFiles $(CMAKE_PROGRESS_27)

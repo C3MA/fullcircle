@@ -92,7 +92,6 @@ tests/configfile/config_filestest: /usr/lib/i386-linux-gnu/libQtGui.so
 tests/configfile/config_filestest: /usr/lib/i386-linux-gnu/libQtCore.so
 tests/configfile/config_filestest: /usr/local/lib/libola.a
 tests/configfile/config_filestest: /usr/local/lib/libolacommon.a
-tests/configfile/config_filestest: /usr/lib/libboost_system-mt.so
 tests/configfile/config_filestest: tests/configfile/CMakeFiles/config_filestest.dir/build.make
 tests/configfile/config_filestest: tests/configfile/CMakeFiles/config_filestest.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking CXX executable config_filestest"

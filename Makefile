@@ -33,4 +33,3 @@ bindist:
 	(cd ${BUILDDIR}; cpack)
 
 .PHONY: clean distclean
-

@@ -92,7 +92,6 @@ tests/sprites/spritestest: /usr/lib/i386-linux-gnu/libQtGui.so
 tests/sprites/spritestest: /usr/lib/i386-linux-gnu/libQtCore.so
 tests/sprites/spritestest: /usr/local/lib/libola.a
 tests/sprites/spritestest: /usr/local/lib/libolacommon.a
-tests/sprites/spritestest: /usr/lib/libboost_system-mt.so
 tests/sprites/spritestest: tests/sprites/CMakeFiles/spritestest.dir/build.make
 tests/sprites/spritestest: tests/sprites/CMakeFiles/spritestest.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking CXX executable spritestest"

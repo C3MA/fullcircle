@@ -380,6 +380,34 @@ fc-simulator/fast:
 .PHONY : fc-simulator/fast
 
 # Convenience name for target.
+src/CMakeFiles/fc-snake.dir/rule:
+	cd /home/c3ma/Development/fullcircle && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/fc-snake.dir/rule
+.PHONY : src/CMakeFiles/fc-snake.dir/rule
+
+# Convenience name for target.
+fc-snake: src/CMakeFiles/fc-snake.dir/rule
+.PHONY : fc-snake
+
+# fast build rule for target.
+fc-snake/fast:
+	cd /home/c3ma/Development/fullcircle && $(MAKE) -f src/CMakeFiles/fc-snake.dir/build.make src/CMakeFiles/fc-snake.dir/build
+.PHONY : fc-snake/fast
+
+# Convenience name for target.
+src/CMakeFiles/fc-streamer.dir/rule:
+	cd /home/c3ma/Development/fullcircle && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/fc-streamer.dir/rule
+.PHONY : src/CMakeFiles/fc-streamer.dir/rule
+
+# Convenience name for target.
+fc-streamer: src/CMakeFiles/fc-streamer.dir/rule
+.PHONY : fc-streamer
+
+# fast build rule for target.
+fc-streamer/fast:
+	cd /home/c3ma/Development/fullcircle && $(MAKE) -f src/CMakeFiles/fc-streamer.dir/build.make src/CMakeFiles/fc-streamer.dir/build
+.PHONY : fc-streamer/fast
+
+# Convenience name for target.
 src/CMakeFiles/fc-testimage.dir/rule:
 	cd /home/c3ma/Development/fullcircle && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/fc-testimage.dir/rule
 .PHONY : src/CMakeFiles/fc-testimage.dir/rule
@@ -781,6 +809,54 @@ fc-simulator.cpp.s:
 	cd /home/c3ma/Development/fullcircle && $(MAKE) -f src/CMakeFiles/fc-simulator.dir/build.make src/CMakeFiles/fc-simulator.dir/fc-simulator.cpp.s
 .PHONY : fc-simulator.cpp.s
 
+fc-snake.o: fc-snake.cpp.o
+.PHONY : fc-snake.o
+
+# target to build an object file
+fc-snake.cpp.o:
+	cd /home/c3ma/Development/fullcircle && $(MAKE) -f src/CMakeFiles/fc-snake.dir/build.make src/CMakeFiles/fc-snake.dir/fc-snake.cpp.o
+.PHONY : fc-snake.cpp.o
+
+fc-snake.i: fc-snake.cpp.i
+.PHONY : fc-snake.i
+
+# target to preprocess a source file
+fc-snake.cpp.i:
+	cd /home/c3ma/Development/fullcircle && $(MAKE) -f src/CMakeFiles/fc-snake.dir/build.make src/CMakeFiles/fc-snake.dir/fc-snake.cpp.i
+.PHONY : fc-snake.cpp.i
+
+fc-snake.s: fc-snake.cpp.s
+.PHONY : fc-snake.s
+
+# target to generate assembly for a file
+fc-snake.cpp.s:
+	cd /home/c3ma/Development/fullcircle && $(MAKE) -f src/CMakeFiles/fc-snake.dir/build.make src/CMakeFiles/fc-snake.dir/fc-snake.cpp.s
+.PHONY : fc-snake.cpp.s
+
+fc-streamer.o: fc-streamer.cpp.o
+.PHONY : fc-streamer.o
+
+# target to build an object file
+fc-streamer.cpp.o:
+	cd /home/c3ma/Development/fullcircle && $(MAKE) -f src/CMakeFiles/fc-streamer.dir/build.make src/CMakeFiles/fc-streamer.dir/fc-streamer.cpp.o
+.PHONY : fc-streamer.cpp.o
+
+fc-streamer.i: fc-streamer.cpp.i
+.PHONY : fc-streamer.i
+
+# target to preprocess a source file
+fc-streamer.cpp.i:
+	cd /home/c3ma/Development/fullcircle && $(MAKE) -f src/CMakeFiles/fc-streamer.dir/build.make src/CMakeFiles/fc-streamer.dir/fc-streamer.cpp.i
+.PHONY : fc-streamer.cpp.i
+
+fc-streamer.s: fc-streamer.cpp.s
+.PHONY : fc-streamer.s
+
+# target to generate assembly for a file
+fc-streamer.cpp.s:
+	cd /home/c3ma/Development/fullcircle && $(MAKE) -f src/CMakeFiles/fc-streamer.dir/build.make src/CMakeFiles/fc-streamer.dir/fc-streamer.cpp.s
+.PHONY : fc-streamer.cpp.s
+
 fc-testimage.o: fc-testimage.cpp.o
 .PHONY : fc-testimage.o
 
@@ -853,6 +929,30 @@ fc-text.cpp.s:
 	cd /home/c3ma/Development/fullcircle && $(MAKE) -f src/CMakeFiles/fc-text.dir/build.make src/CMakeFiles/fc-text.dir/fc-text.cpp.s
 .PHONY : fc-text.cpp.s
 
+snake.o: snake.cpp.o
+.PHONY : snake.o
+
+# target to build an object file
+snake.cpp.o:
+	cd /home/c3ma/Development/fullcircle && $(MAKE) -f src/CMakeFiles/fc-snake.dir/build.make src/CMakeFiles/fc-snake.dir/snake.cpp.o
+.PHONY : snake.cpp.o
+
+snake.i: snake.cpp.i
+.PHONY : snake.i
+
+# target to preprocess a source file
+snake.cpp.i:
+	cd /home/c3ma/Development/fullcircle && $(MAKE) -f src/CMakeFiles/fc-snake.dir/build.make src/CMakeFiles/fc-snake.dir/snake.cpp.i
+.PHONY : snake.cpp.i
+
+snake.s: snake.cpp.s
+.PHONY : snake.s
+
+# target to generate assembly for a file
+snake.cpp.s:
+	cd /home/c3ma/Development/fullcircle && $(MAKE) -f src/CMakeFiles/fc-snake.dir/build.make src/CMakeFiles/fc-snake.dir/snake.cpp.s
+.PHONY : snake.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -875,6 +975,8 @@ help:
 	@echo "... fc-read-image"
 	@echo "... fc-server"
 	@echo "... fc-simulator"
+	@echo "... fc-snake"
+	@echo "... fc-streamer"
 	@echo "... fc-testimage"
 	@echo "... fc-testrow"
 	@echo "... fc-text"
@@ -931,6 +1033,12 @@ help:
 	@echo "... fc-simulator.o"
 	@echo "... fc-simulator.i"
 	@echo "... fc-simulator.s"
+	@echo "... fc-snake.o"
+	@echo "... fc-snake.i"
+	@echo "... fc-snake.s"
+	@echo "... fc-streamer.o"
+	@echo "... fc-streamer.i"
+	@echo "... fc-streamer.s"
 	@echo "... fc-testimage.o"
 	@echo "... fc-testimage.i"
 	@echo "... fc-testimage.s"
@@ -940,6 +1048,9 @@ help:
 	@echo "... fc-text.o"
 	@echo "... fc-text.i"
 	@echo "... fc-text.s"
+	@echo "... snake.o"
+	@echo "... snake.i"
+	@echo "... snake.s"
 .PHONY : help
 
 
