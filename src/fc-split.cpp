@@ -16,6 +16,7 @@
 #include <boost/program_options.hpp>
 #include <boost/program_options/positional_options.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/format.hpp>
 
 namespace po = boost::program_options;
 namespace bfs=boost::filesystem;
@@ -101,8 +102,10 @@ int main (int argc, char* argv[]) {
 		
 		for(uint32_t frameCount=0; frameCount < inputSeq->size(); frameCount += frameLength)
 		{
-			std::string snippetfile (prefixfile + boost::lexical_cast<std::string>((frameCount / frameLength) + 1) + ".seq");
-			std::cout << "Storeing " << frameCount << " - " << (frameCount+frameLength) << "to file " << snippetfile << std::endl;
+			boost::format fmt("%03d");
+			fmt % ((frameCount / frameLength) + 1);
+			std::string snippetfile (prefixfile + fmt.str() + ".seq");
+			std::cout << "" << snippetfile << " with " << frameCount << " - " << (frameCount+frameLength) << std::endl;
 			
 			fullcircle::Sequence::Ptr snippetSeq(new fullcircle::Sequence( (uint16_t) inputSeq->fps(),
 								inputSeq->width(), inputSeq->height() ));
