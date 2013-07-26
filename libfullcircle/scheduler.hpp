@@ -27,10 +27,12 @@ namespace fullcircle {
 			typedef boost::signals2::signal<void (fullcircle::Frame::Ptr)>     on_frame_t;
 			typedef on_frame_t::slot_type on_frame_slot_t;
 			boost::signals2::connection do_on_frame(const on_frame_slot_t& slot);
+			void disconnect_on_frame();
 
 			typedef boost::signals2::signal<void (void)>     on_end_t;
 			typedef on_end_t::slot_type on_end_slot_t;
 			boost::signals2::connection do_on_end(const on_end_slot_t& slot);
+			void disconnect_on_end();
 
 		private:
 			bool _debug;
@@ -42,6 +44,8 @@ namespace fullcircle {
 			int _width, _height;
 			on_frame_t _on_frame;
 			on_end_t _on_end;
+			std::list<boost::signals2::connection> _on_frame_connections;
+			std::list<boost::signals2::connection> _on_end_connections;
 	};
 }
 
