@@ -1,6 +1,7 @@
 #include "server_protocol_dispatcher.hpp"
 #include <sstream>
 #include <libfullcircle/sequence.pb.h>
+#include <libfullcircle/common.hpp>
 
 
 using namespace fullcircle;
@@ -78,6 +79,32 @@ void ServerProtocolDispatcher::handle_envelope(
           _active = false;
         }
         break;
+      case fullcircle::Snip::INFO_REQUEST:
+	{
+	 uint16_t width, height, fps;
+	 fullcircle::VersionInfo::Ptr version(new fullcircle::VersionInfo());
+         read_configuration(&width, &height, &fps); 
+	 std::cout << "Request: " << width << "x" << height << " fps: " << fps << " at server-version " << version->getVersion() << std::endl;
+          fullcircle::Snip snop;
+          snop.set_type(fullcircle::Snip::INFO_ANSWER);
+          fullcircle::Snip_InfoAnswerSnip* info=snop.mutable_infoanswer_snip();
+	  fullcircle::BinarySequenceMetadata* metadata = info->mutable_meta();
+           metadata->set_frames_per_second(fps); 
+	   metadata->set_width(width); 
+	   metadata->set_height(height); 
+	   metadata->set_generator_name("server");
+	   metadata->set_generator_version(version->getVersion());
+          //FIXME asdasdas
+	  std::ostringstream oss;
+          if (!snop.SerializeToOstream(&oss)) {
+            std::cout << "info answer snip serialization did not work." << std::endl;
+          }
+          oss.flush();
+          fullcircle::Envelope::Ptr renv(new fullcircle::Envelope());
+          renv->set_body(oss.str());
+          _transport->write(renv);
+	}
+	break;
       default: // Unknown snip. Don't know what to do
         std::cout << "Unknown snip, discarding." << std::endl;
         break;

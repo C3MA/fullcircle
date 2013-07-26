@@ -12,6 +12,7 @@ set(fc-concat_src fc-concat.cpp)
 set(fc-read-image_src fc-read-image.cpp)
 set(fc-flowmap_src fc-flowmap.cpp)
 set(fc-concat_src fc-concat.cpp)
+set(fc-split_src fc-split.cpp)
 set(fc-read-image_src fc-read-image.cpp)
 set(fc-leader_src fc-leader.cpp)
 set(fc-testimage_src fc-testimage.cpp)
@@ -51,6 +52,9 @@ add_executable(fc-text
   )
 add_executable(fc-add
   ${fc-add_src}
+  )
+add_executable(fc-split
+  ${fc-split_src}
   )
 add_executable(fc-concat
   ${fc-concat_src}
@@ -139,6 +143,11 @@ target_link_libraries(fc-add
   fullcircle
   ${Boost_LIBRARIES}
   )
+target_link_libraries(fc-split
+  fullcircle
+  ${Boost_LIBRARIES}
+  )
+
 target_link_libraries(fc-read-image
   fullcircle
   ${Boost_LIBRARIES}

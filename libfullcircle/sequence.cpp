@@ -42,6 +42,13 @@ void Sequence::add_sequence(Sequence::Ptr rhs)
 	}
 }
 
+void Sequence::extract_sequence(Sequence::Ptr rhs, uint32_t frame_offset, uint32_t snippet_length)
+{
+	for (uint32_t frameID=frame_offset; frameID < size() && frameID < frame_offset + snippet_length; ++frameID) {
+                rhs->add_frame(get_frame(frameID));
+        }
+}
+
 void Sequence::dump(std::ostream& os) {
   uint32_t seq_number = 0;
   std::vector<Frame::Ptr>::iterator it;

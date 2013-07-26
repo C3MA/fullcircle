@@ -42,7 +42,9 @@ message Snip {
     NACK = 8;
     TIMEOUT = 9;
     ABORT = 10;
-		EOS = 11;
+    EOS = 11;
+    INFO_REQUEST = 12;
+    INFO_ANSWER = 13;
   }
   required SnipType type = 1;
 
@@ -99,9 +101,18 @@ message Snip {
   }
   optional AbortSnip abort_snip = 20;
 
-	message EosSnip {
-	}
-	optional EosSnip eos_snip = 21;
+  message EosSnip {
+  }
+  optional EosSnip eos_snip = 21;
+
+  message InfoRequestSnip {
+  }
+  optional InfoRequestSnip inforequest_snip = 22;
+
+  message InfoAnswerSnip {
+    required BinarySequenceMetadata meta = 1;
+  }
+  optional InfoAnswerSnip infoanswer_snip = 23;
 }
 
 

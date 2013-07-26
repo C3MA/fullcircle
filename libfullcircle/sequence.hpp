@@ -20,7 +20,8 @@ namespace fullcircle {
       virtual ~Sequence() {}; 
 
       void add_frame(Frame::Ptr frame);
-	  void add_sequence(Sequence::Ptr rhs);
+      void add_sequence(Sequence::Ptr rhs);
+      void extract_sequence(Sequence::Ptr rhs, uint32_t frame_offset, uint32_t snippet_length);
       Frame::Ptr get_frame(uint32_t frameid);
       Frame::Ptr get_last_frame();
       uint16_t width() const { return _width; };
