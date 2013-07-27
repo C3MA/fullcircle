@@ -57,6 +57,7 @@ namespace fullcircle {
       bool is_active();
 
       void setConfig(boost::filesystem::path config);
+      std::string getConfig();
 
       void setSession(ServerSession::Ptr session);
       fullcircle::ServerSession::Ptr getSession();

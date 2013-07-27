@@ -42,6 +42,13 @@ void NetServer::handle_accept(ServerSession::Ptr session,
       error.message() << std::endl;
   }
 
+
+  /* dirty hack, that can probalbly work */
+  if (_config == "")
+	_config = _dispatcher->getConfig();
+  else
+	_dispatcher->setConfig(_config);
+
   start_accept();
 }
 

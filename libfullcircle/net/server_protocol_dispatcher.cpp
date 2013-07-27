@@ -84,7 +84,7 @@ void ServerProtocolDispatcher::handle_envelope(
 	 uint16_t width, height, fps;
 	 fullcircle::VersionInfo::Ptr version(new fullcircle::VersionInfo());
          read_configuration(_config, &width, &height, &fps); 
-	 std::cout << "Request: " << width << "x" << height << " fps: " << fps << " at server-version " << version->getVersion() << std::endl;
+	 std::cout << "Server configuration: " << width << "x" << height << " fps: " << fps << " at server-version " << version->getVersion() << "(from " << _config << ")" << std::endl;
           fullcircle::Snip snop;
           snop.set_type(fullcircle::Snip::INFO_ANSWER);
           fullcircle::Snip_InfoAnswerSnip* info=snop.mutable_infoanswer_snip();
@@ -252,6 +252,11 @@ void ServerProtocolDispatcher::setSession(ServerSession::Ptr session)
 void ServerProtocolDispatcher::setConfig(boost::filesystem::path config)
 {
  _config = config;
+}
+
+std::string ServerProtocolDispatcher::getConfig()
+{
+ return _config.c_str();
 }
 
 ServerSession::Ptr ServerProtocolDispatcher::getSession()

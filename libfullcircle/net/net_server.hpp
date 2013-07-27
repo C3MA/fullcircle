@@ -45,6 +45,7 @@ namespace fullcircle {
       boost::asio::ip::tcp::acceptor _acceptor;
       boost::thread _t;
       ServerProtocolDispatcher::Ptr _dispatcher;
+      std::string _config;
   };
 };
 
