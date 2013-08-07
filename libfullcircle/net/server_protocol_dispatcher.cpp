@@ -83,6 +83,18 @@ void ServerProtocolDispatcher::handle_envelope(
 	{
 	 uint16_t width, height, fps;
 	 fullcircle::VersionInfo::Ptr version(new fullcircle::VersionInfo());
+	 if (_config == "")
+	 {
+          std::cerr << "Load configuration from standard places" << std::endl;
+          boost::filesystem::path config_file;
+	  char* homedir = getenv("HOME");
+	  if (homedir != NULL) {
+	    config_file = config_file / homedir / ".fullcirclerc";
+	  } else {
+	    config_file = config_file / "etc" / "fullcirclerc";
+	  }
+	  _config = config_file;
+	 }
          read_configuration(_config, &width, &height, &fps); 
 	 std::cout << "Server configuration: " << width << "x" << height << " fps: " << fps << " at server-version " << version->getVersion() << "(from " << _config << ")" << std::endl;
           fullcircle::Snip snop;
