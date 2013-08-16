@@ -36,6 +36,7 @@ int main (int argc, char* argv[]) {
 			("output,o", po::value<std::string>(), "the directory played sequence files are moved to")
 			("port", po::value<int>(), "the port to listen for network streams")
 			("universe,u", po::value<int>(), "the DMX universe used for output")
+			("dimm", po::value<float>(), "dimm factor, should be between 0.0 and 1.0")
 			("debug,d", "print additional info")
 			;
 
@@ -83,6 +84,7 @@ int main (int argc, char* argv[]) {
 
 		std::string srcdir, priodir, falldir, dstdir;
 		int port = 0;
+		float dimm = 1.0;
 		fullcircle::Scheduler::Ptr scheduler(new fullcircle::Scheduler());
 
 		std::map< int, std::map<int, int> > map;
@@ -221,9 +223,15 @@ int main (int argc, char* argv[]) {
 			std::cout << "Using universe " << universe << std::endl;
 		}
 
+		if (vm.count("dimm")) {
+			dimm=vm["dimm"].as<float>();
+			std::cout << "Using dimm factor " << dimm << std::endl;
+		}
+
 		fullcircle::DmxClient client(scheduler);
 		client.setUniverse(universe);
 		client.setMapping(&map);
+		client.setDimm(dimm);
 		if ( debug )
 		{
 			client.setDebug(true);

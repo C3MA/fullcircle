@@ -85,9 +85,9 @@ void DmxClient::playSequence(Sequence::Ptr seq, double ifs)
 				if ( addr >= 0 )
 				{
 					fullcircle::RGB_t pixel = frame->get_pixel(x, y);
-					_buffer.SetChannel( addr    , pixel.red   % 256 );
-					_buffer.SetChannel( addr + 1, pixel.green % 256 );
-					_buffer.SetChannel( addr + 2, pixel.blue  % 256 );
+					_buffer.SetChannel( addr    , (pixel.red   % 256)*_dimm );
+					_buffer.SetChannel( addr + 1, (pixel.green % 256)*_dimm );
+					_buffer.SetChannel( addr + 2, (pixel.blue  % 256)*_dimm );
 				}
 			}
 		}
@@ -111,9 +111,9 @@ void DmxClient::playFrame(Frame::Ptr frame)
 			if ( addr >= 0 )
 			{
 				fullcircle::RGB_t pixel = frame->get_pixel(x, y);
-				_buffer.SetChannel( addr    , pixel.red   % 256 );
-				_buffer.SetChannel( addr + 1, pixel.green % 256 );
-				_buffer.SetChannel( addr + 2, pixel.blue  % 256 );
+				_buffer.SetChannel( addr    , (pixel.red   % 256)*_dimm );
+				_buffer.SetChannel( addr + 1, (pixel.green % 256)*_dimm );
+				_buffer.SetChannel( addr + 2, (pixel.blue  % 256)*_dimm );
 			}
 		}
 	}
@@ -157,4 +157,9 @@ void DmxClient::setMapping(std::map< int, std::map<int, int> > *map)
 void DmxClient::setDebug(bool debug)
 {
 	_debug = debug;
+}
+
+void DmxClient::setDimm(float dimm)
+{
+	_dimm = dimm;
 }

@@ -15,6 +15,7 @@ namespace fullcircle {
 			void setUniverse(int universe);
 			void setMapping(std::map< int, std::map<int, int> > *map);
 			void setDebug(bool debug);
+			void setDimm(float dimm);
 			void start();
 			void stop();
 		private:
@@ -29,6 +30,7 @@ namespace fullcircle {
 			bool _running;
 			pthread_t _thread;
 			int _universe;
+			float _dimm;
 			fullcircle::Scheduler::Ptr _scheduler;
 			ola::DmxBuffer _buffer;
 			ola::StreamingClient *_olaClient;
